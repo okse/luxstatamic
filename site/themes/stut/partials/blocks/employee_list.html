@@ -1,0 +1,18 @@
+<div class="block employee-list">
+    {{ collection:employees }}
+        <div class="employee-list-item">
+            <div class="employee-list-item-image">
+                {{ assets:image }}
+                    <img src="{{ glide:id quality="60" width="600" height="600" }}">
+                {{ /assets:image }}
+            </div>
+            <div class="employee-list-item-info">
+                <h2>{{ title }}</h2>
+                {{ if position }}<div class="employee-list-item-info-position">{{ position }}</div>{{ /if }}
+                {{ if description && show_description }}<div class="employee-list-item-info-description">{{ description | markdown }}</div>{{ /if }}
+                {{ if email }}<div class="employee-list-item-info-email"><span class="employee-list-item-label">E-post:</span> <a    href="mailto:{{ email }}">{{ email }}</a></div>{{ /if }}
+                {{ if phone }}<div class="employee-list-item-info-phone"><span class="employee-list-item-label">Telefon:</span> {{   phone }}</div>{{ /if }}
+            </div>
+        </div>
+    {{ /collection:employees }}
+</div>

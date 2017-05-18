@@ -1,0 +1,45 @@
+{{ if transparent_top }}
+    <main class="main transparent-top" role="main">
+{{ else }}
+    <main class="main" role="main">
+{{ /if }}
+{{ content_rep scope="content_rep" }}
+    {{ if type == "breadcrumb" }}
+        {{ partial:blocks/breadcrumb }}
+
+    {{ elseif type == "hero" }}
+        {{ partial:blocks/hero}}
+
+    {{ elseif type == "single_asset" }}
+        {{ partial:blocks/single_asset}}
+
+    {{ elseif type == "text_and_image_set" }}
+        {{ partial:blocks/text_and_image}}
+
+    {{ elseif type == "employee_list" }}
+        {{ partial:blocks/employee_list }}
+
+    {{ elseif type == "work_list" }}
+        {{ partial:blocks/work_list }}
+
+    {{ elseif type == "contact_form" }}
+        {{ partial:blocks/contact_form}}
+
+    {{ elseif type == "markdown" }}
+        {{ partial:blocks/markdown }}
+
+    {{ elseif type == "quote" }}
+        {{ partial:blocks/quote }}
+
+    {{ elseif type == "cta_set" }}
+        {{ partial:blocks/cta_set }}
+
+    {{ elseif type == "single_header" }}
+        {{ partial:blocks/single_header }}
+
+    {{ elseif type == "sub_pages" }}
+        {{ partial:blocks/sub_pages }}
+
+    {{ /if }}
+{{ /content_rep }}
+</main>

@@ -1,0 +1,12 @@
+{{ if content_rep:image }}
+    {{ asset:image }}
+        <div class="single-asset block">
+            <img src="{{ glide:id width='1600' height='{min_height}' quality='60' }}" >
+            {{ if caption }}
+                <div class="single-asset-caption img-caption">
+                    {{ caption | markdown }}
+                </div>
+            {{ /if }}
+        </div>
+    {{ /asset:image }}
+{{ /if }}

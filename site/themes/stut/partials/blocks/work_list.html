@@ -1,0 +1,57 @@
+{{ if work_show_type == "full_list" }}
+ <div class="block work-list">
+  {{ collection:work sort="sortkey" scope="content_rep" }}
+      {{ if !hide }}
+      <div class="work-list-item">
+          <a href="{{ url }}" class="work-list-item-full_link"></a>
+              {{ if asset_thumbnail }}
+                  {{ asset:asset_thumbnail }}
+                  <div class="work-list-item-image">
+                      <img src="{{ glide:id quality="100" width="800" height="800" }}" >
+                  </div>
+                  {{ /asset:asset_thumbnail }}
+              {{ else }}
+                  {{ asset:asset_main }}
+                  <div class="work-list-item-image">
+                      <img src="{{ glide:id quality="100" width="800" height="800" }}" >
+                  </div>
+                  {{ /asset:asset_main }}
+              {{ /if }}
+          <div class="work-list-item-info">
+              <div class="work-list-item-info-wrapper">
+                  <h2>{{ title }}</h2>
+                 {{ if asset_logo }}
+                  {{ asset:asset_logo scope="content_rep" }}
+                  <div class="work-logo">
+                      <img src="{{ url }}" alt="{{ title }}" title="Logo: {{ title }}, {{ pre_header     }}, {{ post_header }}" >
+                  </div>
+                  {{ /asset:asset_logo }}
+                 {{ /if }}
+              </div>
+          </div>
+
+      </div>
+  {{ /if }}
+  {{ /collection:work }}
+ </div>
+{{ elseif work_show_type == "logos_only"  }}
+ <div class="work-list-logo">
+     <div class="block work-list-logo-wrapper">
+         {{ collection:work sort="sortkey" scope="content_rep" }}
+             {{ if !hide AND !hide_logo }}
+             <div class="work-list-logo-item">
+                 <a href="{{ url }}">
+                 {{ if asset_logo }}
+                  {{ asset:asset_logo }}
+                      <img src="{{ url }}" alt="{{ title }}" title="Logo: {{ title }}, {{ pre_header     }}, {{ post_header }}" >
+                  {{ /asset:asset_logo }}
+                 </a>
+                 {{ else }}
+                     <a href="{{ url }}">{{ title }}</a>
+                 {{ /if }}
+             </div>
+             {{ /if }}
+         {{ /collection:work }}
+     </div>
+ </div>
+{{ /if }}

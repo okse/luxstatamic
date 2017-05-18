@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="no">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>{{ title ensure_right=" / " }}{{ site_name }}</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ theme:css }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ theme:asset src='apple-touch-icon.png' }}">
+        <link rel="icon" type="image/png" href="{{ theme:asset src='favicon-32x32.png' }}" sizes="32x32">
+        <link rel="icon" type="image/png" href="{{ theme:asset src='favicon-16x16.png' }}" sizes="16x16">
+        <link rel="manifest" href="{{ theme:asset src='manifest.json' }}">
+        <link rel="mask-icon" href="{{ theme:asset src='safari-pinned-tab.svg' }}" color="#283746">
+        {{ if global_og_title }}<meta property="og:title" content="{{ global_og_title }}">{{ /if }}
+        {{ if global_og_image }}{{ asset:global_og_image }}<meta property="og:image" content="{{ glide:id width="1000" quality="80" }}">{{ /asset:global_og_image }}{{ /if }}
+        {{ if global_og_description }}<meta property="og:description" content="{{ global_og_description }}">{{ /if }}
+        {{ if global_theme_color }}<meta name="theme-color" content="{{ global_theme_color }}">{{ /if }}
+        {{ if global_head_code }}
+            {{ global_head_code }}
+        {{ /if }}
+</head>
+<body class="section-{{ segment_1 or "home" }} {{ contactform_name_title }} nav-top{{ if global_sticky_header }} header-sticky{{ /if }}{{ if transparent_top }} header-transparent{{ /if }}">
+{{ if global_gtm_id }}
+    <!-- Google Tag Manager -->
+    <noscript><iframe src="//www.googletagmanager.com/ns.html?id={{ global_gtm_id }}"
+    height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+    <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+    new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+    j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+    '//www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+    })(window,document,'script','dataLayer','{{ global_gtm_id }}');</script>
+    <!-- End Google Tag Manager -->
+{{ /if }}
+{{ if global_ga_id }}
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '{{ global_ga_id }}', 'auto');
+  ga('send', 'pageview');
+
+</script>
+{{ /if }}
+
+
+    <!--[if lt IE 8]>
+        <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+    <div class="content-wrapper">
+        {{ partial:header }}
+
+        {{ template_content }}
+    </div>
+
+    {{ partial:footer }}
+
+    <script src="{{ theme:js src="vendor/jquery-3.0.0.min" }}"></script>
+    <script src="{{ theme:js src="vendor/a11y-dialog.min" }}"></script>
+    <script src="{{ theme:js }}"></script>
+
+</body>
+</html>

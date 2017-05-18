@@ -1,0 +1,104 @@
+.block.hero {
+    display: flex;
+    align-items: center;
+}
+.hero-background-image:first-child {
+}
+.hero-high {
+    min-height: 80vh;
+}
+.hero-markdown {
+    :first-child {
+        margin-top: 0;
+    }
+    :last-child {
+        margin-bottom: 0;
+    }
+}
+.hero-background-image:first-child {
+    .block.hero {
+    }
+}
+.hero-content {
+    max-width: $narrow-content-width;
+}
+.hero-content em {
+    color: $secondary-color;
+}
+.block.hero h1,
+.block.hero h2 {
+    font-weight: 500;
+}
+.block.hero h2,
+.block.hero p {
+    font-size: 1.5rem;
+    @media #{$medium-up} {
+        font-size: 1.5rem;
+    }
+}
+.block.hero h1 {
+    font-size: 2rem;
+    line-height: 1.2;
+    letter-spacing: 0.03em;
+    position: relative;
+    @media #{$medium-up} {
+        font-size: 3rem;
+    }
+}
+.block.hero.hero-dark-text h1,
+.block.hero.hero-dark-text p,
+.block.hero.hero-dark-text h2 {
+    color: $primary-color;
+    background-color: $light;
+    padding: $base * 1.5 $base * 2;
+    border-radius: $radius;
+    strong,em {
+        color: inherit;
+    }
+}
+.block.hero.hero-dark-text h1 {
+    background-color: $primary-color;
+    color: $light;
+}
+
+.block.hero .image-left {
+    display: inline-block;
+    max-width: 100%;
+    margin-bottom: $gutter;
+    width: 50%;
+    @media #{$medium-up} {
+        position: absolute;
+        margin-right: $gutter * 3;
+        top: -20%;
+        right: 100%;
+    }
+}
+.block.hero .button-set {
+    margin-top: $gutter * 2;
+    .button,
+    button {
+        width: 100%;
+        margin-bottom: $gutter;
+        span {
+            width: 100%;
+        }
+        @media #{$medium-up} {
+            width: auto;
+            margin-bottom: 0;
+            span {
+                width: auto;
+            }
+        }
+    }
+}
+.hero-markdown h2 em,
+.hero-markdown h1 em {
+    font-style: normal;
+    font-weight: 800;
+}
+.hero-markdown a {
+    &:hover,
+    &:active,
+    &:focus {
+    }
+}

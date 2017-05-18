@@ -1,0 +1,21 @@
+title: Kontakt oss
+honeypot: subject
+fields:
+  email:
+    display: Din e-postadresse
+    validate: email
+  message:
+    display: Melding
+  name:
+    display: Navn
+  phone:
+    display: Ditt telefonnummer
+  heard_about_us:
+    display: Hvordan hørte du om oss?
+columns:
+  - email
+  - message
+email:
+  - 
+    to: erling@okse.no
+    subject: 'Okse.no: Kontaktskjema!'

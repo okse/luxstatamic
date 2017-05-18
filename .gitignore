@@ -1,0 +1,8 @@
+.DS_Store
+.env
+.htaccess
+node_modules/
+bower_components/
+local/cache/*
+local/storage/*
+local/temp/*

@@ -1,0 +1,46 @@
+html,
+body {
+    font-family: $body-font-family;
+    color: $body-font-color;
+    line-height: 1.4;
+    font-size: 100%;
+}
+
+a,
+a:visited {
+    text-decoration: underline;
+    transition: color .2s ease-in-out;
+    color: $body-font-color;
+}
+a:hover,
+a:focus,
+a:active {
+    color: $secondary-color;
+    text-decoration: none;
+}
+h1,h2,h3,h4,h5,h6 {
+    font-weight: 600;
+    clear: both;
+}
+h2 {
+    font-size: 2rem;
+    margin-bottom: 0.2em;
+}
+p {
+    font-size: 1.15rem;
+}
+strong {
+    font-weight: 600;
+}
+ul.nav li {
+    font-size: 1rem;
+}
+input,
+textarea,
+option {
+    font-size: 1.15rem;
+}
+label {
+    font-size: 1.15rem;
+    font-weight: 600;
+}

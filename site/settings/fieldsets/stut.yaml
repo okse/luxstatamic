@@ -1,0 +1,343 @@
+title: Innhold
+taxonomies: false
+fields:
+  page_contentbuilder:
+    type: section
+    display: Innholdsbygger
+  content_rep:
+    type: replicator
+    display: Innholdsblokker
+    sets:
+      hero:
+        display: Hero
+        fields:
+          high:
+            type: toggle
+            display: Høy?
+          markdown:
+            type: markdown
+            display: Markdown
+            width: 50
+          image:
+            type: assets
+            display: Bilde
+            container: main
+            folder: hero-images
+            width: 25
+          min_height:
+            type: text
+            display: Minimumshøyde
+            width: 25
+          hero_class:
+            type: text
+            display: class
+            width: 25
+          hero_dark_text:
+            type: toggle
+            display: Mørk tekst?
+            width: 25
+          buttons:
+            type: replicator
+            display: Knapper
+            sets:
+              button:
+                display: Knapp
+                fields:
+                  button_text:
+                    type: text
+                    display: Knappetekst
+                    width: 25
+                  button_url:
+                    type: text
+                    display: Knappe-lenke
+                    width: 25
+          hero_full_width:
+            type: toggle
+            display: Full bredde?
+      markdown:
+        display: Markdown
+        fields:
+          text:
+            type: markdown
+            display: Tekst
+            cheatsheet: true
+            container: main
+            folder: /
+          markdown_class:
+            type: text
+            display: CSS-klasse
+      employee_list:
+        display: Ansatteliste
+        fields:
+          dummy:
+            type: hidden
+            display: Dummy
+            default: dummy
+      work_list:
+        display: Referanseliste
+        fields:
+          dummy:
+            type: hidden
+            display: Dummy
+            default: dummy
+          work_show_type:
+            type: select
+            display: 'Vis:'
+            options:
+              full_list: Alle
+              logos_only: Kun logoer
+              highlighted_only: Kun uthevede
+            default: full_list
+            width: 25
+      contact_form:
+        display: Kontaktskjema
+        fields:
+          contactform_email_title:
+            type: text
+            display: 'Kontaktskjema - E-post - Tittel'
+            width: 33
+            default: 'E-posten din:'
+          contactform_name_title:
+            type: text
+            display: 'Kontaktskjema - Navn - Tittel'
+            width: 33
+            default: 'Navnet ditt:'
+          contactform_phone_title:
+            type: text
+            display: 'Kontaktskjema - Telefon - Tittel'
+            width: 25
+            default: 'Ditt telefonnummer:'
+          contactform_heard_about_us_title:
+            type: text
+            display: 'Kontaktskjema - Hørt om oss - Tittel'
+            width: 25
+            default: Hvor hørte du om oss?
+          contactform_message_title:
+            type: text
+            display: 'Kontaktskjema - Melding - Tittel'
+            width: 33
+            default: 'Utbroder dine ønsker og behov:'
+          contactform_button_text:
+            type: text
+            display: 'Kontaktskjema - Knappetext'
+            default: Send skjema
+            width: 25
+          contact_phone_subtext:
+            type: text
+            display: 'Kontakt - Telefon - Unertekst'
+            width: 25
+            default: '(<strong>Direkte</strong> til Knut)'
+          contact_email_subtext:
+            type: text
+            display: 'Kontakt - E-post - Undertekst'
+            width: 25
+            default: '(Vi svarer <strong>fort</strong>!)'
+          contact_email_title:
+            type: text
+            display: 'Kontakt - E-post - Tittel'
+            default: 'Send oss e-post:'
+          contact_phone_title:
+            type: text
+            display: 'Kontakt - Telefon - Tittel'
+            default: 'Ring oss:'
+          contact_address_title:
+            type: text
+            display: 'Adresse - Tittel'
+            width: 25
+            default: 'Besøk oss / send oss brev:'
+      single_asset:
+        display: Bare bilde
+        fields:
+          image:
+            type: assets
+            display: Bilde
+            container: main
+            folder: hero-images
+            max_files: 1
+          min_height:
+            type: text
+            display: Maksimumshøyde
+      text_and_image_set:
+        display: Kolonner (tekst og bilde)
+        fields:
+          text_and_image_columns:
+            type: text
+            display: Kolonner
+            instructions: >
+              Av 12 kolonner, hvor stor plass skal hvert element ta? 3 = en fjerdedel (3/12), 4 = en tredjedel
+              (4/12), 6 = en halvdel (6/12)
+            default: 6
+            width: 50
+          text_and_image_class:
+            type: text
+            display: CSS-klasse
+            width: 25
+          image_position:
+            type: select
+            display: Bildeposisjon
+            options:
+              left: Venstre
+              right: Høyre
+              over: Over
+            width: 25
+          text_and_image_rep:
+            type: replicator
+            display: Tekst og bilde
+            sets:
+              text_and_image_repset:
+                display: Text and image
+                fields:
+                  text_and_image_image:
+                    type: assets
+                    display: Bilde
+                    container: main
+                    folder: img
+                    width: 33
+                  text_and_image_item_class:
+                    type: text
+                    display: CSS-klasse
+                    width: 33
+                  text_and_image_image_url:
+                    type: text
+                    display: URL på bilde
+                    width: 33
+                  text_and_image_text:
+                    type: markdown
+                    display: Tekst
+                    cheatsheet: true
+                    container: main
+                    folder: /
+      process_set:
+        display: Tilnærming
+        fields:
+          process_set_rep:
+            type: replicator
+            display: Prosess
+            sets:
+              process_set_rep_set:
+                display: Prosess
+                fields:
+                  process_image-right:
+                    type: toggle
+                    display: Bilde til høyre?
+                    width: 25
+                  process_icon:
+                    type: assets
+                    display: Ikon
+                    container: main
+                    folder: /
+                    width: 25
+                  process_header:
+                    type: text
+                    display: Hovedheader
+                    width: 25
+                  process_subheader:
+                    type: text
+                    display: Subheader
+                    width: 25
+                  process_text:
+                    type: markdown
+                    display: Tekst
+                    container: main
+                    folder: /
+                  process_tools:
+                    type: markdown
+                    display: Verktøy
+                    container: main
+                    folder: /
+      cta_set:
+        display: CTA
+        fields:
+          cta_set_rep:
+            type: replicator
+            display: CTA
+            sets:
+              cta_set_rep_set:
+                display: Legg til knapp/lenke
+                fields:
+                  cta_type:
+                    type: select
+                    display: Type
+                    options:
+                      cta_button: CTA-knapp
+                      cta_ghost: Ghost-knapp
+                      cta_link: Kun lenketekst
+                    width: 25
+                  cta_arrow:
+                    type: toggle
+                    display: Pil?
+                  cta_button_text:
+                    type: text
+                    display: Knappetekst
+                    width: 33
+                  cta_button_url:
+                    type: text
+                    display: URL
+                    width: 25
+      single_header:
+        display: Enkel header
+        fields:
+          single_header_center:
+            type: toggle
+            display: Sentrert tekst?
+            width: 25
+          single_header_no_bottom_margin:
+            type: toggle
+            display: Fjern luft under
+            width: 25
+          single_header_text:
+            type: text
+            display: Tekst
+            width: 50
+      quote:
+        display: Sitat
+        fields:
+          quote_asset:
+            type: assets
+            display: Bilde av den som har sagt noe
+            container: work
+            folder: /
+          quote_quote:
+            type: markdown
+            display: Sitatet
+          quote_name-and-title:
+            type: text
+            display: Navn og tittel på den som har sagt sitatet
+          quote_url:
+            type: text
+            display: Lenke-URL
+          quote_url_text:
+            type: text
+            display: Lenketekst
+      collection_list:
+        display: Bloggliste
+        fields:
+          collection_list_title:
+            type: text
+            display: Tittel
+          related_entries:
+            type: collection
+            display: Relaterte innlegg
+            collection:
+              - blog
+      sub_pages:
+        display: Undersider
+        fields:
+          sub_page_url:
+            type: text
+            display: URL
+            instructions: 'Skriv inn den relative URL-en til siden du vil ha undersidene til, f.eks: _/medlem_'
+          sub_pages_class:
+            type: text
+            display: CSS-klasse
+  page_settings:
+    type: section
+    display: Innstillinger
+  transparent_top:
+    type: toggle
+    display: Transparent toppnavigasjon?
+    width: 25
+  header_invert:
+    type: toggle
+    display: Inverter menytekst
+    width: 25

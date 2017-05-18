@@ -1,0 +1,37 @@
+title: Employee
+create_title: Employee
+taxonomies: false
+fields:
+  title:
+    type: title
+    display: Full name
+  employee_sort_key:
+    type: text
+    display: Rekkefølge?
+    width: 25
+  position:
+    type: text
+    display: Stilling
+    width: 75
+  image:
+    type: assets
+    display: Profilbilde
+    container: main
+    folder: /
+    width: 25
+  email:
+    type: text
+    display: E-post
+    width: 25
+  phone:
+    type: text
+    display: 'Telefonnummer:'
+    width: 25
+  description:
+    type: markdown
+    display: Om den ansatte
+    cheatsheet: true
+  show_description:
+    type: toggle
+    display: Show description in list?
+    width: 25

@@ -1,0 +1,88 @@
+.process {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    @media only screen and (min-width: 990px) {
+        flex-direction: row;
+    }
+}
+.process_circle {
+    background-color: $primary-color;
+    border-radius: 50%;
+    padding: 5%;
+    text-align: center;
+    position: relative;
+    min-width: 288px;
+    min-height: 288px;
+    margin-bottom: 135px;
+    @media only screen and (min-width: 450px) {
+        min-width: 392px;
+        min-height: 392px;
+    }
+    @media only screen and (min-width: 990px) {
+        margin-right: 135px;
+        margin-bottom: 0;
+    }
+    h2, h3 {
+        margin: 0;
+    }
+    h3 {
+        color: $secondary-color;
+        font-weight: 400;
+    }
+    img {
+        margin-top: -5%;
+        transform: scale(0.4) translateX(18px);
+        display: inline-block;
+        margin-bottom: -35px;
+        @media only screen and (min-width: 450px) {
+            transform: scale(0.6) translateX(18px);
+            margin-bottom: -15px;
+            margin-top: 5%;
+        } 
+    }
+}
+.process_circle:after {
+    content: url(../img/icon-thick-arrow.svg);
+    position: absolute;
+    right: 50%;
+    top: auto;
+    bottom: -88px;
+    transform: translateX(50%) rotate(90deg);
+    @media only screen and (min-width: 990px) {
+        right: -88px;
+        top: 50%;
+        bottom: auto;
+        transform: translateY(-50%);
+    }
+}
+.process.process-image-right {
+    .process_circle {
+        @media only screen and (min-width: 990px) {
+            margin-right: 0;
+            margin-left: 135px;
+            order: 2;
+        }
+        &:after {
+            @media only screen and (min-width: 990px) {
+                left: -88px;
+                right: auto;
+                top: 50%;
+                bottom: auto;
+                transform: translateY(-50%) rotate(180deg);
+            }
+        }
+    }
+}
+.process_text {
+}
+.process em {
+    font-style: normal;
+    color: $secondary-color;
+}
+.process div.process_text p {
+    font-size: $base * 1.5;
+}
+.process div.process_tools p {
+    font-size: $base * 1.25;
+}

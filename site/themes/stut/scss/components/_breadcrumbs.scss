@@ -1,0 +1,33 @@
+ul.breadcrumbs {
+    max-width: $content-width;
+    margin: 0 auto;
+    list-style-type: none;
+    display: flex;
+    margin-bottom: -2.5rem;
+    white-space: nowrap;
+    padding: $gutter;
+    @media #{$medium-up} {
+        font-size: 1.5rem;
+        padding: $gutter * 2;
+    }
+}
+ul.breadcrumbs li {
+    &:after {
+        content: "/"; 
+        display: inline-block;
+        padding-right: $gutter / 2;
+        padding-left: $gutter / 2;
+        color: $secondary-color;
+        line-height: 1rem;
+        font-weight: 800;
+    }
+    &:last-child:after {
+        display: none;
+    }
+}
+ul.breadcrumbs li a {
+    &:hover,
+    &:active,
+    &:focus {
+    }
+}

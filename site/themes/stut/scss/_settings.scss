@@ -1,0 +1,86 @@
+/* ==========================================================================
+   Settings file. All variables are defined here.
+   ========================================================================== */
+
+/* ==========================================================================
+   Base values
+   ========================================================================== */
+
+$base: 1rem;
+$content-width: 75rem;
+$narrow-content-width: 50rem;
+$wide-content-width: 105rem;
+
+$radius: 4px;
+
+/* ==========================================================================
+   Colors
+   ========================================================================== */
+$blue: #388EBA;
+$yellow: #F9E93A;
+$brown: brown;
+
+$light: #fff;
+$white: $light;
+$dark: #000;
+$black: $dark;
+$almost-white: #f6f6f6;
+
+$border-color: #ccc;
+
+$primary-color: $dark;
+$secondary-color: $blue;
+
+$body-font-color: $dark;
+
+$body-background-color: $light;
+
+$header-background-color: $light;
+
+/* ==========================================================================
+   Typography
+   ========================================================================== */
+
+$base-font-size: $base;
+$body-font-family: 'Open Sans', 'Helvetica', 'Helvetica Neue', Verdana, Arial, sans-serif;
+
+/* ==========================================================================
+   Selection
+   ========================================================================== */
+
+$selection-background-color: $secondary-color;
+$selection-color: $light;
+
+/* ==========================================================================
+   Selection
+   ========================================================================== */
+$animation-delay: 200ms;
+
+/* ==========================================================================
+   Grid
+   ========================================================================== */
+$row-width: $content-width;
+$gutter: $base * 2;
+
+$small-up: 'only screen and (min-width: 20rem)';
+$medium-up: 'only screen and (min-width: 40rem)';
+$large-up: 'only screen and (min-width: 64rem)';
+
+/* ==========================================================================
+   Images and icons 
+   ========================================================================== */
+
+$okse-footer-logo-white: 'url(../img/okse-footer-logo-white.svg)';
+$okse-footer-logo-black: 'url(../img/okse-footer-logo-black.svg)';
+$okse-footer-logo-yellow: 'url(../img/okse-footer-logo-yellow.svg)';
+$okse-footer-logo-blue: 'url(../img/okse-footer-logo-blue.svg)';
+
+$icon-arrow-large-white: 'url(../img/icon-arrow-large-white.svg)';
+$icon-arrow-large-black: 'url(../img/icon-arrow-large-black.svg)';
+$icon-arrow-large-yellow: 'url(../img/icon-arrow-large-yellow.svg)';
+$icon-arrow-large-blue: 'url(../img/icon-arrow-large-blue.svg)';
+
+$icon-arrow-small-white: 'url(../img/icon-arrow-small-white.svg)';
+$icon-arrow-small-black: 'url(../img/icon-arrow-small-black.svg)';
+$icon-arrow-small-yellow: 'url(../img/icon-arrow-small-yellow.svg)';
+$icon-arrow-small-blue: 'url(../img/icon-arrow-small-blue.svg)';

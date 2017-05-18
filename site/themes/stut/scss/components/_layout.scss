@@ -1,0 +1,11 @@
+main.main {
+}
+.content-wrapper {
+    max-width: $content-width;
+    margin: 0 auto;
+    box-shadow: 0 0 80px rgba(0,0,0,.1);
+    background-color: $body-background-color;
+    @media #{$medium-up} {
+            border-radius: 8px;
+    }
+}

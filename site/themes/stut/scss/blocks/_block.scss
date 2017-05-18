@@ -1,0 +1,15 @@
+.block {
+    width: auto;
+    max-width: $content-width;
+    padding: $gutter;
+    margin: 0 auto;
+    @media #{$medium-up} {
+        padding: $gutter * 2;
+    }
+}
+.transparent-top > .block:first-of-type {
+    padding-top: 130px;
+    @media #{$medium-up} {
+        padding-top: 146px;
+    }
+}

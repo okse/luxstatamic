@@ -1,0 +1,14 @@
+<footer class="main-footer">
+	{{ if global_footer }}
+    {{ global_footer | markdown}}
+    {{ elseif global_footer_1 }}
+    <div class="main-footer-cols">
+    	<div class="main-footer-cols-1">{{ global_footer_1 | markdown }}</div>
+    	<div class="main-footer-cols-2">{{ global_footer_2 | markdown }}</div>
+    	<div class="main-footer-cols-3">{{ global_footer_3 | markdown }}</div>
+    </div>
+    {{ /if }}
+    {{ if global_okse_logo }}
+        <a href="http://okse.no" class="okse-colophon">{{ global_footer_okse_colophon }}</a>
+    {{ /if }}
+</footer>

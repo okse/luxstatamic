@@ -1,0 +1,30 @@
+<div class="block quote">
+    <blockquote>
+        <div class="quote-text">
+            <div class="quote-wrapper">
+                <span class="quote-left">«</span>
+                <div class="quote-body">
+                    {{ quote_quote | markdown}}
+                </div>
+            </div>
+            <div class="quote-by">
+                <div class="quote-by-asset">
+                {{ if quote_asset }}
+                    {{ asset:quote_asset }}
+                        <img src="{{ glide:id width="150" quality="100" }}" />
+                    {{ /asset:quote_asset }}
+                {{ /if }}
+                </div>
+                <div class="quote-by-text"> 
+                    {{ quote_name-and-title }}<br>
+                    {{ if quote_url && quote_url_text }}
+                    <a href="{{ quote_url }}"><span>{{ quote_url_text }} »</span></a>
+                    {{ /if }}
+                </div>
+            </div> 
+        </div>
+        
+    </blockquote>
+        
+    
+</div>

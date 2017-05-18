@@ -1,0 +1,24 @@
+<div class="block text-and-image text-and-image-columns-{{ text_and_image_columns }}{{ if image_position == 'right' }} text-and-image-image-right{{ elseif image_position == 'left' }} text-and-image-image-left{{ /if }}{{ if text_and_image_class }} {{ text_and_image_class }}{{ /if }} text-and-image-image-size-{{ text_and_image_image_size }}">
+    {{ text_and_image_rep scope="content_rep" }}
+    <div class="text-and-image-item">
+            {{ if content_rep:text_and_image_image }}
+            <div class="text-and-image-image{{ if text_and_image_item_class }} {{ text_and_image_item_class }}{{ /if }}">
+                {{ if text_and_image_image_url }}
+                    <a href="{{ text_and_image_image_url }}">
+                {{ /if }}
+                        {{ asset:text_and_image_image }}
+                        <img src="{{ glide:id width="600" quality="50" }}" title="{{ title }}" alt="{{ alt }}">
+                        {{ /asset:text_and_image_image }}
+                {{ if text_and_image_image_url }}
+                    </a>
+                {{ /if }}
+                </div>
+            {{ /if }}
+            {{ if text_and_image_text }}
+                <div class="text-and-image-text">
+                    {{ text_and_image_text | markdown }}
+                </div>
+            {{ /if }}
+    </div>
+    {{ /text_and_image_rep }}
+</div>

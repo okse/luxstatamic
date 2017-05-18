@@ -1,0 +1,62 @@
+ .row {
+   max-width: $row-width;
+   margin: 0 auto;
+   display: flex;
+   flex-wrap: wrap;
+ }
+ .column,
+ .columns {
+   width: 100%;
+   padding-left: $gutter;
+   padding-right: $gutter;
+   margin: $gutter 0;
+ }
+ @for $i from 1 through 12 {
+   .small-#{$i} {
+     width: calc(100% / (12 / #{$i}));
+   }
+ }
+ @for $i from 1 through 12 {
+   @media #{$medium-up} {
+     .medium-#{$i} {
+       width: calc(100% / (12 / #{$i}));
+     }
+   }
+ }
+ @for $i from 1 through 12 {
+   @media #{$large-up} {
+     .large-#{$i} {
+       width: calc(100% / (12 / #{$i}));
+     }
+   }
+ }
+
+/*
+* To change the order of elements with classes
+*/
+@for $i from 1 through 10 {
+  @media #{$small-up} {
+    .small-order-#{$i} {
+      order: #{$i};
+    }
+    .small-order-m-#{$i} {
+      order: -#{$i};
+    }
+  }
+  @media #{$medium-up} {
+    .medium-order-#{$i} {
+      order: #{$i};
+    }
+    .medium-order-m-#{$i} {
+      order: -#{$i};
+    }
+  }
+  @media #{$large-up} {
+    .large-order-#{$i} {
+      order: #{$i};
+    }
+    .large-order-m-#{$i} {
+      order: -#{$i};
+    }
+  }
+}

@@ -1,0 +1,10 @@
+settings:
+  debug:
+    debug: true
+    debug_bar: false
+  system:
+    locales:
+      en:
+        url: http://stut.dev
+  caching:
+    static_caching_enabled: false

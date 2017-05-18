@@ -1,0 +1,14 @@
+title: Gallery
+taxonomies: false
+fields:
+  title:
+    type: title
+    display: Title
+  content:
+    type: markdown
+    display: Content
+  images:
+    type: assets
+    display: Images
+    container: main
+    folder: img

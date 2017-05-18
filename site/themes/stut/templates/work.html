@@ -1,0 +1,69 @@
+{{ partial:header }}
+<div class="work-page">
+<ul class="breadcrumbs">
+    <li><a href="/">Okse</a></li>
+    <li><a href="/referanser">Referanser</a></li>
+    <li><strong>{{ title }}</strong></li>
+</ul>
+    {{ content_rep }}
+        {{ if type == "content_markdown_set" }}
+            <div class="page-work-content block">
+                <div class="page-work-content-markdown markdown">
+                    
+                     {{ content_markdown | markdown }}
+                </div>
+            </div>
+        {{ elseif type == "main_asset_set" }}
+            <div class="page-work-asset_main">
+            {{ if asset_content}}
+                {{ asset:asset_content }}                        
+                    <div class="page-work-content-asset_main-image">
+                        <img src="{{ glide:id quality="90" width="2000" height="450" fit="crop_focal" }}" title="{{ title }}" alt="{{ alt}}" > 
+                     </div>
+                 {{ /asset:asset_content }}
+            {{ else }}
+                {{ assets:asset_main }}                        
+                    <div class="page-work-content-asset_main-image">
+                        <img src="{{ glide:id quality="90" width="2000" height="450" fit="crop_focal" }}" title="{{ title }}" alt="{{ alt}}" > 
+                     </div>
+                 {{ /assets:asset_main }}
+            {{ /if }}
+            </div>
+
+            {{ elseif type == "cta_button_set" }}
+            <div class="page-work-button">
+                <a href="{{ cta_button_url }}" class="button"><span>{{ cta_button_text }}</span></a>
+            </div>
+
+        {{ /if }}
+
+    {{ /content_rep }}
+    {{ if asset_detail }}
+        <div class="page-work-asset_detail">
+            {{ assets:asset_detail }}
+                <div class="page-work-asset_detail-image">
+                    <img src="{{ glide:id quality='60' width='400' height='400' }}" alt="Detaljbilde, {{ title }}">
+                </div>
+            {{ /assets:asset_detail }}
+        </div>
+    {{ /if }}
+    <div class="next-prev">
+        {{ collection:previous sort="sortkey" in="work" limit="1" }}
+            {{ if no_results || hide }}
+            <a href="/referanser" class="no-results previous">« Ingen flere, se alle</a>
+            {{ else }}
+                <a href="{{ url }}" class="previous">{{ title }}</a>
+            {{ /if }}
+
+        {{ /collection:previous }}
+        <strong class="current">{{ title }}</strong>
+        {{ collection:next sort="sortkey" in="work" limit="1" }}
+            {{ if no_results || hide}}
+                <a href="/referanser" class="no-results next">Ingen flere, se alle »</a>
+            {{ else }}
+                <a href="{{ url }}" class="next">{{ title }}</a>
+            {{ /if }}
+        {{ /collection:next }}
+
+    </div>
+</div>

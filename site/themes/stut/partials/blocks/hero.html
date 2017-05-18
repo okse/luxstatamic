@@ -1,0 +1,25 @@
+{{ if content_rep:image }}
+    {{ asset:image }}
+        <div
+            class="hero-background-image{{ if hero_class }} {{ hero_class }}{{ /if }}"
+            style="background: url('{{ glide:id quality='100' width='1600' }}') center center no-repeat; background-size: cover;"
+        >
+    {{ /asset:image }}
+{{ /if }}
+    <div class="block hero{{ if high }} hero-high{{ /if }}{{ if hero_class }} {{ hero_class }}{{ /if }}{{ if hero_dark_text }} hero-dark-text{{ /if }}"{{ if min_height }} style="min-height: {{ min_height }};"{{ /if}}>
+       <div class="hero-content">
+           <div class="hero-markdown">
+               {{ markdown | markdown }}
+               {{ if content_rep:buttons }}
+                   <div class="button-set">
+                       {{ buttons }}
+                       <a href="{{ button_url }}" class="button"><span>{{ button_text}}</span></a>
+                       {{ /buttons }}
+                   </div>
+               {{ /if }}
+           </div>
+       </div>
+    </div>
+{{ if image }}
+</div> <!-- /hero-background-image -->
+{{ /if }}

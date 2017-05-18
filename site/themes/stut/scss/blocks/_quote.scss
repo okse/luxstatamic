@@ -1,0 +1,63 @@
+ .block.quote {
+ }
+ .quote blockquote {
+    font-style: italic;
+    position: relative;
+    margin: 0 auto;
+    margin-bottom: $gutter;
+    p {
+        font-size: 1.75rem;
+    }
+    strong {
+    }
+    display: flex;
+    flex-direction: column;
+    @media #{$medium-up} {
+        flex-direction: row;
+    }
+}
+.quote-by {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    font-size: 1.25rem;
+    /* color: rgba(255,255,255,0.5); */
+    font-style: normal;
+    width: 100%;
+}
+.quote-by .quote-by-asset img {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: $gutter / 2;
+}
+.quote-by .quote-by-text {
+    a {
+    }
+}
+.quote-button-set {
+    margin-top: 2rem;
+}
+.quote-wrapper {
+    position: relative;
+    .quote-left,
+    .quote-right {
+        position: absolute;
+        right: 100%;
+        top: 22px;
+        line-height: 0;
+        font-weight: bold;
+        color: $secondary-color;
+        padding-right: $gutter;
+        display: none;
+        @media #{$medium-up} {
+            display: inline;
+            font-size: 10rem;
+        }
+    }
+    .quote-right {
+        padding-right: 0;
+        padding-left: $gutter;
+    }
+}

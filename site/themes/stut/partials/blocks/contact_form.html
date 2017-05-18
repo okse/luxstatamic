@@ -1,0 +1,31 @@
+<div class="block contact">
+    <div class="contact-form">
+    {{ form:create in="contact-us" redirect="takk-for-henvendelsen" }}
+        <div class="contact-form-name_email">
+            <div class="contact-form-name">
+                <label for="name">{{ contactform_name_title }}</label>
+                <input type="text" id="name" name="name" value="{{ old:name }}" placeholder="Ola Nordmann" />
+            </div>
+            <div class="contact-form-email">
+                <label for="email">{{ contactform_email_title }}</label>
+                <input type="email" id="email" name="email" value="{{ old:email }}" placeholder="ola@nordmann.no" required />
+            </div>
+        </div>
+        <div class="contact-form-phone_heard">
+            <div class="contact-form-phone">
+                <label for="phone">{{ contactform_phone_title }}</label>
+                <input type="number" id="phone" name="phone" value="{{ old:phone }}" placeholder="987 65 432" />
+            </div>
+            <div class="contact-form-heard_about_us">
+                <label for="heard_about_us">{{ contactform_heard_about_us_title }}</label>
+                <input type="text" id="heard_about_us" name="heard_about_us" value="{{ old:heard_about_us }}" placeholder="Ble anbefalt av ... " />
+            </div>
+        </div>
+        <label for="message">{{ contactform_message_title }}</label>
+        <textarea id="message" name="message" value="{{ old:message }}"></textarea>
+        <div class="button-set">
+            <button type="submit"><span>{{ contactform_button_text }}</span></button>
+        </div>
+    {{ /form:create }}
+    </div>
+</div>

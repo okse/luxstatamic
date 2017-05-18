@@ -1,0 +1,93 @@
+title: Globals
+hide: true
+taxonomies: false
+fields:
+  global_gi_title:
+    type: section
+    display: Generelle innstillinger
+  site_name:
+    type: text
+    display: Website Name
+    instructions: The name of your website
+    localizable: true
+  global_logo_main:
+    type: assets
+    display: Hovedlogo
+    container: main
+    folder: /
+    max_files: 1
+    width: 25
+  global_logo_element:
+    type: assets
+    display: Logo-element
+    instructions: Valgfri. Til mobil og på scroll.
+    container: main
+    folder: /
+    width: 25
+    max_files: 1
+  global_sticky_header:
+    type: toggle
+    display: Sticky header?
+    width: 25
+  global_head_code:
+    type: textarea
+    display: Custom ead code
+  global_footer:
+    type: markdown
+    display: Footer
+    cheatsheet: true
+  global_footer_1:
+    type: markdown
+    display: Footer
+    cheatsheet: true
+    width: 33
+  global_footer_2:
+    type: markdown
+    display: Footer
+    cheatsheet: true
+    width: 33
+  global_footer_3:
+    type: markdown
+    display: Footer
+    cheatsheet: true
+    width: 33
+  global_tracking_title:
+    type: section
+    display: Tracking
+  global_gtm_id:
+    type: text
+    display: Google Tag Manager ID
+    width: 25
+  global_ga_id:
+    type: text
+    display: Google Analytics
+    width: 25
+  global_og_title:
+    type: text
+    display: Open Graph – Tittel
+  global_og_image:
+    type: assets
+    display: Open Graph image
+    container: main
+    folder: /
+    max_files: 1
+    width: 25
+  global_og_description:
+    type: textarea
+    display: 'Open Graph - Description'
+    width: 25
+  global_meta_title:
+    type: section
+    display: Diverse meta
+  global_theme_color:
+    type: text
+    display: Theme Color
+    instructions: Hexadecimal color for Android chrome.
+  global_okse_logo:
+    type: toggle
+    display: Okse-logo i footer?
+    default: 'true'
+  global_footer_okse_colophon:
+    type: text
+    display: Tekst over Okse-logo
+    default: Website built by

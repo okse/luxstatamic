@@ -1,0 +1,72 @@
+.block.contact {
+    max-width: $narrow-content-width;
+}
+.contact-form-phone_heard,
+.contact-form-name_email {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    & > * {
+        flex: 1;
+        flex-basis: calc(100% - 1rem);
+        max-width: calc(100% - 1rem);
+        @media #{$medium-up} {
+            flex-basis: calc(50% - 1rem);
+            max-width: calc(50% - 1rem);
+        }
+    }
+}
+.contact-form-phone_heard,
+.contact-form-name_email {
+    & > * {
+        flex-basis: calc(100% - 1rem);
+        max-width: calc(100% - 1rem);
+        @media #{$medium-up} {
+            flex-basis: calc(50% - 1rem);
+            max-width: calc(50% - 1rem);
+        }
+    }
+}
+.contact-form {
+    margin: 0 auto;
+    label {
+        display: block;
+        width: 100%;
+        padding-bottom: 8px;
+        @media #{$medium-up} {
+            font-weight: 600;
+        }
+    }
+    textarea,
+    input {
+        width: 100%;
+        border: 1px solid $border-color;
+        border-radius: $radius;
+        display: block;
+        padding: 8px;
+        margin-bottom: $gutter;
+    }
+    textarea {
+        min-height: 15em;
+    }
+}
+.contact h3 {
+    max-width: 550px;
+    margin: $gutter * 2 auto $gutter;
+}
+.contact-form {
+}
+.contact-form .button-set {
+    text-align: right;
+    button span,
+    button {
+        width: 100%;
+        @media #{$medium-up} {
+            width: auto;
+        }
+    }
+}
+.contact-address {
+    margin-top: $gutter * 3;
+    text-align: center;
+}

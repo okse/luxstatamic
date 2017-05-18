@@ -1,0 +1,8 @@
+<ul class="breadcrumbs">
+    <li><a href="/">Okse</a></li>
+    {{ if current_uri != "/" }}
+        <li><strong>{{ title }}</strong></li>
+    {{ else }}
+        <li><strong>Forsiden</strong></li>
+    {{ /if }}
+</ul>

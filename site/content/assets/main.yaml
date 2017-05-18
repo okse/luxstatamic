@@ -1,0 +1,16 @@
+title: Main Assets
+path: assets
+url: /assets
+assets:
+  hero-images/pexels-photo-202384.jpeg:
+    focus: 50-66
+  img/black-bear-cubs.jpg:
+    title: Black Bear Cubs
+  img/coffee-mug.jpg:
+    title: Coffee Mug
+  img/jedi-set.jpg:
+    title: Jedi Set
+    alt: The set of The Return of the Jedi
+  img/me.jpg:
+    title: Me
+    alt: Niles Peppertrout

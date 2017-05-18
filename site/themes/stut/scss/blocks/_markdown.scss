@@ -1,0 +1,15 @@
+.block.markdown {
+    width: auto;
+    font-size: 1.5rem;
+}
+.block.markdown > :first-child {
+    margin-top: 0;
+}
+.block.markdown > :last-child {
+    margin-bottom: 0;
+}
+.markdown img {
+    max-width: 100%;
+    margin-bottom: $gutter;
+    display: inline-block;
+}

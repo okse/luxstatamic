@@ -1,0 +1,9 @@
+.block.single-header {
+}
+.block.single-header.single-header-center {
+    text-align: center;
+}
+.block.single-header.single-header-no-bottom-margin {
+    padding-bottom: 0;
+    margin-bottom: - $gutter * 3;
+}

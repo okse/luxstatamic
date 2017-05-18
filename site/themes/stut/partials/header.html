@@ -1,0 +1,47 @@
+<nav role="navigation" aria-label="Primary" class="header{{ if header_invert }} header-invert{{ /if }}">
+    {{ if global_logo_main }}
+        {{ asset:global_logo_main }}
+            <a class="logo" href="/"><img src="{{ url }}" alt="{{ site_name }}" title="{{ site_name }}" /></a>
+        {{ /asset:global_logo_main }}
+    {{ else }}
+        <p>{{ site_name }}</p>
+    {{ /if }}
+    {{ if global_logo_element }}
+        {{ asset:global_logo_element }}
+            <a class="logo-small" href="/"><img src="{{ url }}" alt="{{ site_name }}" title="{{ site_name }}" /></a>
+        {{ /asset:global_logo_element }}
+    {{ /if}}
+
+    <ul class="nav">
+        {{ nav from="/" max_depth="2" include_home="false" exclude="takk-for-henvendelsen" }}
+            <li{{ if is_current or is_parent }} class="active"{{ /if }}>
+                <a href="{{ url }}">{{ tag:nav_title or title }}
+                </a>
+                {{ if children }}
+                  <ul>
+                    {{ children }}
+                      <li><a href="{{ url }}" {{ if is_current }} class="current"{{ endif }}>{{ title }}</a>
+                    {{ /children }}
+                  </ul>
+                {{ /if }}
+            </li>
+        {{ /nav }}
+    </ul>
+    <a href="#" class="burger-menu" data-a11y-dialog-show="nav-mobile"><span class="burger-text">Meny</span><span class="burger-icon"></span></a>
+</nav>
+<div id="nav-mobile" class="dialog" aria-hidden="true">
+    <div tabindex="-1" data-a11y-dialog-hide class="overlay"></div>
+    <button type="button" data-a11y-dialog-hide aria-label="Lukk menyen" class="close">Lukk</button>
+    <div role="document" class="wrapper">
+        <ul class="nav-mobile" aria-hidden="true">
+                <li><a href="/">Forsiden</a></li>
+            {{ nav from="/" include_home="false" exclude="takk-for-henvendelsen" }}
+                <li{{ if is_current or is_parent }} class="active"{{ /if }}>
+                    <a href="{{ url }}">{{ tag:nav_title or title }}
+                    </a>
+                </li>
+            {{ /nav }}
+        </ul>
+    </div>
+</div>
+

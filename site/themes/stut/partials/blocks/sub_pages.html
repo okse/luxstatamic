@@ -1,0 +1,9 @@
+<div class="block sub-pages{{ if sub_pages_class }} {{ sub_pages_class }}{{ /if }}">
+    {{ pages from="{ sub_page_url }" depth="1" }}
+	    <div class="sub-page">
+	    	<div class="sub-page-wrapper">
+				<a href="{{ url }}">{{ title }}</a>
+			</div>
+		</div>
+    {{ /pages }}
+</div>

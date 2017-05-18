@@ -1,0 +1,199 @@
+$burger-break: 835px;
+nav.header {
+    width: 100%;
+    padding: $gutter / 2 $gutter;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 9999;
+}
+.logo {
+    position: relative;
+    overflow: hidden;
+    text-shadow: none;
+    box-shadow: none;
+    transition: width .2s ease-in-out;
+    a,
+    a:visited {
+        color: $body-background-color;
+    }
+    &:hover,
+    &:active,
+    &:focus {
+        text-shadow: none;
+        box-shadow: none;
+    }
+}
+.logo-small {
+    display: none;
+}
+.header-sticky.nav-up .logo,
+.header-sticky.nav-down .logo {
+    display: none;
+}
+.header-sticky.nav-up .logo-small,
+.header-sticky.nav-down .logo-small {
+    display: inline-block;
+}
+ul.nav {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+    display: none;
+    @media only screen and (min-width: #{$burger-break}) {
+        display: flex;
+    }
+    li {
+        padding: 0 0 0 $gutter ;
+        transition: font-size .2s ease-in-out;
+    }
+    a {
+        text-decoration: none;
+        padding: 0 8px;
+        display: inline-block;
+        line-height: 2;
+        border-bottom: 2px solid transparent;
+        transition: border .2s ease-in-out;
+    }
+    li.active > a,
+    li:hover > a {
+        border-bottom: 2px solid $secondary-color;
+    }
+    li.active a {
+        font-weight: 800;
+    }
+}
+ul.nav > li {
+    position: relative;
+    ul {
+        display: none;
+        opacity: 0;
+        position: absolute;
+        top: 100%;
+        background-color: $primary-color;
+        border-radius: 8px;
+        padding: 1rem;
+        box-shadow: 0 0 20px rgba(0,0,0,.1);
+        list-style-type: none;
+        transition: opacity 200ms ease-in-out;
+        min-width: 250px;
+        li {
+            padding-left: 0;
+            a {
+                color: $light;
+                display: block;
+            }
+        }
+    }
+    &:hover ul {
+        display: block;
+        opacity: 1;
+    }
+}
+.nav-up .header-invert ul.nav,
+.nav-top .header-invert ul.nav {
+    a {
+        color: $primary-color;
+    }
+}
+.header-sticky nav.header {
+     transform: translateY(0);
+     transition: transform .2s ease-in-out, background-color .2s .2s ease-in-out, padding .2s ease-in-out;
+}
+.header-transparent nav.header {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    background-color: transparent;
+}
+.header-sticky nav.header {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+}
+nav.header {
+  background-color: $header-background-color;
+}
+
+.header-sticky.nav-up nav.header{
+    transform: translateY(-100%);
+}
+.header-sticky.nav-down nav.header {
+    transform: translateY(0);
+}
+
+// Mobile menu
+.burger-menu {
+    display: block;
+    @media only screen and (min-width: #{$burger-break}) {
+        display: none;
+    }
+}
+.burger-text {
+    display: none;
+}
+.burger-menu {
+    text-transform: uppercase;
+    font-weight: bold;
+    text-decoration: none;
+    span.burger-icon {
+        margin-left: 8px;
+    }
+    span.burger-icon:after,
+    span.burger-icon:before,
+    span.burger-icon {
+        width: 42px;
+        height: 9px;
+        background-color: $body-font-color;
+        border-radius: 2px;
+        display: inline-block;
+        position: relative;
+    }
+    span.burger-icon:after,
+    span.burger-icon:before {
+        content: "";
+        position: absolute;
+    }
+    span.burger-icon:after {
+        bottom: -14px;
+    }
+    span.burger-icon:before {
+        top: -14px;
+    }
+}
+.burger-menu:hover {
+    cursor: pointer;
+}
+.header-invert .burger-menu {
+    span.burger-icon,
+    span.burger-icon:before,
+    span.burger-icon:after {
+        background-color: $primary-color;
+    }
+}
+ul.nav-mobile {
+    display: flex;
+    @media #{$medium-up} {
+        display: none;
+    }
+}
+ul.nav-mobile {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    li {
+        font-size: 2rem;
+        display: flex;
+        align-items: center;
+        a {
+            line-height: 2em;
+            color: $secondary-color;
+        }
+    }
+}

@@ -1,0 +1,115 @@
+.block.text-and-image {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1.125rem;
+    align-items: flex-start;
+    & > * {
+        width:100%;
+        flex-basis: 100%;
+    }
+    &.text-and-image-columns-6 {
+        & > * {
+            @media #{$medium-up} {
+                flex: 1 1 50%;
+                width: 50%;
+            }
+        }
+    }
+    &.text-and-image-columns-4 {
+        & > * {
+            @media #{$medium-up} {
+                flex: 1 1 auto;
+                width: 33.333333%;
+            }
+        }
+    }
+    &.text-and-image-columns-3 {
+        & > * {
+            @media #{$medium-up} {
+                flex: 1 1 auto;
+                width: 25%;
+            }
+        }
+    }
+}
+.text-and-image-item {
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 1.125rem;
+    margin-bottom: $gutter;
+    padding: $gutter 0;
+    @media #{$medium-up} {
+        padding: $gutter;
+    }
+}
+.text-and-image.text-and-image-columns-12 .text-and-image-item {
+    margin-bottom: 0;
+    padding: 0;
+}
+.text-and-image-image-right .text-and-image-item > *,
+.text-and-image-image-left .text-and-image-item > * {
+    flex: 1 1 100%;
+    width: 100%;
+    @media #{$medium-up} {
+        flex: 1 1 50%;
+        width: 50%;
+    }
+}
+.text-and-image-image-left .text-and-image-item .text-and-image-text {
+    @media #{$medium-up} {
+        padding-left: $gutter / 2;
+    }
+}
+.text-and-image-image-left .text-and-image-item .text-and-image-image {
+    @media #{$medium-up} {
+        padding-right: $gutter / 2;
+    }
+}
+.text-and-image-image-right .text-and-image-item > .text-and-image-image {
+    @media #{$medium-up } {
+       order: 2;
+    }
+}
+
+.text-and-image-image-right .text-and-image-item .text-and-image-text {
+    @media #{$medium-up} {
+        padding-right: $gutter / 2;
+    }
+}
+.text-and-image-image-right .text-and-image-item .text-and-image-image {
+    @media #{$medium-up} {
+        padding-left: $gutter / 2;
+    }
+}
+
+.text-and-image-image {
+    padding: 0;
+    img {
+        max-width: 100%;
+        width: 100%;
+        height: auto;
+        border-radius: $radius;
+        @media #{$medium-up} {
+        }
+
+    }
+}
+.text-and-image-image {
+    padding: 0;
+    :first-child {
+        margin-top: 0;
+    }
+}
+.text-and-image-image-size-small .text-and-image-image {
+    width: 10%;
+    flex-basis: 10%;
+}
+.text-and-image-text {
+    width: 100%;
+    & > * :first-child {
+        margin-top: 0;
+    }
+    h2 {
+        margin-top: 0.5em;
+    }
+}

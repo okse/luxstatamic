@@ -1,0 +1,32 @@
+.block.sub-pages {
+	display: flex;
+	text-align: center;
+	justify-content: center;
+	align-items: center;
+	flex-wrap: wrap;
+	& > * {
+		flex-grow: 0;
+		flex-basis: 100%;
+		@media #{$medium-up} {
+			flex-basis: 25%;
+		}
+	}
+}
+.sub-pages a {
+	text-decoration: none;
+	font-size: 1rem;
+	padding: $gutter;
+	border: 1px solid $border-color;
+	transition: background-color 200ms ease-in-out;
+	display: block;
+	&:hover,
+	&:active,
+	&:focus {
+		background-color: rgba($orange,0.2);
+	}
+}
+.sub-pages .sub-page {
+	padding: $gutter / 2;
+	.sub-page-wrapper {
+	}
+}
