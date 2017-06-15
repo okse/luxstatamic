@@ -13,18 +13,20 @@
     {{ /if}}
 
     <ul class="nav">
-        {{ nav from="/" max_depth="2" include_home="false" exclude="takk-for-henvendelsen" }}
-            <li{{ if is_current or is_parent }} class="active"{{ /if }}>
-                <a href="{{ url }}">{{ tag:nav_title or title }}
-                </a>
-                {{ if children }}
-                  <ul>
-                    {{ children }}
-                      <li><a href="{{ url }}" {{ if is_current }} class="current"{{ endif }}>{{ title }}</a>
-                    {{ /children }}
-                  </ul>
-                {{ /if }}
-            </li>
+        {{ nav from="/" max_depth="2" include_home="false" scope="nav"}}
+            {{ if !nav:hide_from_menu }}
+                <li{{ if is_current or is_parent }} class="active"{{ /if }}>
+                    <a href="{{ url }}">{{ tag:nav_title or title }}
+                    </a>
+                    {{ if children }}
+                      <ul>
+                        {{ children }}
+                          <li><a href="{{ url }}" {{ if is_current }} class="current"{{ endif }}>{{ title }}</a>
+                        {{ /children }}
+                      </ul>
+                    {{ /if }}
+                </li>
+            {{ /if }}
         {{ /nav }}
     </ul>
     <a href="#" class="burger-menu" data-a11y-dialog-show="nav-mobile"><span class="burger-text">Meny</span><span class="burger-icon"></span></a>
@@ -35,11 +37,13 @@
     <div role="document" class="wrapper">
         <ul class="nav-mobile" aria-hidden="true">
                 <li><a href="/">Forsiden</a></li>
-            {{ nav from="/" include_home="false" exclude="takk-for-henvendelsen" }}
+            {{ nav from="/" include_home="false" scope="nav"}}
+                {{ if !nav:hide_from_menu }}
                 <li{{ if is_current or is_parent }} class="active"{{ /if }}>
                     <a href="{{ url }}">{{ tag:nav_title or title }}
                     </a>
                 </li>
+                {{ /if }}
             {{ /nav }}
         </ul>
     </div>

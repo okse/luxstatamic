@@ -1,6 +1,7 @@
 .block.markdown {
     width: auto;
     font-size: 1.5rem;
+    max-width: $narrow-content-width;
 }
 .block.markdown > :first-child {
     margin-top: 0;

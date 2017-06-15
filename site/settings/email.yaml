@@ -1,0 +1,7 @@
+driver: mail
+from_email: admin@site.com
+from_name: Nettsted
+port: 587
+encryption: tls
+username: ""
+password: ""

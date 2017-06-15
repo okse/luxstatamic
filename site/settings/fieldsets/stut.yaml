@@ -341,3 +341,7 @@ fields:
     type: toggle
     display: Inverter menytekst
     width: 25
+  hide_from_menu:
+    type: toggle
+    display: Skjul fra meny?
+    width: 25
