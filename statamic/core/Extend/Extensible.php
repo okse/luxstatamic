@@ -58,6 +58,13 @@ trait Extensible
                 return $this->getContextualStore('js', new ContextualJs($this));
             case 'img':
                 return $this->getContextualStore('img', new ContextualImage($this));
+            case 'request':
+                // Before Statamic 2.6, you could access the request by $this->request inside controllers.
+                // In 2.6, we removed that and added this here so it would work for backwards compatibility.
+                if ($this instanceof \Statamic\Extend\Controller) {
+                    \Log::notice('$this->request is deprecated. You should typehint the Request object in your controller methods.');
+                    return request();
+                }
         }
 
         throw new \ErrorException(
@@ -76,11 +83,9 @@ trait Extensible
      * Load the addon's bootstrap file, if available.
      * Useful for an addon to use a composer autoloader, for example.
      */
-    private function bootstrap()
+    public function bootstrap()
     {
-        $reflector = new \ReflectionClass(static::class);
-
-        $path = Path::directory($reflector->getFileName()) . '/bootstrap.php';
+        $path = $this->getDirectory() . '/bootstrap.php';
 
         if (File::exists($path)) {
             require_once $path;
@@ -102,21 +107,56 @@ trait Extensible
      */
     public function getAddonClassName()
     {
-        if (property_exists($this, 'addon_name') && ! is_null($this->addon_name)) {
-            return $this->addon_name;
-        }
-
         return explode('\\', get_called_class())[2];
     }
 
-    /**
-     * Get the fully qualified class name of the appropriate addon aspect
-     *
-     * @return string
-     */
-    public function getAddonFQCN()
+    public function getClassNameWithoutSuffix()
     {
-        return get_called_class();
+        $suffixes = [
+            'API', 'Command', 'Controller', 'Fieldtype', 'Filter', 'Listener',
+            'Modifier', 'ServiceProvider', 'Tags', 'Tasks', 'Widget'
+        ];
+
+        $original = $class = last(explode('\\', get_called_class()));
+
+        foreach ($suffixes as $suffix) {
+            $class = Str::removeRight($class, $suffix);
+
+            if ($class !== $original) {
+                return $class;
+            }
+        }
+
+        return $class;
+    }
+
+    /**
+     * Whether the addon is bundled with Statamic.
+     *
+     * (ie. located inside the statamic directory)
+     *
+     * @return bool
+     */
+    public function isFirstParty()
+    {
+        $reflection = new \ReflectionClass($this);
+
+        return Str::contains(
+            Path::tidy($reflection->getFileName()),
+            'statamic/bundles/'
+        );
+    }
+
+    /**
+     * Whether the addon is third party.
+     *
+     * (ie. located outside of the statamic directory)
+     *
+     * @return bool
+     */
+    public function isThirdParty()
+    {
+        return ! $this->isFirstParty();
     }
 
     /**
@@ -154,8 +194,7 @@ trait Extensible
      */
     public function getMeta()
     {
-        $reflector = new \ReflectionClass(get_called_class());
-        $file = pathinfo($reflector->getFileName())['dirname'] . '/meta.yaml';
+        $file = $this->getDirectory() . '/meta.yaml';
 
         if (! File::exists($file)) {
             return [];
@@ -247,15 +286,17 @@ trait Extensible
     }
 
     /**
-     * Get the directory this addon file is in
+     * Get this addon's root directory.
+     *
+     * eg. /path/to/site/addons/SomeAddon or /path/to/statamic/bundles/SomeAddon
      *
      * @return string
      */
-    protected function getDirectory()
+    public function getDirectory()
     {
-        $reflector = new \ReflectionClass($this->getAddonFQCN());
+        $path = $this->getAddonClassName();
 
-        return Path::popLastSegment(Path::tidy($reflector->getFileName()));
+        return $this->isFirstParty() ? bundles_path($path) : addons_path($path);
     }
 
     /**
@@ -263,7 +304,7 @@ trait Extensible
      *
      * @return \Statamic\Email\Builder
      */
-    protected function email()
+    public function email()
     {
         $email = Email::create();
 
@@ -279,7 +320,7 @@ trait Extensible
      * @param bool   $relative
      * @return string
      */
-    protected function actionUrl($url, $relative = true)
+    public function actionUrl($url, $relative = true)
     {
         return $this->eventUrl($url, $relative);
     }
@@ -291,7 +332,7 @@ trait Extensible
      * @param bool $relative
      * @return string
      */
-    protected function eventUrl($url, $relative = true)
+    public function eventUrl($url, $relative = true)
     {
         $url = URL::tidy(
             URL::prependSiteUrl(EVENT_ROUTE . '/' . $this->getAddonClassName() . '/' . $url)
@@ -323,9 +364,7 @@ trait Extensible
      */
     public function view($view, $data = [])
     {
-        $reflector = new \ReflectionClass($this);
-
-        $directory = Path::directory($reflector->getFileName()) . '/resources/views';
+        $directory = $this->getDirectory() . '/resources/views';
 
         $namespace = $this->getAddonClassName();
 

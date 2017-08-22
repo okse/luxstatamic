@@ -15,6 +15,8 @@ class RolesController extends CpController
 {
     public function index()
     {
+        $this->authorize('super');
+
         return view('roles.index', [
             'title' => 'Roles'
         ]);
@@ -55,6 +57,8 @@ class RolesController extends CpController
 
     public function edit($role)
     {
+        $this->authorize('super');
+
         $role = $this->getRole($role);
 
         $data = [
@@ -129,6 +133,8 @@ class RolesController extends CpController
 
     public function create()
     {
+        $this->authorize('super');
+
         $data = [
             'title' => 'Create role',
             'content_titles' => $this->getContentTitles(),
@@ -141,10 +147,13 @@ class RolesController extends CpController
 
     public function store()
     {
+        $this->authorize('super');
+
         $title = $this->request->input('title');
 
         $data = [
             'title' => $title,
+            'slug' => $this->request->input('slug', Str::snake($title)),
             'permissions' => $this->request->input('permissions', [])
         ];
 
@@ -157,6 +166,8 @@ class RolesController extends CpController
 
     public function delete()
     {
+        $this->authorize('super');
+
         $ids = Helper::ensureArray($this->request->input('ids'));
 
         foreach ($ids as $id) {

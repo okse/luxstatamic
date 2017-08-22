@@ -6,8 +6,10 @@ use Log;
 use GuzzleHttp\Client;
 use Statamic\API\Cache;
 use Statamic\API\Config;
+use Statamic\Extend\Addon;
 use Illuminate\Http\Request;
 use GuzzleHttp\Exception\RequestException;
+use Statamic\Extend\Management\AddonRepository;
 
 class Outpost
 {
@@ -32,13 +34,20 @@ class Outpost
     private $response;
 
     /**
+     * @var AddonRepository
+     */
+    private $addonRepo;
+
+    /**
      * Create a new Outpost instance
      *
      * @param Request $request
+     * @param AddonRepository $addonRepo
      */
-    public function __construct(Request $request)
+    public function __construct(Request $request, AddonRepository $addonRepo)
     {
         $this->request = $request;
+        $this->addonRepo = $addonRepo;
     }
 
     /**
@@ -55,7 +64,23 @@ class Outpost
         $this->performRequest();
 
         $this->cacheResponse();
+
         return $this->response;
+    }
+
+    public function hasSuccessfulResponse()
+    {
+        return ! array_get($this->response, 'default_response');
+    }
+
+    public function getLicenseKey()
+    {
+        return Config::getLicenseKey();
+    }
+
+    public function hasLicenseKey()
+    {
+        return $this->getLicenseKey() != null;
     }
 
     /**
@@ -66,6 +91,40 @@ class Outpost
     public function isLicenseValid()
     {
         return array_get($this->response, 'license_valid');
+    }
+
+    public function areAddonLicensesValid()
+    {
+        foreach (array_get($this->response, 'addons', []) as $addon) {
+            if (! $addon['licensed']) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public function isAddonLicenseValid(Addon $addon)
+    {
+        $addons = collect(array_get($this->response, 'addons', []));
+
+        $match = $addons->where('addon', $addon->id())->first();
+
+        return $match['licensed'];
+    }
+
+    /**
+     * Is the site in trial mode?
+     *
+     * @return bool
+     */
+    public function isTrialMode()
+    {
+        if ($this->isLicenseValid()) {
+            return false;
+        }
+
+        return !$this->isOnPublicDomain();
     }
 
     /**
@@ -85,7 +144,16 @@ class Outpost
      */
     public function isOnCorrectDomain()
     {
+        if (! $this->isOnPublicDomain()) {
+            return true;
+        }
+
         return array_get($this->response, 'correct_domain');
+    }
+
+    public function getLicenseDomain()
+    {
+        return array_get($this->response, 'domain');
     }
 
     /**
@@ -154,7 +222,7 @@ class Outpost
         }
 
         // Changing the license key essentially invalidates the cache
-        if (Config::get('system.license_key') !== array_get($this->getCachedResponse(), 'license_key')) {
+        if ($this->getLicenseKey() !== array_get($this->getCachedResponse(), 'license_key')) {
             return false;
         }
 
@@ -171,6 +239,11 @@ class Outpost
         return Cache::get(self::RESPONSE_CACHE_KEY);
     }
 
+    public function clearCachedResponse()
+    {
+        Cache::forget(self::RESPONSE_CACHE_KEY);
+    }
+
     /**
      * Get a default response to use if the request can't be made
      *
@@ -179,7 +252,8 @@ class Outpost
     private function getDefaultResponse()
     {
         return [
-            'license_key'      => Config::get('system.license_key'),
+            'default_response' => true,
+            'license_key'      => $this->getLicenseKey(),
             'latest_version'   => STATAMIC_VERSION,
             'update_available' => false,
             'license_valid'    => false
@@ -194,14 +268,26 @@ class Outpost
     private function getPayload()
     {
         return [
-            'license_key' => Config::get('system.license_key'),
+            'license_key' => $this->getLicenseKey(),
             'version'     => STATAMIC_VERSION,
             'php_version' => PHP_VERSION,
             'request'     => [
                 'domain'  => request()->server('HTTP_HOST'),
                 'ip'      => request()->ip(),
                 'port'    => request()->getPort()
-            ]
+            ],
+            'addons' => $this->getAddonsPayload()
         ];
+    }
+
+    private function getAddonsPayload()
+    {
+        return $this->addonRepo->thirdParty()->addons()->map(function ($addon) {
+             return [
+                 'addon' => $addon->id(),
+                 'version' => $addon->version(),
+                 'license_key' => $addon->licenseKey(),
+             ];
+        })->all();
     }
 }

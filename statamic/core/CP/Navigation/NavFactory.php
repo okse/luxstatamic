@@ -22,22 +22,6 @@ class NavFactory
         $this->nav->add($this->buildContentNav());
         $this->nav->add($this->buildToolsNav());
         $this->nav->add($this->buildConfigureNav());
-
-        $this->trim();
-    }
-
-    /**
-     * Remove any sections that have no children.
-     *
-     * @return void
-     */
-    private function trim()
-    {
-        foreach ($this->nav->children() as $item) {
-            if ($item->children()->isEmpty()) {
-                $this->nav->remove($item);
-            }
-        }
     }
 
     private function buildContentNav()

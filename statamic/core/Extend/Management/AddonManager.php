@@ -4,10 +4,8 @@ namespace Statamic\Extend\Management;
 
 use Statamic\API\File;
 use Statamic\API\Helper;
-use Statamic\Contracts\Extend\Management\ComposerManager;
-use Statamic\Contracts\Extend\Management\AddonManager as ManagerContract;
 
-class AddonManager implements ManagerContract
+class AddonManager
 {
     /**
      * @var ComposerManager
@@ -20,13 +18,19 @@ class AddonManager implements ManagerContract
     protected $packages;
 
     /**
+     * @var AddonRepository
+     */
+    private $addonRepository;
+
+    /**
      * Create an AddonManager instance
      *
-     * @param \Statamic\Contracts\Extend\Management\ComposerManager $composer
+     * @param ComposerManager $composer
      */
-    public function __construct(ComposerManager $composer)
+    public function __construct(ComposerManager $composer, AddonRepository $addonRepository)
     {
         $this->composer = $composer;
+        $this->addonRepository = $addonRepository;
     }
 
     /**
@@ -91,7 +95,7 @@ class AddonManager implements ManagerContract
             return $this->packages;
         }
 
-        $addons = addon_repo()->filter('composer.json')->getFiles()->all();
+        $addons = $this->addonRepository->filename('composer.json')->files()->all();
 
         if (count($addons) === 0) {
             return [];

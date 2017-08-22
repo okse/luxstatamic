@@ -61,4 +61,18 @@ class Nav
     {
         return $this->tree;
     }
+
+    /**
+     * Remove any sections that have no children.
+     *
+     * @return void
+     */
+    public function trim()
+    {
+        foreach ($this->children() as $item) {
+            if ($item->children()->isEmpty()) {
+                $this->remove($item);
+            }
+        }
+    }
 }

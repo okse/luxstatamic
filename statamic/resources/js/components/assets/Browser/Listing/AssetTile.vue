@@ -4,7 +4,7 @@
          :class="{ 'is-image': isImage && !canShowSvg, 'is-svg': canShowSvg, 'is-file': !isImage && !canShowSvg }"
          :title="asset.filename"
          @click="toggle"
-         @dblclick="editAsset"
+         @dblclick="doubleClicked"
          @dragstart="assetDragStart"
     >
         <i class="icon icon-check selected-icon" v-if="isSelected"></i>

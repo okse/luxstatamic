@@ -19,6 +19,9 @@ class OldTags extends Tags
             return;
         }
 
+        // Sanitize.
+        $value = e($value);
+
         // If it's a tag pair, we'll wangjangle the output a little to make it easier for the developer.
         if ($this->isPair) {
             $this->content = '{{'.$var.'}}' . $this->content . '{{/'.$var.'}}';
@@ -26,5 +29,17 @@ class OldTags extends Tags
         }
 
         return $value;
+    }
+
+    /**
+     * Unfortunately hacky workaround for {{ old:email }} calling $this->email(), resulting in
+     * an instance of Statamic\Email\Builder instead of retrieving the old "email" value.
+     * Helper methods were made public to facilitate testing, with this side effect.
+     *
+     * @return mixed
+     */
+    public function email()
+    {
+        return $this->__call('email', []);
     }
 }

@@ -2,28 +2,18 @@
 
 namespace Statamic\API;
 
+use Statamic\Search\Index;
+
 class Search
 {
     /**
      * Search instance
      *
-     * @return \Statamic\Contracts\Search\Search
+     * @return \Statamic\Search\Search
      */
     private static function search()
     {
-        return app('Statamic\Contracts\Search\Search');
-    }
-
-    /**
-     * Initiate a search query
-     *
-     * @param  string $query String to search
-     * @param  array|null $fields Fields to search in, or null to search all fields
-     * @return Query
-     */
-    public static function query($query, $fields = null)
-    {
-        return self::search()->search($query, $fields);
+        return app('Statamic\Search\Search');
     }
 
     /**
@@ -35,7 +25,7 @@ class Search
      */
     public static function get($query, $fields = null)
     {
-        return self::query($query, $fields)->get();
+        return self::search()->search($query, $fields);
     }
 
     /**
@@ -94,5 +84,32 @@ class Search
         } catch (\Exception $e) {
             \Log::error("Error deleting [$id] from search index.");
         }
+    }
+
+    public static function indexExists($index)
+    {
+        return self::search()->index($index)->exists();
+    }
+
+    /**
+     * @return \Illuminate\Support\Collection
+     */
+    public static function indexes()
+    {
+        $indexes = collect(['default' => [
+            'driver' => Config::get('search.driver'),
+            'fields' => Config::get('search.searchable')
+        ]]);
+
+        $collections = collect(Collection::all())->map(function ($collection) {
+            if ($fields = $collection->get('searchable')) {
+                $driver = $collection->get('search_driver');
+                return compact('driver', 'fields');
+            }
+        })->filter()->keyByWithKey(function ($item, $key) {
+            return 'collections/'.$key;
+        });
+
+        return $indexes->merge($collections);
     }
 }

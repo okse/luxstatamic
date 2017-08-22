@@ -199,9 +199,16 @@ class UsersController extends CpController
 
     public function getResetUrl($username)
     {
+        $user = User::whereUsername($username);
+
+        // Users can reset their own password
+        if ($user !== User::getCurrent()) {
+            $this->authorize('super');
+        }
+
         $resetter = new PasswordReset;
 
-        $resetter->user(User::whereUsername($username));
+        $resetter->user($user);
 
         return [
             'success' => true,

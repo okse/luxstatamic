@@ -227,9 +227,6 @@ class UpdateConfiguration
             'services.mandrill.secret' => ConfigAPI::get('email.mandrill_secret'),
             'services.mailgun.secret' => ConfigAPI::get('email.mailgun_secret'),
             'services.mailgun.domain' => ConfigAPI::get('email.mailgun_domain'),
-
-            'search.connections.algolia.config.application_id' => ConfigAPI::get('search.algolia_app_id'),
-            'search.connections.algolia.config.admin_api_key' => ConfigAPI::get('search.algolia_api_key'),
         ]);
     }
 

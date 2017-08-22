@@ -7,6 +7,7 @@
         get="{{ route('entries.get', $collection->path()) }}"
         delete="{{ route('entries.delete') }}"
         reorder="{{ route('entries.reorder') }}"
+        search="{{ route('entries.search', $collection->path()) }}"
         sort="{{ $sort }}"
         sort-order="{{ $sort_order }}"
         :reorderable="{{ $reorderable }}"
@@ -19,6 +20,7 @@
                 <div class="controls">
                     @can("collections:{$collection->path()}:create")
                         <template v-if="! reordering">
+                            <search :keyword.sync="searchTerm"></search>
                             <div class="btn-group">
                                 <button type="button" @click="enableReorder" class="btn btn-secondary" v-if="reorderable">
                                     {{ translate('cp.reorder') }}
@@ -46,12 +48,18 @@
             <div class="card flush">
                 <template v-if="noItems">
                     <div class="info-block">
-                        <span class="icon icon-documents"></span>
-                        <h2>{{ trans('cp.entries_empty_heading', ['type' => $collection->title()]) }}</h2>
-                        <h3>{{ trans('cp.entries_empty') }}</h3>
-                        @can("collections:{$collection->path()}:create")
-                            <a href="{{ route('entry.create', $collection->path()) }}" class="btn btn-default btn-lg">{{ trans('cp.create_entry_button') }}</a>
-                        @endcan
+                        <template v-if="isSearching">
+                            <span class="icon icon-magnifying-glass"></span>
+                            <h2>{{ translate('cp.no_search_results') }}</h2>
+                        </template>
+                        <template v-else>
+                            <span class="icon icon-documents"></span>
+                            <h2>{{ trans('cp.entries_empty_heading', ['type' => $collection->title()]) }}</h2>
+                            <h3>{{ trans('cp.entries_empty') }}</h3>
+                            @can("collections:{$collection->path()}:create")
+                                <a href="{{ route('entry.create', $collection->path()) }}" class="btn btn-default btn-lg">{{ trans('cp.create_entry_button') }}</a>
+                            @endcan
+                        </template>
                     </div>
                 </template>
 
@@ -59,7 +67,7 @@
                     <span class="icon icon-circular-graph animation-spin"></span> {{ translate('cp.loading') }}
                 </div>
 
-                <dossier-table v-if="hasItems" :items="items" :keyword.sync="keyword" :options="tableOptions"></dossier-table>
+                <dossier-table v-if="hasItems" :items="items" :options="tableOptions" :is-searching="isSearching"></dossier-table>
             </div>
         </div>
 

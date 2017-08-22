@@ -14,8 +14,7 @@ class PasswordProtector extends AbstractProtector
      */
     public function providesProtection()
     {
-        return array_key_exists('password', $this->scheme)
-               && !empty(array_get($this->scheme, 'password.allowed', []));
+        return ! empty(array_get($this->scheme, 'allowed', []));
     }
 
     /**
@@ -46,11 +45,9 @@ class PasswordProtector extends AbstractProtector
 
     protected function getUserPasswords()
     {
-        return array_get(
-            session()->get('protect.passwords'),
-            md5($this->url),
-            []
-        );
+        $key = $this->siteWide ? 'site' : md5($this->url);
+
+        return session()->get("protect.password.passwords.{$key}", []);
     }
 
     protected function isPasswordFormUrl()
@@ -60,7 +57,7 @@ class PasswordProtector extends AbstractProtector
 
     protected function getAllowedPasswords()
     {
-        return array_get($this->scheme, 'password.allowed', []);
+        return array_get($this->scheme, 'allowed', []);
     }
 
     protected function redirectToPasswordForm()
@@ -76,7 +73,7 @@ class PasswordProtector extends AbstractProtector
     {
         $default = '/'; // @todo
 
-        return array_get($this->scheme, 'password.form_url', $default);
+        return array_get($this->scheme, 'form_url', $default);
     }
 
     protected function getRedirectUrl()
@@ -88,7 +85,11 @@ class PasswordProtector extends AbstractProtector
     {
         $token = Str::random(32);
 
-        session()->put("protect.scheme.$token", ['scheme' => $this->scheme, 'url' => $this->url]);
+        session()->put("protect.password.scheme.$token", [
+            'scheme' => $this->scheme,
+            'url' => $this->url,
+            'siteWide' => $this->siteWide
+        ]);
 
         return $token;
     }

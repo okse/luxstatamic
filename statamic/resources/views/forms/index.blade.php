@@ -29,7 +29,7 @@
                 <h3>{{ $form['title'] }}</h3>
                 <div class="callout">
                     <span class="major">{{ $form['count'] }}</span>
-                    <span class="minor">{{ trans_choice('response', $form['count']) }}</span>
+                    <span class="minor">{{ trans_choice('cp.response', $form['count']) }}</span>
                 </div>
             </a>
         @endforeach

@@ -85,7 +85,7 @@ class Persister
         });
 
         // Persist the keys
-        Cache::put('stache::keys', $this->keys->all());
+        Cache::put('stache::keys', $this->keys->unique()->all());
     }
 
     /**

@@ -55,7 +55,7 @@ class Migrator
      */
     private function prepareMigration($migration)
     {
-        $migration['pages'] = collect($this->sortDeepest($migration['pages']->all()));
+        $migration['pages'] = collect($this->sortDeepest(array_get($migration, 'pages', [])->all()));
 
         return $migration;
     }
@@ -87,7 +87,7 @@ class Migrator
      */
     private function createTaxonomies()
     {
-        foreach ($this->migration['taxonomies'] as $taxonomy_slug => $taxonomy_data) {
+        foreach (array_get($this->migration, 'taxonomies', []) as $taxonomy_slug => $taxonomy_data) {
             $taxonomy = Taxonomy::create($taxonomy_slug);
 
             $taxonomy->route($taxonomy_data['route']);
@@ -106,7 +106,7 @@ class Migrator
      */
     private function createTaxonomyTerms()
     {
-        foreach ($this->migration['terms'] as $taxonomy_slug => $terms) {
+        foreach (array_get($this->migration, 'terms', []) as $taxonomy_slug => $terms) {
             foreach ($terms as $term_slug => $term_data) {
                 // Skip if this term was not checked in the summary.
                 if (! $this->summary['taxonomies'][$taxonomy_slug]['terms'][$term_slug]['_checked']) {
@@ -125,7 +125,7 @@ class Migrator
      */
     private function createCollections()
     {
-        foreach ($this->migration['collections'] as $handle => $data) {
+        foreach (array_get($this->migration, 'collections', []) as $handle => $data) {
             $collection = Collection::create($handle);
 
             $collection->route($data['route']);

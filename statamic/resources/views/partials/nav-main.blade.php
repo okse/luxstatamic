@@ -48,9 +48,13 @@
 		<div class="version" v-cloak>Statamic @{{ version }}</div>
 
 		@if ($is_trial)
-			<div class="trial">
-                <a href="{{ route('settings') }}">{{ t('trial_mode_badge') }}</a>
+			<div class="license-badge">
+                <a href="{{ route('licensing') }}">{{ t('trial_mode_badge') }}</a>
             </div>
+		@elseif ($is_unlicensed)
+			<div class="license-badge">
+				<a href="{{ route('licensing') }}">{{ t('unlicensed') }}</a>
+			</div>
 		@endif
 	</div>
 </nav>

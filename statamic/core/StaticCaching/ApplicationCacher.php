@@ -19,10 +19,8 @@ class ApplicationCacher extends AbstractCacher
      *
      * @param \Illuminate\Http\Request $request     Request associated with the page to be cached
      * @param string                   $content     The response content to be cached
-     * @param null|int                 $expiration  Length of time to cache for, in minutes.
-     *                                              Null to use the configured default.
      */
-    public function cachePage(Request $request, $content, $expiration = null)
+    public function cachePage(Request $request, $content)
     {
         $url = $this->getUrl($request);
 
@@ -37,11 +35,14 @@ class ApplicationCacher extends AbstractCacher
         // Keep track of the URL and key the response content is about to be stored within.
         $this->cacheUrl($key, $url);
 
-        $this->putInCache(
-            $key,
-            $this->normalizeContent($content),
-            $expiration ?: $this->getDefaultExpiration()
-        );
+        $key = $this->normalizeKey('responses:'.$key);
+        $value = $this->normalizeContent($content);
+
+        if ($expiration = $this->getDefaultExpiration()) {
+            $this->cache->put($key, $value, $expiration);
+        } else {
+            $this->cache->forever($key, $value);
+        }
     }
 
     /**
@@ -56,7 +57,7 @@ class ApplicationCacher extends AbstractCacher
 
         $key = $this->makeHash($url);
 
-        return $this->cache->get($this->normalizeKey($key));
+        return $this->cache->get($this->normalizeKey('responses:'.$key));
     }
 
     /**
@@ -67,7 +68,7 @@ class ApplicationCacher extends AbstractCacher
     public function flush()
     {
         $this->getUrls()->keys()->each(function ($key) {
-            $this->cache->forget($key);
+            $this->cache->forget($this->normalizeKey('responses:'.$key));
         });
 
         $this->flushUrls();
@@ -86,7 +87,7 @@ class ApplicationCacher extends AbstractCacher
             return;
         }
 
-        $this->cache->forget($key);
+        $this->cache->forget($this->normalizeKey('responses:'.$key));
 
         $this->forgetUrl($key);
     }

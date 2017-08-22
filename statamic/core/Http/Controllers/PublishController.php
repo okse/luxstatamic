@@ -47,6 +47,14 @@ abstract class PublishController extends CpController
     abstract protected function redirect(Request $request, $content);
 
     /**
+     * Whether the user is authorized to publish the object.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    abstract protected function canPublish(Request $request);
+
+    /**
      * Save the content.
      *
      * This can also be implemented to the child components so an event can be
@@ -64,6 +72,10 @@ abstract class PublishController extends CpController
      */
     public function save(Request $request)
     {
+        if (! $this->canPublish($request)) {
+            return response()->json(['success' => false, 'errors' => ['Unauthorized.']]);
+        }
+
         try {
             /**
              * Maybe refactor to take in the fields so we don't have to depend
@@ -95,11 +107,16 @@ abstract class PublishController extends CpController
             ];
         }
 
-        $this->success(translate('cp.thing_saved', ['thing' => ucwords($request->type)]));
+        $successMessage = translate('cp.thing_saved', ['thing' => ucwords($request->type)]);
+
+        if (! $request->continue || $request->new) {
+            $this->success($successMessage);
+        }
 
         return [
             'success'  => true,
             'redirect' => $this->buildRedirect($request, $content),
+            'message' => $successMessage
         ];
     }
 

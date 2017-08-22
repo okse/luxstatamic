@@ -11,6 +11,7 @@ use Statamic\API\Helper;
 use Statamic\API\Config;
 use Statamic\Exceptions;
 use Statamic\View\Antlers\Parser;
+use Statamic\Extend\Management\TagLoader;
 use Illuminate\View\Engines\EngineInterface;
 use Statamic\Exceptions\FileNotFoundException;
 
@@ -151,7 +152,7 @@ class Engine implements EngineInterface
         }
 
         try {
-            $tag = resource_loader()->loadTags($name, [
+            $tag = app(TagLoader::class)->load($name, [
                 'parameters' => $parameters,
                 'content'    => $content,
                 'context'    => $context,

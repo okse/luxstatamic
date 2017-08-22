@@ -4,6 +4,7 @@ namespace Statamic\Http\Controllers;
 
 use Statamic\API\User;
 use Statamic\API\Config;
+use Statamic\Extend\Management\WidgetLoader;
 
 /**
  * Controller for the CP home/dashboard
@@ -12,20 +13,15 @@ class DashboardController extends CpController
 {
     /**
      * View for the CP dashboard
+     *
+     * @param WidgetLoader $loader
+     * @return mixed
      */
-    public function index()
+    public function index(WidgetLoader $loader)
     {
-        $widgets = [];
+        $widgets = $this->getWidgets($loader);
 
-        foreach (resource_loader()->loadWidgets(Config::get('cp.widgets', [])) as $widget) {
-            $widgets[] = [
-                'width' => $widget->getConfig('width', 100),
-                'html' => (string) $widget->html(),
-                'importance' => $widget->getConfig('importance', 2)
-            ];
-        }
-
-        if (empty($widgets) && !User::getCurrent()->can('settings:cp')) {
+        if ($widgets->isEmpty() && !User::getCurrent()->can('settings:cp')) {
             return redirect()->route('pages');
         }
 
@@ -36,5 +32,18 @@ class DashboardController extends CpController
         ];
 
         return view('dashboard', $data);
+    }
+
+    private function getWidgets($loader)
+    {
+        return collect(Config::get('cp.widgets', []))->map(function ($config) use ($loader) {
+            $widget = $loader->load(array_get($config, 'type'), $config);
+
+            return [
+                'width' => $widget->getConfig('width', 100),
+                'html' => (string) $widget->html(),
+                'importance' => $widget->getConfig('importance', 2)
+            ];
+        });
     }
 }

@@ -2,9 +2,11 @@
 
 namespace Statamic\Http\Controllers\Auth;
 
+use Statamic\API\User;
 use Statamic\API\OAuth;
 use Illuminate\Auth\Guard;
 use Illuminate\Http\Request;
+use Statamic\Addons\User\PasswordReset;
 use Statamic\Http\Controllers\CpController;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Validation\Factory as Validator;
@@ -87,6 +89,45 @@ class AuthController extends CpController
             ->withErrors([
                 'username' => 'These credentials are incorrect.',
             ]);
+    }
+
+    /**
+     * Show the logged out password reset page
+     *
+     * @return \Illuminate\View\View
+     */
+    public function getPasswordReset()
+    {
+        $data = [
+            'title' => translate('cp.reset_password')
+        ];
+
+        return view('auth.reset', $data);
+    }
+
+    /**
+     * Handle a password reset request.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function postPasswordReset()
+    {
+        $this->validate($this->request, [
+            'email' => 'required'
+        ]);
+
+        $user = User::whereEmail($this->request->email);
+
+        // If an invalid username has been entered we'll tell a white lie and say
+        // that the email has been sent. This is a security measure to prevent
+        // spamming of the form until a valid username is discovered.
+        if ($user) {
+            $resetter = new PasswordReset;
+            $resetter->user($user);
+            $resetter->send();
+        }
+
+        return back()->with('success', t('password_reset_sent'));
     }
 
     /**

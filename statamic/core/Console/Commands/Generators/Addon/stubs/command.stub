@@ -4,7 +4,7 @@ namespace Statamic\Addons\DummyAddon\Commands;
 
 use Statamic\Extend\Command;
 
-class DummyAddonCommand extends Command
+class CommandNameCommand extends Command
 {
     /**
      * The name and signature of the console command.

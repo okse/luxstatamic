@@ -741,8 +741,6 @@ abstract class Data implements DataContract
 
             $this->supplements[$taxonomy_handle.'_raw'] = $terms;
 
-            $is_array = is_array($terms);
-
             // Do nothing if there's a blank field.
             if ($terms == '') {
                 return;
@@ -752,7 +750,7 @@ abstract class Data implements DataContract
                 return Term::whereSlug(Term::normalizeSlug($term), $taxonomy_handle);
             });
 
-            $this->supplements[$taxonomy_handle] = ($is_array) ? $terms->all() : $terms->first();
+            $this->supplements[$taxonomy_handle] = $terms->all();
         });
     }
 }

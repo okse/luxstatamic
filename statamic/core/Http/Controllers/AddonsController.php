@@ -12,12 +12,25 @@ use Statamic\API\Fieldset;
 use Statamic\API\Str;
 use Statamic\API\Cache;
 use Statamic\API\Stache;
+use Statamic\Extend\Addon;
+use Illuminate\Http\Request;
+use Statamic\Extend\Management\AddonRepository;
 
 /**
  * Controller for the addon area
  */
 class AddonsController extends CpController
 {
+    /**
+     * @var AddonRepository
+     */
+    private $addonRepo;
+
+    public function __construct(AddonRepository $addonRepo)
+    {
+        $this->addonRepo = $addonRepo;
+    }
+
     public function index()
     {
         return view('addons.index', [
@@ -27,46 +40,33 @@ class AddonsController extends CpController
 
     public function get()
     {
-        $addons = [];
-
-        $has_settings = addon_repo()->addons()->filter('settings.yaml')->getFiles()->map(function ($path) {
-            return explode('/', $path)[2];
-        })->all();
-
-        foreach (addon_repo()->addons()->filter('meta.yaml')->getFiles() as $file) {
-            $meta = YAML::parse(File::get($file));
-
-            $addon = [
-                'id'            => Path::directory($file),
-                'name'          => array_get($meta, 'name'),
-                'addon_url'     => array_get($meta, 'url'),
-                'version'       => array_get($meta, 'version'),
-                'developer'     => array_get($meta, 'developer'),
-                'developer_url' => array_get($meta, 'developer_url'),
-                'description'   => array_get($meta, 'description')
+        $addons = $this->addonRepo->thirdParty()->addons()->map(function ($addon) {
+            return [
+                'id'            => $addon->id(),
+                'name'          => $addon->name(),
+                'addon_url'     => $addon->url(),
+                'version'       => $addon->version(),
+                'developer'     => $addon->developer(),
+                'developer_url' => $addon->developerUrl(),
+                'description'   => $addon->description(),
+                'settings_url'  => $addon->hasSettings() ? $addon->settingsUrl() : null,
+                'installed'     => $addon->isInstalled()
             ];
-
-            $name = Path::folder($file);
-
-            if (in_array($name, $has_settings)) {
-                $addon['settings_url'] = '/' . URL::assemble(CP_ROUTE, 'addons', Str::studlyToSlug($name), 'settings');
-            }
-
-            $addons[] = $addon;
-        }
+        })->values();
 
         return [
-            'columns' => ['name', 'version', 'developer', 'description'],
-            'items' => $addons
+            'columns' => ['name', 'version', 'developer', 'description', 'installed'],
+            'items' => $addons,
+            'pagination' => ['totalPages' => 1]
         ];
     }
 
-    public function delete()
+    public function delete(Request $request)
     {
-        $ids = Helper::ensureArray($this->request->input('ids'));
+        $this->authorize('super');
 
-        foreach ($ids as $folder) {
-            Folder::delete($folder);
+        foreach (Helper::ensureArray($request->ids) as $id) {
+            \Statamic\API\Addon::create($id)->delete();
         }
 
         return ['success' => true];
@@ -81,33 +81,35 @@ class AddonsController extends CpController
 
     public function settings($addon)
     {
-        $addon = Str::studly($addon);
+        $addon = new Addon(Str::studly($addon));
 
-        $path = "site//addons//$addon//settings.yaml";
-
-        // If there's no settings fieldset, we'll error out.
-        if (! File::exists($path)) {
+        if (! $addon->hasSettings()) {
             return redirect()->route('addons')->withErrors(['The requested addon does not have settings.']);
         }
 
-        $data = addon($addon)->getConfig();
+        return view('addons.settings', [
+            'title' => $addon->name() . ' ' . trans_choice('cp.settings', 2),
+            'slug'  => $addon->slug(),
+            'extra' => [
+                'addon' => $addon->id()
+            ],
+            'content_data' => $this->getAddonData($addon),
+            'content_type' => 'addon',
+            'fieldset' => 'addon.'.$addon->slug().'.settings'
+        ]);
+    }
 
-        $fieldset = Fieldset::get($addon.'.settings', 'addon');
+    private function getAddonData(Addon $addon)
+    {
+        $data = $addon->config();
+
+        $fieldset = $addon->settingsFieldset();
 
         $data = $this->preProcessData($data, $fieldset);
 
         $data = $this->populateWithBlanks($fieldset, $data);
 
-        return view('addons.settings', [
-            'title' => $addon . ' ' . trans_choice('cp.settings', 2),
-            'slug'  => $addon,
-            'extra' => [
-                'addon' => $addon
-            ],
-            'content_data' => $data,
-            'content_type' => 'addon',
-            'fieldset' => 'addon.'.$addon.'.settings'
-        ]);
+        return $data;
     }
 
     /**
@@ -149,15 +151,15 @@ class AddonsController extends CpController
         return $data;
     }
 
-    public function saveSettings($addon)
+    public function saveSettings(Request $request, $addon)
     {
-        $addon = Str::studly($addon);
+        $addon = new Addon(Str::studly($addon));
 
-        $data = $this->processFields($addon.'.settings');
+        $data = $this->processFields($request->fields, $addon->settingsFieldset());
 
         $contents = YAML::dump($data);
 
-        $file = settings_path('addons/' . Str::snake($addon) . '.yaml');
+        $file = settings_path('addons/' . $addon->handle() . '.yaml');
         File::put($file, $contents);
 
         Cache::clear();
@@ -165,14 +167,11 @@ class AddonsController extends CpController
 
         $this->success('Settings updated');
 
-        return ['success' => true, 'redirect' => route('addon.settings', Str::studlyToSlug($addon))];
+        return ['success' => true, 'redirect' => route('addon.settings', $addon->slug())];
     }
 
-    private function processFields($fieldset_name)
+    private function processFields($data, $fieldset)
     {
-        $fieldset = Fieldset::get($fieldset_name, 'addon');
-        $data = $this->request->input('fields');
-
         foreach ($fieldset->fieldtypes() as $field) {
             if (! in_array($field->getName(), array_keys($data))) {
                 continue;

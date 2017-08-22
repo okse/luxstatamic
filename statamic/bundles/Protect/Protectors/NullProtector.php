@@ -21,7 +21,9 @@ class NullProtector extends AbstractProtector
      */
     public function protect()
     {
-        \Log::error("A protect variable has been set on [{$this->url}] but was not able to be parsed. Access has been denied.");
+        $where = $this->siteWide ? 'the system settings' : $this->url;
+
+        \Log::error("A protect variable has been set in {$where} but was not able to be parsed. Access has been denied.");
 
         $this->deny();
     }

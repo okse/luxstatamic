@@ -2,14 +2,15 @@ module.exports = {
 
     mixins: [Dossier],
 
-    props: ['get', 'delete', 'keyword', 'reorder', 'canDelete', 'sort', 'sortOrder', 'reorderable'],
+    props: ['get', 'delete', 'reorder', 'search', 'canDelete', 'sort', 'sortOrder', 'reorderable'],
 
     data: function() {
         return {
             ajax: {
                 get: this.get,
                 delete: this.delete,
-                reorder: this.reorder
+                reorder: this.reorder,
+                search: this.search
             },
             tableOptions: {
                 sort: this.sort,

@@ -16,23 +16,32 @@ class PublishUserController extends PublishController
      */
     protected function redirect(Request $request, $user)
     {
-        if ($request->continue || $this->cannotManageUsers($user)) {
-            return route('user.edit', $user->username());
+        $currentUser = User::getCurrent();
+        $edit = route('user.edit', $user->username());
+        $index = route('users');
+
+        if ($request->continue) {
+            return $edit;
         }
 
-        return route('users');
+        if ($currentUser->hasPermission('users:edit')) {
+            return $index;
+        }
+
+        return $edit;
     }
 
     /**
-     * Check if the current logged user can manage all the users.
+     * Whether the user is authorized to publish the object.
      *
-     * @param  \Statamic\Contracts\Data\Users\User  $user
+     * @param Request $request
      * @return bool
      */
-    private function cannotManageUsers($user)
+    protected function canPublish(Request $request)
     {
-        $current = User::getCurrent();
+        $user = User::find($request->uuid);
+        $currentUser = User::getCurrent();
 
-        return $user == $current && ! $user->hasPermission('user:manage');
+        return $currentUser === $user || $currentUser->hasPermission('users:edit');
     }
 }

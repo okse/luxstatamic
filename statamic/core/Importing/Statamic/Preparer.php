@@ -15,6 +15,10 @@ class Preparer
     {
         $this->data = $data;
 
+        if (! isset($this->data['pages']) || ! is_array($this->data['pages'])) {
+            $this->data['pages'] = [];
+        }
+
         ksort($this->data['pages']);
 
         $this->migration = [
@@ -62,7 +66,11 @@ class Preparer
 
     private function createCollections()
     {
-        foreach ($this->data['collections'] as $name => $entries) {
+        if (! isset($this->data['collections'])) {
+            return;
+        }
+
+        foreach (array_get($this->data, 'collections', []) as $name => $entries) {
             $this->createCollection($name, $entries);
             $this->createEntries($name, $entries);
         }

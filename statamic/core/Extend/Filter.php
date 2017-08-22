@@ -2,9 +2,7 @@
 
 namespace Statamic\Extend;
 
-use Illuminate\Support\Collection;
-
-abstract class Filter implements FilterInterface
+abstract class Filter
 {
     /**
      * Provides access to addon helper methods
@@ -18,6 +16,7 @@ abstract class Filter implements FilterInterface
 
     /**
      * @var \Illuminate\Support\Collection
+     * @deprecated since 2.6  Use the collection passed into the filter method instead.
      */
     protected $collection;
 
@@ -28,18 +27,17 @@ abstract class Filter implements FilterInterface
 
     /**
      * Create a new Filter instance
-     *
-     * @param \Illuminate\Support\Collection $collection
-     * @param array                          $context
-     * @param array                          $parameters
      */
-    public function __construct(Collection $collection, array $context = [], array $parameters = [])
+    public function __construct()
     {
         $this->bootstrap();
         $this->init();
+    }
 
-        $this->collection = $collection;
-        $this->context = $context;
-        $this->parameters = $parameters;
+    public function setProperties($properties)
+    {
+        $this->collection = $properties['collection'];
+        $this->context = $properties['context'];
+        $this->parameters = $properties['parameters'];
     }
 }

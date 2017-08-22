@@ -60,9 +60,6 @@ class FormTags extends CollectionTags
         // Make formset data available to the tag
         $data['fields'] = (Form::fields($formset));
 
-        // Make the old data available
-        $data['old'] = old();
-
         $this->addToDebugBar($data);
 
         $params = compact('formset');

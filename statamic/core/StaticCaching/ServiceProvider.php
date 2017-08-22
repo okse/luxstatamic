@@ -2,8 +2,10 @@
 
 namespace Statamic\StaticCaching;
 
+use Illuminate\Cache\Repository;
 use Statamic\API\Config;
 use Illuminate\Support\ServiceProvider as LaravelServiceProvider;
+use Statamic\API\Str;
 
 class ServiceProvider extends LaravelServiceProvider
 {
@@ -22,9 +24,12 @@ class ServiceProvider extends LaravelServiceProvider
     public function register()
     {
         $this->app->bind(Cacher::class, function () {
-            return (Config::get('caching.static_caching_type') === 'file')
-                ? app(FileCacher::class)
-                : app(ApplicationCacher::class);
+            $cache = app(Repository::class);
+            $config = $this->getStaticCachingConfig();
+
+            return ($config['type'] === 'file')
+                ? new FileCacher(new Writer, $cache, $config)
+                : new ApplicationCacher($cache, $config);
         });
 
         $this->commands(ClearStaticCommand::class);
@@ -38,5 +43,23 @@ class ServiceProvider extends LaravelServiceProvider
     public function provides()
     {
         return [Cacher::class];
+    }
+
+    private function getStaticCachingConfig()
+    {
+        $config = [];
+        $prefix = 'static_caching_';
+
+        foreach (Config::get('caching', []) as $key => $value) {
+            if (Str::startsWith($key, $prefix)) {
+                $key = Str::removeLeft($key, $prefix);
+                $config[$key] = $value;
+            }
+        }
+
+        $config['base_url'] = $this->app['request']->root();
+        $config['locale'] = site_locale();
+
+        return $config;
     }
 }

@@ -16,19 +16,47 @@ abstract class AbstractCacher implements Cacher
     protected $cache;
 
     /**
+     * @var \Illuminate\Support\Collection
+     */
+    private $config;
+
+    /**
      * @param Repository $cache
      */
-    public function __construct(Repository $cache)
+    public function __construct(Repository $cache, $config)
     {
         $this->cache = $cache;
+        $this->config = collect($config);
+    }
+
+    /**
+     * Get a config value
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function config($key, $default = null)
+    {
+        return $this->config->get($key, $default);
+    }
+
+    /**
+     * Get the base URL (domain)
+     *
+     * @return string
+     */
+    public function getBaseUrl()
+    {
+        return $this->config('base_url');
     }
 
     /**
      * @return int
      */
-    protected function getDefaultExpiration()
+    public function getDefaultExpiration()
     {
-        return Config::get('caching.static_caching_default_cache_length');
+        return $this->config('default_cache_length');
     }
 
     /**
@@ -52,25 +80,7 @@ abstract class AbstractCacher implements Cacher
      */
     protected function normalizeKey($key)
     {
-        return "static_cache.$key";
-    }
-
-    /**
-     * Place a key into the cache
-     *
-     * @param string   $key         Key to add
-     * @param string   $value       Value to add
-     * @param int|null $expiration  Expiration in minutes, or null for indefinite
-     */
-    protected function putInCache($key, $value, $expiration = null)
-    {
-        $key = $this->normalizeKey($key);
-
-        if ($expiration) {
-            $this->cache->put($key, $value, $expiration);
-        } else {
-            $this->cache->forever($key, $value);
-        }
+        return "static-cache:$key";
     }
 
     /**
@@ -85,32 +95,61 @@ abstract class AbstractCacher implements Cacher
     }
 
     /**
+     * Get the domains that have been cached
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public function getDomains()
+    {
+        return collect($this->cache->get($this->normalizeKey('domains'), []));
+    }
+
+    /**
+     * Cache the current domain
+     *
+     * @return void
+     */
+    public function cacheDomain()
+    {
+        $domains = $this->getDomains();
+
+        if (! $domains->contains($domain = $this->getBaseUrl())) {
+            $domains->push($domain);
+        }
+
+        $this->cache->forever($this->normalizeKey('domains'), $domains->all());
+    }
+
+    /**
      * Get the URL from a request
      *
      * @param Request $request
      * @return string
      */
-    protected function getUrl(Request $request)
+    public function getUrl(Request $request)
     {
-        $url = $request->path();
+        $url = $request->getUri();
 
-        if (! Config::get('static_caching_ignore_query_strings')) {
-            if ($query = http_build_query($request->query->all())) {
-                $url .= '?' . $query;
-            }
+        if ($this->config('ignore_query_strings')) {
+            $url = explode('?', $url)[0];
         }
 
-        return Str::ensureLeft($url, '/');
+        return $url;
     }
 
     /**
      * Get all the URLs that have been cached
      *
+     * @param string|null $domain
      * @return \Illuminate\Support\Collection
      */
-    protected function getUrls()
+    public function getUrls($domain = null)
     {
-        return collect($this->cache->get($this->normalizeKey('urls'), []));
+        $domain = $domain ?: $this->getBaseUrl();
+
+        $domain = $this->makeHash($domain);
+
+        return collect($this->cache->get($this->normalizeKey($domain.'.urls'), []));
     }
 
     /**
@@ -118,9 +157,13 @@ abstract class AbstractCacher implements Cacher
      *
      * @return void
      */
-    protected function flushUrls()
+    public function flushUrls()
     {
-        $this->cache->forget($this->normalizeKey('urls'));
+        $this->getDomains()->each(function ($domain) {
+            $this->cache->forget($this->getUrlsCacheKey($domain));
+        });
+
+        $this->cache->forget($this->normalizeKey('domains'));
     }
 
     /**
@@ -130,13 +173,17 @@ abstract class AbstractCacher implements Cacher
      * @param string $url
      * @return void
      */
-    protected function cacheUrl($key, $url)
+    public function cacheUrl($key, $url)
     {
+        $this->cacheDomain();
+
         $urls = $this->getUrls();
 
-        $urls->put($this->normalizeKey($key), $url);
+        $url = Str::removeLeft($url, $this->getBaseUrl());
 
-        $this->cache->forever($this->normalizeKey('urls'), $urls->all());
+        $urls->put($key, $url);
+
+        $this->cache->forever($this->getUrlsCacheKey(), $urls->all());
     }
 
     /**
@@ -145,13 +192,13 @@ abstract class AbstractCacher implements Cacher
      * @param string $key
      * @return void
      */
-    protected function forgetUrl($key)
+    public function forgetUrl($key)
     {
         $urls = $this->getUrls();
 
         $urls->forget($key);
 
-        $this->cache->forever($this->normalizeKey('urls'), $urls->all());
+        $this->cache->forever($this->getUrlsCacheKey(), $urls->all());
     }
 
     /**
@@ -194,9 +241,14 @@ abstract class AbstractCacher implements Cacher
      * @param string $url
      * @return bool
      */
-    protected function isExcluded($url)
+    public function isExcluded($url)
     {
-        $exclusions = collect(Config::get('caching.static_caching_exclude', []));
+        $exclusions = collect($this->config('exclude', []));
+
+        // Query strings should be ignored.
+        $url = explode('?', $url)[0];
+
+        $url = Str::removeLeft($url, $this->getBaseUrl());
 
         foreach ($exclusions as $excluded) {
             if (Str::endsWith($excluded, '*') && Str::startsWith($url, substr($excluded, 0, -1))) {
@@ -209,5 +261,16 @@ abstract class AbstractCacher implements Cacher
         }
 
         return false;
+    }
+
+    /**
+     * @param string|null $domain
+     * @return string
+     */
+    protected function getUrlsCacheKey($domain = null)
+    {
+        $domain = $domain ?: $this->getBaseUrl();
+
+        return $this->normalizeKey($this->makeHash($domain) . '.urls');
     }
 }

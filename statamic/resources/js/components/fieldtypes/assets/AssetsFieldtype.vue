@@ -254,6 +254,7 @@ export default {
 
             if (! data || ! data.length) {
                 this.loading = false;
+                this.assets = [];
                 return;
             }
 

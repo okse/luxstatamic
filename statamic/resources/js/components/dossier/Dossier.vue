@@ -13,8 +13,8 @@ module.exports = {
             columns: [],
             sort: null,
             sortOrder: null,
-            search: null,
-            reordering: false
+            reordering: false,
+            searchTerm: null
         }
     },
 
@@ -37,11 +37,27 @@ module.exports = {
 
         allItemsChecked: function() {
             return this.items.length === this.checkedItems.length;
+        },
+
+        isSearching() {
+            return this.searchTerm.length >= 3;
         }
     },
 
     ready: function () {
         this.getItems();
+    },
+
+    watch: {
+
+        searchTerm(term) {
+            if (term.length >= 3) {
+                this.performSearch();
+            } else {
+                this.getItems();
+            }
+        }
+
     },
 
     components: {
@@ -59,6 +75,15 @@ module.exports = {
                 this.columns = data.columns;
                 this.loading = false;
                 this.pagination = data.pagination;
+            }).error(function() {
+                alert('There was a problem retrieving data. Check your logs for more details.');
+            });
+        },
+
+        performSearch() {
+            this.$http.get(this.ajax.search + '?q=' + this.searchTerm, function(data, status, request) {
+                this.items = data;
+                this.loading = false;
             }).error(function() {
                 alert('There was a problem retrieving data. Check your logs for more details.');
             });

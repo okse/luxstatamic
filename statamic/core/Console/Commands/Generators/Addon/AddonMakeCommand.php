@@ -2,13 +2,11 @@
 
 namespace Statamic\Console\Commands\Generators\Addon;
 
-use Statamic\API\File;
-use Statamic\API\Path;
-use Statamic\API\YAML;
+use Statamic\API\Addon;
 use Statamic\API\Str;
-use Illuminate\Console\Command;
+use Statamic\Console\Commands\AbstractCommand;
 
-class AddonMakeCommand extends Command
+class AddonMakeCommand extends AbstractCommand
 {
     /**
      * The name and signature of the console command.
@@ -42,6 +40,7 @@ class AddonMakeCommand extends Command
         'Composer.json' => 'composer',
         'Widget' => 'widget',
         'Controller' => 'controller',
+        'Tasks' => 'tasks',
     ];
 
     /**
@@ -94,6 +93,13 @@ class AddonMakeCommand extends Command
     private $addon_description;
 
     /**
+     * Whether the addon is commercial
+     *
+     * @var bool
+     */
+    private $commercial;
+
+    /**
      * Execute the console command.
      *
      * @return mixed
@@ -113,12 +119,14 @@ class AddonMakeCommand extends Command
                 $args['vendor'] = $this->vendor;
             }
 
-            $this->call("make:{$type}", $args);
+            $this->callSilent("make:{$type}", $args);
         }
 
         $this->generateMeta();
 
-        $this->info("\nYour addon has been created!");
+        $dir = realpath(addons_path(Str::studly($this->addon)));
+        $this->checkInfo('Your addon has been created!');
+        $this->line("You can find it in {$dir}");
     }
 
     private function getSelections()
@@ -148,29 +156,40 @@ class AddonMakeCommand extends Command
         $this->line('Great name!');
 
         $this->vendor = $this->ask("What's the developer name?");
-        $this->vendor_url = $this->ask("What's the developer URL?", '');
-        $this->version = $this->ask("What version is your addon?", '1.0');
-        $this->addon_url = $this->ask("What's the URL of your addon? eg. For marketing or documentation.", '');
-        $this->addon_description = $this->ask("What does your addon do, in one sentence?", '');
+        $this->vendor_url = $this->getAnswer("What's the developer URL?");
+        $this->version = $this->getAnswer("What version is your addon?", '1.0');
+        $this->addon_url = $this->getAnswer("What's the URL of your addon? eg. For marketing or documentation.");
+        $this->addon_description = $this->getAnswer("What does your addon do, in one sentence?", false, 'Oooh! I wish I thought of that.');
+        $this->commercial = $this->confirm('Is this a commercial addon?');
+    }
 
-        $this->line('Oooh! I wish I thought of that.');
+    private function getAnswer($question, $default = false, $response = null)
+    {
+        $answer = $this->ask($question, $default);
+
+        if ($answer === false) {
+            return null;
+        }
+
+        if ($response) {
+            $this->line($response);
+        }
+
+        return $answer;
     }
 
     private function generateMeta()
     {
-        $meta = [
+        $data = array_filter([
             'name' => $this->addon,
             'version' => $this->version,
             'description' => $this->addon_description,
             'url' => $this->addon_url,
             'developer' => $this->vendor,
-            'developer_url' => $this->vendor_url
-        ];
+            'developer_url' => $this->vendor_url,
+            'commercial' => $this->commercial
+        ]);
 
-        $path = addons_path(Str::studly($this->addon) . '/meta.yaml');
-
-        File::put($path, YAML::dump($meta));
-
-        $this->info('Your Meta file awaits at: '.Path::makeRelative($path));
+        Addon::create($this->addon)->makeMeta($data)->save();
     }
 }

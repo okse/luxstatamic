@@ -17,17 +17,17 @@
     				</td>
     				<td class="row-controls">
     					<span class="icon icon-menu move drag-handle"></span>
-    					<span class="icon icon-cross delete" v-on:click="deleteRow(rowIndex)"></span>
+    					<span class="icon icon-cross delete" v-on:click="deleteRow($index)"></span>
     				</td>
     			</tr>
     		</tbody>
     	</table>
 
     	<div class="btn-group">
-    		<a href="" class="btn btn-default" @click.prevent="addRow" v-if="canAddRows">
+    		<a class="btn btn-default" @click="addRow" v-if="canAddRows">
     			{{ translate_choice('cp.rows', 1) }} <i class="icon icon-plus icon-right"></i>
     		</a>
-    		<a href="" class="btn btn-default" @click.prevent="addColumn" v-if="canAddColumns">
+    		<a class="btn btn-default" @click="addColumn" v-if="canAddColumns">
     			{{ translate_choice('cp.columns', 1) }} <i class="icon icon-plus icon-right"></i>
     		</a>
     	</div>

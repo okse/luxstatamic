@@ -16,7 +16,8 @@
             :selected-assets="selectedAssets"
             @selected="selectAsset"
             @deselected="deselectAsset"
-            @editing="editAsset">
+            @editing="editAsset"
+            @doubleclicked="assetDoubleclicked">
         </asset-tile>
 
         <!-- hack for flexbox spacing the last row properly. -->

@@ -83,6 +83,34 @@ class Tree
     }
 
     /**
+     * Supplement taxonomies on all pages
+     *
+     * @return void
+     */
+    public function supplementTaxonomies()
+    {
+        $this->branches = $this->performTaxonomySupplementing($this->branches);
+    }
+
+    /**
+     * Recursively supplement taxonomies on pages and their children
+     *
+     * @param array $branches
+     * @return array
+     */
+    private function performTaxonomySupplementing($branches)
+    {
+        foreach ($branches as $branch) {
+            $branch['page']->supplementTaxonomies();
+            if ($branch['page'] instanceof Page) {
+                $branch['children'] = $this->performTaxonomySupplementing($branch['children']);
+            }
+        }
+
+        return $branches;
+    }
+
+    /**
      * Filter the branches by conditions
      *
      * @param  array $conditions

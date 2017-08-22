@@ -6,7 +6,6 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Statamic\API\Entry;
 use Statamic\API\Config;
 use Statamic\API\Helper;
-use Statamic\API\Content;
 use Statamic\API\Collection;
 use Statamic\Presenters\PaginationPresenter;
 

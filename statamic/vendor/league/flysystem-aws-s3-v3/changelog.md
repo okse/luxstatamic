@@ -1,5 +1,23 @@
 # Changelog
 
+##1.0.16 - 2017-06-08
+
+### Improved
+
+* Allow the `Tagging` meta option.
+
+## 1.0.15 - 2017-04-28
+
+### Improved
+
+* Indicate this adapter can overwrite files.
+
+## 1.0.14 - 2017-01-02
+
+### Improved
+
+* Now also detect mimetypes of streams.
+
 ## 1.0.13 - 2016-06-21
 
 ### Fixed

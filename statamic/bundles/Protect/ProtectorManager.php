@@ -6,6 +6,7 @@ use Statamic\Addons\Protect\Protectors\Protector;
 use Statamic\Addons\Protect\Protectors\IpProtector;
 use Statamic\Addons\Protect\Protectors\NullProtector;
 use Statamic\Addons\Protect\Protectors\PasswordProtector;
+use Statamic\Addons\Protect\Protectors\LoggedInProtector;
 
 class ProtectorManager
 {
@@ -20,24 +21,30 @@ class ProtectorManager
     protected $scheme;
 
     /**
+     * @var bool
+     */
+    private $siteWide;
+
+    /**
      * Protection classes in order of priority
      *
      * @var array
      */
     protected $protectors = [
-        PasswordProtector::class,
-        IpProtector::class,
-        NullProtector::class
+        'password' => PasswordProtector::class,
+        'ip_address' => IpProtector::class,
+        'logged_in' => LoggedInProtector::class,
     ];
 
     /**
      * @param string $url
      * @param array  $scheme
      */
-    public function __construct($url, array $scheme)
+    public function __construct($url, array $scheme, $siteWide)
     {
         $this->url = $url;
         $this->scheme = $scheme;
+        $this->siteWide = $siteWide;
     }
 
     /**
@@ -45,9 +52,9 @@ class ProtectorManager
      *
      * @return void
      */
-    public function protect()
+    public function protect($type)
     {
-        $this->getProtectionProvider()->protect();
+        $this->getProtectionProvider($type)->protect();
     }
 
     /**
@@ -55,15 +62,17 @@ class ProtectorManager
      *
      * @return Protector
      */
-    protected function getProtectionProvider()
+    protected function getProtectionProvider($type)
     {
-        foreach ($this->protectors as $class) {
-            $protector = $this->resolveProtector($class);
+        $protector = $this->resolveProtector(
+            array_get($this->protectors, $type, NullProtector::class)
+        );
 
-            if ($protector->providesProtection()) {
-                return $protector;
-            }
+        if (! $protector->providesProtection()) {
+            return $this->resolveProtector(NullProtector::class);
         }
+
+        return $protector;
     }
 
     /**
@@ -74,6 +83,6 @@ class ProtectorManager
      */
     protected function resolveProtector($class)
     {
-        return new $class($this->url, $this->scheme);
+        return new $class($this->url, $this->scheme, $this->siteWide);
     }
 }

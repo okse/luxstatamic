@@ -12,6 +12,7 @@ use Statamic\API\Config;
 use Statamic\API\Folder;
 use Statamic\API\Content;
 use Illuminate\Http\Request;
+use Statamic\Routing\Route;
 use Statamic\Routing\Router;
 use Statamic\CP\Publish\SneakPeek;
 use Statamic\Routing\ExceptionRoute;
@@ -73,7 +74,7 @@ class StatamicController extends Controller
      * @param string|null $name
      * @param string|null $method
      * @param string|null $parameters
-     * @return \Illuminate\Http\Response
+     * @return mixed
      */
     public function controllerTrigger($name = null, $method = null, $parameters = null)
     {
@@ -92,7 +93,12 @@ class StatamicController extends Controller
             return $response;
         }
 
-        return $this->fireEvent($name, $method, $parameters);
+        if ($response = $this->fireEvent($name, $method, $parameters)) {
+            return $response;
+        }
+
+        $this->response = response('');
+        return $this->notFoundResponse('/'.request()->path());
     }
 
     /**
@@ -101,20 +107,26 @@ class StatamicController extends Controller
      * @param string $name
      * @param string $method
      * @param array $parameters
-     * @return bool|\Illuminate\Http\Response
+     * @return mixed
      */
     private function callControllerMethod($name, $method, $parameters)
     {
         $studly = Str::studly($name);
-        $controller = "Statamic\\Addons\\$studly\\{$studly}Controller";
+        $method = strtolower($this->request->method()) . Str::studly($method);
+        $namespace = "Statamic\\Addons\\$studly\\";
+        $params = $parameters ?: [];
 
-        if (! class_exists($controller)) {
-            return false;
+        // First check the root level controller, named after the addon.
+        // eg. Statamic\Addons\AddonName\AddonNameController
+        if (class_exists($rootClass = $namespace . "{$studly}Controller")) {
+            return app()->call($rootClass.'@'.$method, $params);
         }
 
-        $method = strtolower($this->request->method()) . Str::studly($method);
-
-        return app()->call($controller.'@'.$method, $parameters ?: []);
+        // Next, check the controller namespace, still named after the addon.
+        // eg. Statamic\Addons\AddonName\Controllers\AddonNameController
+        if (class_exists($namespacedClass = $namespace."Controllers\\{$studly}Controller")) {
+            return app()->call($namespacedClass.'@'.$method, $params);
+        }
     }
 
     /**
@@ -186,6 +198,18 @@ class StatamicController extends Controller
         $this->data = $this->getDataForUri($url);
         if ($this->data === false) {
             return $this->notFoundResponse($url);
+        }
+
+        if ($this->data instanceof Route && Str::contains($this->data->template()[0], 'Controller@')) {
+            list($controller, $method) = explode('@', $this->data->template()[0]);
+
+            $controller = "Statamic\\SiteHelpers\\$controller";
+
+            if (! class_exists($controller)) {
+                return $this->notFoundResponse($url);
+            }
+
+            return app()->call($controller.'@'.$method, []);
         }
 
         // Check for a redirect within the data
@@ -339,18 +363,7 @@ class StatamicController extends Controller
 
     private function protect()
     {
-        // First try to get a protection scheme from the system
-        // settings then fall back to a scheme inside the data.
-        if (! $scheme = Config::get('system.protect')) {
-            $scheme = $this->data->get('protect');
-        }
-
-        // If there's no protection scheme then we can move along.
-        if (! $scheme) {
-            return;
-        }
-
-        addon('Protect')->protect(URL::getCurrent(), $scheme);
+        return addon('Protect')->protect($this->data);
     }
 
     private function ensureTheme()

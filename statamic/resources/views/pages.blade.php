@@ -41,7 +41,7 @@
                 </div>
             </div>
 
-            <div :class="{'page-tree': true, 'show-urls': showUrls}" v-if="arePages">
+            <div :class="{'page-tree': true, 'show-urls': showUrls}">
                 <div class="loading" v-if="loading">
                     <span class="icon icon-circular-graph animation-spin"></span> {{ translate('cp.loading') }}
                 </div>
@@ -65,18 +65,6 @@
                 </ul>
 
                 <branches :pages="pages" :depth="1"></branches>
-            </div>
-
-            <div class="card" v-if="! arePages" v-cloak>
-                <div class="no-results">
-                    <span class="icon icon-documents"></span>
-                    <h2>{{ trans('cp.pages_empty_heading') }}</h2>
-                    <h3>{{ trans('cp.pages_empty') }}</h3>
-                    @can('pages:create')
-                        <a href="{{ route('page.create') }}" class="btn btn-default btn-lg" @click.prevent="createPage('/')">{{ trans('cp.create_page_button') }}</a>
-                        <a href="{{ route('page.edit') }}" class="btn btn-default btn-lg">{{ trans('cp.edit_homepage_button') }}</a>
-                    @endcan
-                </div>
             </div>
 
             <create-page></create-page>

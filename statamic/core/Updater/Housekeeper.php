@@ -3,6 +3,7 @@
 namespace Statamic\Updater;
 
 use Illuminate\Console\Command;
+use Statamic\Events\StatamicUpdated;
 
 class Housekeeper
 {
@@ -56,6 +57,7 @@ class Housekeeper
         }
 
         // Fire an event for devs etc.
-        event('system.updated');
+        event(new StatamicUpdated($version, $previousVersion));
+        event('system.updated'); // @todo deprecated
     }
 }

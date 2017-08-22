@@ -2,29 +2,36 @@
 
 namespace Statamic\StaticCaching;
 
-use Statamic\API\File;
 use Statamic\API\Path;
-use Statamic\API\Config;
-use Statamic\API\Folder;
 use Illuminate\Http\Request;
-use League\Flysystem\FileNotFoundException;
+use Illuminate\Contracts\Cache\Repository;
 
 class FileCacher extends AbstractCacher
 {
     /**
-     * @var string
+     * @var Writer
      */
-    private $cache_path;
+    private $writer;
+
+    /**
+     * @param Writer $writer
+     * @param Repository $cache
+     * @param array $config
+     */
+    public function __construct(Writer $writer, Repository $cache, $config)
+    {
+        parent::__construct($cache, $config);
+
+        $this->writer = $writer;
+    }
 
     /**
      * Cache a page
      *
      * @param \Illuminate\Http\Request $request     Request associated with the page to be cached
      * @param string                   $content     The response content to be cached
-     * @param null|int                 $expiration  Length of time to cache for, in minutes.
-     *                                              Null to use the configured default.
      */
-    public function cachePage(Request $request, $content, $expiration = null)
+    public function cachePage(Request $request, $content)
     {
         $url = $this->getUrl($request);
 
@@ -34,46 +41,13 @@ class FileCacher extends AbstractCacher
 
         $content = $this->normalizeContent($content);
 
-        $path = $this->getFilePath($request);
+        $path = $this->getFilePath($request->getUri());
 
-        if (! $this->writeFile($path, $content)) {
+        if (! $this->writer->write($path, $content, $this->config('lock_hold_length'))) {
             return;
         }
 
         $this->cacheUrl($this->makeHash($url), $url);
-    }
-
-    /**
-     * Write the cache file to disk.
-     *
-     * @param string $path     The path to the file.
-     * @param string $content  The content of the file.
-     * @return bool            True if written, false if not.
-     */
-    private function writeFile($path, $content)
-    {
-        @mkdir(dirname($path), 0777, true);
-
-        // Create the file handle. We use the "c" mode which will avoid writing an
-        // empty file if we abort when checking the lock status in the next step.
-        $handle = fopen($path, 'c');
-
-        // Attempt to obtain the lock for a the file. If the file is already locked, then we'll
-        // abort right here since another process is in the middle of writing the file. Since
-        // file locks are only advisory, we'll have to manually check and prevent writing.
-        if (! flock($handle, LOCK_EX | LOCK_NB)) {
-            return false;
-        }
-
-        fwrite($handle, $content);
-        chmod($path, 0777);
-
-        // Hold the file lock for a moment to prevent other processes from trying to write the same file.
-        sleep(Config::get('caching.static_caching_lock_hold_length', 0));
-
-        fclose($handle);
-
-        return true;
     }
 
     /**
@@ -93,11 +67,9 @@ class FileCacher extends AbstractCacher
      */
     public function flush()
     {
-        foreach (Folder::getFilesRecursively($this->cachePath()) as $path) {
-            File::delete($path);
+        foreach ($this->getCachePaths() as $path) {
+            $this->writer->flush($path);
         }
-
-        Folder::deleteEmptySubfolders($this->cachePath());
 
         $this->flushUrls();
     }
@@ -115,38 +87,55 @@ class FileCacher extends AbstractCacher
             return;
         }
 
-        try {
-            File::delete(Path::assemble($this->cachePath(), $url, 'index.html'));
-        } catch (FileNotFoundException $e) {
-            //
-        }
+        $this->writer->delete($this->getFilePath($url));
 
         $this->forgetUrl($key);
+    }
+
+    public function getCachePaths()
+    {
+        $paths = $this->config('file_path');
+
+        if (! is_array($paths)) {
+            $paths = [$this->config('locale') => $paths];
+        }
+
+        return $paths;
     }
 
     /**
      * Get the path where static files are stored
      *
+     * @param string|null $locale  A specific locale's path.
      * @return string
      */
-    private function cachePath()
+    public function getCachePath($locale = null)
     {
-        if ($this->cache_path) {
-            return $this->cache_path;
+        $paths = $this->getCachePaths();
+
+        if (! $locale) {
+            $locale = $this->config('locale');
         }
 
-        return $this->cache_path = Config::get('caching.static_caching_file_path');
-
+        return $paths[$locale];
     }
 
     /**
      * Get the path to the cached file.
      *
-     * @param Request $request
+     * @param $url
      * @return string
      */
-    private function getFilePath(Request $request)
+    public function getFilePath($url)
     {
-        return Path::makeFull($this->cachePath() . '/' . $request->path() . '/index.html');
+        $parts = parse_url($url);
+
+        $path = sprintf('%s/%s_%s.html',
+            $this->getCachePath(),
+            $parts['path'],
+            array_get($parts, 'query', '')
+        );
+
+        return Path::makeFull($path);
     }
 }

@@ -68,11 +68,14 @@ abstract class Tags
 
     /**
      * Create a new Tags instance
-     *
-     * @param array  $properties  Properties that to set
-     * @return Tags
      */
-    public function __construct($properties)
+    public function __construct()
+    {
+        $this->bootstrap();
+        $this->init();
+    }
+
+    public function setProperties($properties)
     {
         $this->content     = $properties['content'];
         $this->context     = $properties['context'];
@@ -80,9 +83,6 @@ abstract class Tags
         $this->isPair      = $this->content !== '';
         $this->tag         = array_get($properties, 'tag');
         $this->tag_method  = array_get($properties, 'tag_method');
-
-        $this->bootstrap();
-        $this->init();
     }
 
     /**
@@ -93,12 +93,20 @@ abstract class Tags
      */
     private function setUpParameters($params)
     {
-        // Values in parameters prefixed with a colon should be treated as the corresponding
-        // field's value in the context. If it doesn't exist, the value remains the literal.
         foreach ($params as $param => $value) {
+            // Values in parameters prefixed with a colon should be treated as the corresponding
+            // field's value in the context. If it doesn't exist, the value remains the literal.
             if (Str::startsWith($param, ':')) {
                 $params[substr($param, 1)] = array_get($this->context, $value, $value);
                 unset($params[$param]);
+            }
+
+            if ($value === 'true') {
+                $params[$param] = true;
+            }
+
+            if ($value === 'false') {
+                $params[$param] = false;
             }
         }
 

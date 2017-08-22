@@ -162,4 +162,19 @@ class PublishEntryController extends PublishController
 
         return $title;
     }
+
+    /**
+     * Whether the user is authorized to publish the object.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    protected function canPublish(Request $request)
+    {
+        $collection = $request->input('extra.collection');
+
+        return $request->user()->can(
+            $request->new ? "collections:$collection:create" : "collections:$collection:edit"
+        );
+    }
 }

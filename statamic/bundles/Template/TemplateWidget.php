@@ -15,7 +15,7 @@ class TemplateWidget extends Widget
         
         $template = $this->loadTemplate($this->get('template'));
 
-        return Parse::template($template, $this->config);
+        return Parse::template($template, $this->parameters);
     }
 
     /**

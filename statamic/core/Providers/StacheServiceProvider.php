@@ -13,8 +13,8 @@ use Statamic\Stache\Manager;
 use Illuminate\Support\ServiceProvider;
 use Statamic\Stache\Persister;
 use Statamic\Stache\UpdateManager;
-use Tests\Doubles\StacheTestManager;
 use Statamic\Stache\EmptyStacheException;
+use Statamic\Testing\Doubles\StacheTestManager;
 
 class StacheServiceProvider extends ServiceProvider
 {

@@ -35,7 +35,8 @@
                     @deselected="deselectAsset"
                     @editing="editAsset"
                     @deleting="deleteAsset"
-                    @assetdragstart="assetDragStart">
+                    @assetdragstart="assetDragStart"
+                    @doubleclicked="assetDoubleclicked">
                 </tr>
 
             </tbody>

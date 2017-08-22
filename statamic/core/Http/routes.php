@@ -26,7 +26,7 @@ if (CP_ROUTE !== false) {
 Route::group(['prefix' => Config::get('assets.image_manipulation_route')], function () {
     get('/asset/{container}/{path?}', 'GlideController@generateByAsset')->where('path', '.*');
     get('/http/{url}/{filename?}', 'GlideController@generateByUrl');
-    get('/{path?}', 'GlideController@generateByPath')->where('path', '.*');
+    get('{path}', 'GlideController@generateByPath')->where('path', '.*');
 });
 
 /**

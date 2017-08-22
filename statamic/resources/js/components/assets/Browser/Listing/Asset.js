@@ -35,10 +35,18 @@ export default {
          */
         toggle() {
             if (this.isSelected) {
-                this.$emit('deselected', this.asset.id);
+                this.deselect();
             } else {
-                this.$emit('selected', this.asset.id);
+                this.select();
             }
+        },
+
+        select() {
+            this.$emit('selected', this.asset.id);
+        },
+
+        deselect() {
+            this.$emit('deselected', this.asset.id);
         },
 
         /**
@@ -59,6 +67,17 @@ export default {
             e.dataTransfer.setData('asset', this.asset.id);
             e.dataTransfer.effectAllowed = 'move';
             this.$emit('assetdragstart', this.asset.id);
+        },
+
+        doubleClicked() {
+            // When in the context of the asset manager, we want to edit the asset. Otherwise, we want to
+            // select the asset and close the dialog, which will be handled in the parent components.
+            if (document.location.pathname.split('/')[2] === 'assets') {
+                this.editAsset();
+            } else {
+                this.select();
+                this.$emit('doubleclicked', this.asset.id);
+            }
         }
 
     }

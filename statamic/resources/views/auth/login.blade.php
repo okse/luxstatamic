@@ -52,6 +52,9 @@
 
             <div>
                 <button type="submit" class="btn btn-outside btn-block">{{ trans('cp.login') }}</button>
+                @if (! $oauth)
+                    <a href="{{ route('login.reset')}}" class="help-link">{{ t('forgot_password')}}</a>
+                @endif
             </div>
         </form>
     </login>

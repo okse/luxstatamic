@@ -371,7 +371,7 @@ class UserTags extends Tags
      *
      * {@inheritdoc}
      */
-    protected function eventUrl($url, $relative = false)
+    public function eventUrl($url, $relative = false)
     {
         $url = parent::eventUrl($url, $relative);
 

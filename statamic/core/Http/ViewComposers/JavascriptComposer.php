@@ -4,9 +4,20 @@ namespace Statamic\Http\ViewComposers;
 
 use Statamic\API\URL;
 use Illuminate\Contracts\View\View;
+use Statamic\Extend\Management\AddonRepository;
 
 class JavascriptComposer
 {
+    /**
+     * @var AddonRepository
+     */
+    private $repo;
+
+    public function __construct(AddonRepository $repo)
+    {
+        $this->repo = $repo;
+    }
+
     public function compose(View $view)
     {
         $view->with('scripts', $this->scripts());
@@ -19,9 +30,7 @@ class JavascriptComposer
             return '';
         }
 
-        $scripts = addon_repo()->filter('scripts.js')
-            ->getFiles()
-            ->filterByRegex('/^site\/addons\/[\w_-]+\/resources\/assets\/js\/scripts\.js$/');
+        $scripts = $this->repo->thirdParty()->filename('scripts.js')->files();
 
         $str = '';
 

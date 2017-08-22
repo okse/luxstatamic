@@ -2,7 +2,6 @@
 
 namespace Statamic\Addons\Protect;
 
-use Statamic\API\Request;
 use Statamic\Extend\Listener;
 use Statamic\Addons\Protect\Protectors\PasswordProtector;
 
@@ -11,10 +10,6 @@ class ProtectListener extends Listener
     public $events = [
         'Protect.password' => 'password',
     ];
-
-    protected $scheme;
-    protected $url;
-    protected $password;
 
     /**
      * @var PasswordProtector
@@ -28,31 +23,56 @@ class ProtectListener extends Listener
             return back();
         }
 
-        $this->url = $token['url'];
+        $this->protector = new PasswordProtector($this->getUrl(), $this->getScheme());
 
-        $this->protector = new PasswordProtector($this->url, $token['scheme']);
-
-        if (! $this->protector->isValidPassword($this->password = Request::get('password'))) {
+        if (! $this->protector->isValidPassword($this->getPassword())) {
             $this->flash->put('error', 'Incorrect password.');
             return back();
         }
 
         $this->storePassword();
 
-        return redirect($this->url);
+        return redirect($this->getUrl());
+    }
+
+    protected function getScheme()
+    {
+        return array_get($this->getTokenData(), 'scheme');
+    }
+
+    protected function isSiteWide()
+    {
+        return array_get($this->getTokenData(), 'siteWide');
+    }
+
+    protected function getUrl()
+    {
+        return array_get($this->getTokenData(), 'url');
+    }
+
+    protected function getPassword()
+    {
+        return request('password');
+    }
+
+    protected function getToken()
+    {
+        return request('token');
     }
 
     protected function getTokenData()
     {
-        return session()->get('protect.scheme.'.Request::get('token'));
+        return session()->get('protect.password.scheme.'.$this->getToken());
     }
 
     protected function storePassword()
     {
-        $passwords = session()->get('protect.passwords', []);
+        $passwords = session()->get('protect.password.passwords', []);
 
-        $passwords[md5($this->url)][] = $this->password;
+        $key = $this->isSiteWide() ? 'site' : md5($this->getUrl());
 
-        session()->put('protect.passwords', $passwords);
+        $passwords[$key][] = $this->getPassword();
+
+        session()->put('protect.password.passwords', $passwords);
     }
 }

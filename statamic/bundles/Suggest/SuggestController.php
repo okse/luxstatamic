@@ -41,7 +41,7 @@ class SuggestController extends Controller
      */
     private function mode()
     {
-        $mode = $this->request->input('type');
+        $mode = request()->input('type');
 
         if ($mode === 'suggest') {
             $mode = Str::studly($this->request->input('mode', 'options'));
@@ -57,6 +57,6 @@ class SuggestController extends Controller
             throw new FatalException("Suggest mode [$mode] does not exist.");
         }
 
-        return new $class($this->request);
+        return new $class(request());
     }
 }

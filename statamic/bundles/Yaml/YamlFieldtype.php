@@ -7,6 +7,11 @@ use Statamic\Extend\Fieldtype;
 
 class YamlFieldtype extends Fieldtype
 {
+    /**
+     * @var string
+     */
+    protected $snake_name = 'yaml';
+
     public function preProcess($data)
     {
         // When it's a config value being processed, we want to leave it as an array.

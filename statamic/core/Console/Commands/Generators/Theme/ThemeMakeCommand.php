@@ -72,6 +72,8 @@ class ThemeMakeCommand extends Command
             $this->file()->put($this->makeFilename($file), $stub);
         }
 
+        $this->createSiteHelpers();
+
         $this->comment($this->title . ' is ready and waiting for you.');
 
         $this->applyThemeSetting();
@@ -168,5 +170,12 @@ class ThemeMakeCommand extends Command
     private function folder()
     {
         return Folder::disk('themes');
+    }
+
+    private function createSiteHelpers()
+    {
+        $this->callSilent('make:tags-helper', ['--create-only' => true]);
+        $this->callSilent('make:modifiers-helper', ['--create-only' => true]);
+        $this->callSilent('make:filters-helper', ['--create-only' => true]);
     }
 }

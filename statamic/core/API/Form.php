@@ -61,6 +61,29 @@ class Form
     }
 
     /**
+     * Get all Forms
+     *
+     * @param  string $name
+     * @return array of Statamic\Contracts\Forms\Forms
+     */
+    public static function getAllFormsets()
+    {
+        $forms = [];
+        $files = Folder::getFilesByType(settings_path('formsets'), 'yaml');
+
+        foreach ($files as $file) {
+            $filename = pathinfo($file)['filename'];
+            $form = self::get($filename);
+            $form = $form->toArray();
+            $form['show_url'] = route('form.show', $form['name']);
+
+            $forms[] = $form;
+        }
+
+        return $forms;
+    }
+
+    /**
      * Create a form
      *
      * @param  [type] $name [description]

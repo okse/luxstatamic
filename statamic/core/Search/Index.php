@@ -2,101 +2,144 @@
 
 namespace Statamic\Search;
 
-use Mmanos\Search\Index\Algolia;
-use Mmanos\Search\Index\Zend;
-use Mmanos\Search\Index as MmanosIndex;
+use Statamic\API\Config;
+use Partyline as Console;
+use Statamic\Search\Comb\Index as Comb;
+use Statamic\Search\Algolia\Index as Algolia;
 
-/**
- * This class acts as an adapter or middleman between Statamic and the Mmanos/Search
- * index class so we can perform some data manipulation before it goes through.
- */
-class Index
+abstract class Index
 {
     /**
-     * @var MmanosIndex
+     * @var string
      */
-    private $index;
+    protected $name;
 
     /**
-     * @param MmanosIndex $index
+     * @var ItemResolver
      */
-    public function __construct(MmanosIndex $index)
+    protected $itemResolver;
+
+    public function __construct(ItemResolver $itemResolver)
     {
-        $this->index = $index;
+        $this->itemResolver = $itemResolver->setIndex($this);
     }
 
     /**
-     * Insert a document into the index
+     * Get the index name.
+     *
+     * @return string
+     */
+    public function name()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set the index name.
+     *
+     * @param string $name
+     * @return Index
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Factory method for making Index instances.
+     *
+     * @param string $name
+     * @param string|null $driver
+     * @return Index
+     */
+    public static function make($name, $driver = null)
+    {
+        if (! $driver) {
+            $driver = Config::get('search.driver');
+        }
+
+        switch ($driver) {
+            case 'algolia':
+                $index = app(Algolia::class);
+                break;
+
+            default:
+                $index = app(Comb::class);
+        }
+
+        return $index->setName($name);
+    }
+
+    /**
+     * Insert a document into the index.
      *
      * @param string $id
      * @param array $fields
      */
-    public function insert($id, $fields)
-    {
-        // Nested arrays aren't supported by Zend so we'll convert them to dot notation.
-        // For example, ['foo' => ['bar' => ['baz' => 'qux']]] will be converted to
-        // ['foo.bar.baz' => 'qux']. Other drivers will continue to use arrays.
-        if ($this->index instanceof Zend) {
-            $fields = array_dot($fields);
-        }
-
-        $this->index->insert($id, $fields);
-    }
+    abstract public function insert($id, $fields);
 
     /**
-     * A setter/getter for the searchable attribute.
+     * Insert multiple documents into the index.
      *
-     * If there are no parameters given, return all the indexable attributes,
-     * and just set the attributes when given parameters.
-     *
-     * @param  array  $fields
-     * @return Index
+     * @param array $documents  Array of documents, keyed by their ids.
      */
-    public function searchableAttributes(array $attributes = null)
-    {
-        if (! $this->index instanceof Algolia) {
-            return;
-        }
-
-        if (! func_num_args()) {
-            return $this->getSettings()['attributesToIndex'];
-        }
-
-        $this->setSearchableAttributes($attributes);
-    }
+    abstract public function insertMultiple($documents);
 
     /**
-     * Set the attributes to index.
+     * Delete a document from the index.
      *
-     * @param  array  $attributes
+     * @param string $id
+     */
+    abstract public function delete($id);
+
+    /**
+     * Perform a search.
+     *
+     * @param string $query  The search term.
+     * @param array $fields  Restrict the search to these fields.
+     * @return \Illuminate\Support\Collection
+     */
+    abstract public function search($query, $fields = null);
+
+    /**
+     * Delete the entire index.
+     *
      * @return void
      */
-    private function setSearchableAttributes(array $attributes)
-    {
-        $this->index->getIndex()->setSettings([
-            'attributesToIndex' => $attributes
-        ]);
-    }
+    abstract public function deleteIndex();
 
     /**
-     * Return all the settings.
+     * Whether the index exists.
      *
-     * @return array
+     * @return bool
      */
-    private function getSettings()
-    {
-        return $this->index->getIndex()->getSettings();
-    }
+    abstract public function exists();
 
-    /**
-     * Pass along any methods onto the underlying index
-     *
-     * @param string $method
-     * @param array $arguments
-     * @return mixed
-     */
-    public function __call($method, $arguments)
+    public function update()
     {
-        return call_user_func_array(array($this->index, $method), $arguments);
+        $this->deleteIndex();
+
+        $fields = $this->itemResolver->getFields();
+
+        $documents = [];
+        $items = $this->itemResolver->getItems();
+
+        $bar = Console::getOutput()->createProgressBar($items->count());
+
+        foreach ($items as $id => $item) {
+            $documents[$id] = $item->toSearchableArray($fields);
+            $bar->advance();
+        }
+
+        $this->insertMultiple($documents);
+
+        $bar->finish();
+        Console::getOutput()->newLine();
+        Console::checkInfo("Index {$this->name()} updated.");
+        Console::getOutput()->newLine();
+
+        return $this;
     }
 }

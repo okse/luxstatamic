@@ -36,7 +36,7 @@ module.exports = {
     methods: {
         getFieldtypes: function() {
             var self = this;
-            this.$http.get(cp_url('/fieldsets/fieldtypes')).success(function(data) {
+            this.$http.get(cp_url('/fieldtypes')).success(function(data) {
                 _.each(data, function(fieldtype) {
                     self.fieldtypes.push(fieldtype);
                 });
@@ -107,6 +107,7 @@ module.exports = {
                 slug: this.slug,
                 fieldset: this.fieldset
             }).success(function(data) {
+                this.$dispatch('changesMade', false);
                 window.location = data.redirect;
             });
         }

@@ -6,9 +6,8 @@ use Exception;
 use ArrayIterator;
 use Statamic\API\Str;
 use Statamic\API\Helper;
-use Statamic\Extend\Management\Loader;
 use Statamic\Exceptions\ModifierException;
-use Statamic\Exceptions\NativeModifierNotFoundException;
+use Statamic\Extend\Management\ModifierLoader;
 
 class Modify implements \IteratorAggregate
 {
@@ -23,11 +22,11 @@ class Modify implements \IteratorAggregate
     protected $context = [];
 
     /**
-     * @var \Statamic\Extend\Management\Loader
+     * @var \Statamic\Extend\Management\ModifierLoader
      */
     private $loader;
 
-    public function __construct(Loader $loader)
+    public function __construct(ModifierLoader $loader)
     {
         $this->loader = $loader;
     }
@@ -176,30 +175,16 @@ class Modify implements \IteratorAggregate
      */
     protected function runModifier($modifier, $params)
     {
-        try {
-            return $this->modifyNatively($modifier, $params);
-        } catch (NativeModifierNotFoundException $e) {
-            return $this->modifyThirdParty($modifier, $params);
-        }
-    }
-
-    /**
-     * Attempt to modify using the native modifiers
-     *
-     * @param string $modifier
-     * @param array  $params
-     * @return mixed
-     * @throws \Statamic\Exceptions\NativeModifierNotFoundException
-     */
-    protected function modifyNatively($modifier, $params)
-    {
-        $base_modifiers = app('Statamic\View\BaseModifiers');
-
-        if (! method_exists($base_modifiers, $modifier)) {
-            throw new NativeModifierNotFoundException;
+        if (method_exists($nativeModifiers = app('Statamic\View\BaseModifiers'), $modifier)) {
+            return $nativeModifiers->$modifier($this->value, $params, $this->context);
         }
 
-        return $base_modifiers->$modifier($this->value, $params, $this->context);
+        $helpers = 'Statamic\SiteHelpers\Modifiers';
+        if (class_exists($helpers) && method_exists($helpers, $modifier)) {
+            return app($helpers)->$modifier($this->value, $params, $this->context);
+        }
+
+        return $this->modifyThirdParty($modifier, $params);
     }
 
     /**
@@ -212,7 +197,7 @@ class Modify implements \IteratorAggregate
      */
     protected function modifyThirdParty($modifier, $params)
     {
-        $class = $this->loader->loadModifier($modifier);
+        $class = $this->loader->load($modifier);
 
         if (! method_exists($class, 'index')) {
             throw new Exception("Modifier [$modifier] is missing index method.");

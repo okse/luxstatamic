@@ -64,10 +64,6 @@ class ViewServiceProvider extends LaravelViewServiceProvider
             return new AntlersEngine(app('Statamic\DataStore'));
         });
 
-        $this->app->bind('Statamic\View\Modify', function () {
-            return new Modify($this->app->make('Statamic\Extend\Management\Loader'));
-        });
-
         $this->app->singleton('Statamic\View\Antlers\Parser', function () {
             return new Parser;
         });

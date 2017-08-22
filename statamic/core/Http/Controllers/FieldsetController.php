@@ -2,6 +2,7 @@
 
 namespace Statamic\Http\Controllers;
 
+use Statamic\API\Addon;
 use Statamic\API\Config;
 use Statamic\API\Fieldset;
 use Statamic\API\Folder;
@@ -30,22 +31,22 @@ class FieldsetController extends CpController
 
     public function get()
     {
-        $fieldsets = [];
-
-        foreach (Fieldset::all() as $fieldset) {
+        $fieldsets = collect(Fieldset::all())->sort(function ($fieldset) {
+            return $fieldset->title();
+        })->map(function ($fieldset) {
             // If we've decided to omit hidden fieldsets, and this one should be
             // hidden, we'll just move right along.
             if (bool($this->request->query('hidden', true)) === false && $fieldset->hidden()) {
-                continue;
+                return null;
             }
 
-            $fieldsets[] = [
+            return [
                 'title'    => $fieldset->title(),
                 'id'       => $fieldset->name(), // vue uses this as an id
                 'uuid'     => $fieldset->name(), // keeping this here temporarily, just in case.
                 'edit_url' => $fieldset->editUrl()
             ];
-        }
+        })->filter()->values()->all();
 
         return ['columns' => ['title'], 'items' => $fieldsets];
     }
@@ -82,23 +83,7 @@ class FieldsetController extends CpController
 
     public function getFieldset($fieldset)
     {
-        $type = 'default';
-
-        if (substr_count($fieldset, '.') === 2) {
-            // addon fieldsets
-            list($type, $addon, $name) = explode('.', $fieldset);
-            $fieldset = $addon.'.'.$name;
-        } elseif (substr_count($fieldset, '.') === 1) {
-            // settings fieldsets
-            list($type, $fieldset) = explode('.', $fieldset);
-        }
-
-        // Create a temporary fieldset for when creating.
-        if ($fieldset === 'create' && $this->request->creating) {
-            $fieldset = Fieldset::create('temporary');
-        } else {
-            $fieldset = Fieldset::get($fieldset, $type);
-        }
+        $fieldset = $this->getInitialFieldset($fieldset);
 
         $fieldset->locale($this->request->input('locale', default_locale()));
 
@@ -125,6 +110,50 @@ class FieldsetController extends CpController
         }
 
         return $array;
+    }
+
+    /**
+     * @param string $fieldset  Name of the fieldset, as specified in the URL.
+     * @return \Statamic\Contracts\CP\Fieldset
+     */
+    private function getInitialFieldset($fieldset)
+    {
+        // When using the builder to create a new fieldset, we need an object to work
+        // with, but obviously one doesn't exist. So, we'll just use a temporary one.
+        if ($fieldset === 'create' || $this->request->creating === 'true') {
+            return Fieldset::create('temporary');
+        }
+
+        // Addon fieldsets will be specified using "addon.addonname.fieldsetname"
+        if (substr_count($fieldset, '.') === 2) {
+            return $this->getAddonFieldset($fieldset);
+        }
+
+        // Settings fieldsets will be specified using "settings.area"
+        if (substr_count($fieldset, '.') === 1) {
+            return $this->getSettingsFieldset($fieldset);
+        }
+
+        // Otherwise, just get a regular fieldset.
+        return Fieldset::get($fieldset);
+    }
+
+    private function getAddonFieldset($fieldset)
+    {
+        list(, $addonName, $fieldsetName) = explode('.', $fieldset);
+
+        if ($fieldsetName !== 'settings') {
+            throw new \Exception('Cannot get non-settings fieldset.');
+        }
+
+        return Addon::create($addonName)->settingsFieldset();
+    }
+
+    private function getSettingsFieldset($fieldset)
+    {
+        list(, $fieldset) = explode('.', $fieldset);
+
+        return Fieldset::get($fieldset, 'settings');
     }
 
     /**
@@ -181,69 +210,6 @@ class FieldsetController extends CpController
         }
 
         return $taxonomies->values()->all();
-    }
-
-    public function fieldtypes()
-    {
-        $fieldtypes = [];
-
-        foreach ($this->getAllFieldtypes() as $fieldtype) {
-            $config = [];
-
-            foreach ($fieldtype->getConfigFieldset()->fieldtypes() as $item) {
-                $c = $item->getFieldConfig();
-
-                // Go through each fieldtype in *its* config fieldset and process the values. SO META.
-                foreach ($item->getConfigFieldset()->fieldtypes() as $field) {
-                    if (! in_array($field->getName(), array_keys($c))) {
-                        continue;
-                    }
-
-                    $c[$field->getName()] = $field->preProcess($c[$field->getName()]);
-                }
-
-                $c['display'] = trans("fieldtypes/{$fieldtype->snakeName()}.{$c['name']}");
-                $c['instructions'] = markdown(trans("fieldtypes/{$fieldtype->snakeName()}.{$c['name']}_instruct"));
-
-                $config[] = $c;
-            }
-
-            $fieldtypes[] = [
-                'label' => $fieldtype->getAddonName(),
-                'name' => $fieldtype->snakeName(),
-                'canBeValidated' => $fieldtype->canBeValidated(),
-                'canBeLocalized' => $fieldtype->canBeLocalized(),
-                'canHaveDefault' => $fieldtype->canHaveDefault(),
-                'config' => $config,
-            ];
-        }
-
-        $hidden = ['replicator_sets', 'fields', 'asset_container', 'asset_folder', 'user_password',
-                   'locale_settings', 'theme', 'redactor_settings', 'relate'];
-        foreach ($fieldtypes as $key => $fieldtype) {
-            if (in_array($fieldtype['name'], $hidden)) {
-                unset($fieldtypes[$key]);
-            }
-        }
-
-        return array_values($fieldtypes);
-    }
-
-    /**
-     * @return \Illuminate\Support\Collection
-     */
-    private function getAllFieldtypes()
-    {
-        return collect([bundles_path(), addons_path()])->flatMap(function ($path) {
-            return Folder::getFilesRecursively($path);
-        })->filter(function ($path) {
-            return Pattern::endsWith($path, 'Fieldtype.php');
-        })->map(function ($path) {
-            $name = str_replace('Fieldtype', '', basename($path, '.php'));
-            return resource_loader()->loadFieldtype($name);
-        })->sortBy(function ($fieldtype) {
-            return $fieldtype->getAddonName();
-        });
     }
 
     public function update($name)

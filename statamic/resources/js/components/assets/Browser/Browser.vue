@@ -27,11 +27,16 @@
 
             <div class="asset-browser-header">
                 <h1>
-                    <template v-if="restrictNavigation">
-                        {{ folder.title || folder.path }}
+                    <template v-if="isSearching">
+                        {{ translate('cp.search_results') }}
                     </template>
                     <template v-else>
-                        {{ container.title }}
+                        <template v-if="restrictNavigation">
+                            {{ folder.title || folder.path }}
+                        </template>
+                        <template v-else>
+                            {{ container.title }}
+                        </template>
                     </template>
 
                     <div class="loading-indicator" v-show="loadingAssets">
@@ -40,6 +45,13 @@
                 </h1>
 
                 <div class="asset-browser-actions">
+
+                    <input type="text"
+                           class="asset-search-field"
+                           placeholder="{{ translate('cp.search') }}..."
+                           v-model="searchTerm"
+                           debounce="500" />
+
                     <slot name="contextual-actions"></slot>
 
                     <div class="btn-group action">
@@ -62,19 +74,19 @@
 
                     <button type="button"
                             class="btn action"
-                            v-if="!restrictNavigation"
+                            v-if="!restrictNavigation && !isSearching"
                             @click.prevent="createFolder">
                         {{ translate('cp.new_folder') }}
                     </button>
 
-                    <button type="button" class="btn btn-primary action" @click.prevent="uploadFile">
+                    <button type="button" class="btn btn-primary action" @click.prevent="uploadFile" v-if="!isSearching">
                         {{ translate('cp.upload') }}
                     </button>
                 </div>
             </div>
 
             <breadcrumbs
-                v-if="!restrictNavigation"
+                v-if="!restrictNavigation && !isSearching"
                 :path="path"
                 @navigated="folderSelected">
             </breadcrumbs>
@@ -110,13 +122,20 @@
                     @asset-deselected="assetDeselected"
                     @asset-editing="editAsset"
                     @asset-deleting="deleteAsset"
-                    @assets-dragged-to-folder="assetsDraggedToFolder">
+                    @assets-dragged-to-folder="assetsDraggedToFolder"
+                    @asset-doubleclicked="assetDoubleclicked">
                 </component>
 
                 <div class="no-results" v-if="isEmpty">
-                    <span class="icon icon-folder"></span>
-                    <h2>{{ translate('cp.asset_folder_empty_heading') }}</h2>
-                    <h3>{{ translate('cp.asset_folder_empty') }}</h3>
+                    <template v-if="isSearching">
+                        <span class="icon icon-magnifying-glass"></span>
+                        <h2>{{ translate('cp.no_search_results') }}</h2>
+                    </template>
+                    <template v-else>
+                        <span class="icon icon-folder"></span>
+                        <h2>{{ translate('cp.asset_folder_empty_heading') }}</h2>
+                        <h3>{{ translate('cp.asset_folder_empty') }}</h3>
+                    </template>
                 </div>
 
                 <pagination
@@ -212,6 +231,7 @@ module.exports = {
             showFolderCreator: false,
             editedFolderPath: null,
             editorHasChild: false,
+            isSearching: false
         }
     },
 
@@ -243,6 +263,8 @@ module.exports = {
 
         showSidebar() {
             if (! this.initialized) return false;
+
+            if (this.isSearching) return false;
 
             if (this.restrictNavigation) return false;
 
@@ -358,6 +380,14 @@ module.exports = {
          */
         selectedAssets(selections) {
             this.$emit('selections-updated', selections);
+        },
+
+        searchTerm(term) {
+            if (term) {
+                this.search();
+            } else {
+                this.loadAssets();
+            }
         }
 
     },
@@ -402,6 +432,24 @@ module.exports = {
                 this.selectedPage = response.pagination.currentPage;
                 this.loadingAssets = false;
                 this.initializedAssets = true;
+                this.isSearching = false;
+            });
+        },
+
+        search() {
+            this.loadingAssets = true;
+
+            this.$http.post(cp_url('assets/search'), {
+                term: this.searchTerm,
+                container: this.container.id,
+                folder: this.folder.path,
+                restrictNavigation: this.restrictNavigation
+            }).success((response) => {
+                this.isSearching = true;
+                this.assets = response.assets;
+                this.folders = [];
+                this.loadingAssets = false;
+                this.initializedAssets = true;
             });
         },
 
@@ -434,6 +482,12 @@ module.exports = {
          * When an asset has been selected.
          */
         assetSelected(id) {
+            // For single asset selections, clicking a different asset will replace the selection.
+            if (this.maxFiles === 1 && this.maxFilesReached) {
+                this.selectedAssets = [id];
+            }
+
+            // Completely prevent additional selections when the limit has been hit.
             if (this.maxFilesReached) {
                 return;
             }
@@ -517,6 +571,18 @@ module.exports = {
         assetMoved(folder) {
             this.closeAssetEditor();
             this.folderSelected(folder);
+        },
+
+        /**
+         * When an asset was double clicked.
+         *
+         * This event would only ever be called when the browser is used in the context of a
+         * fieldtype. When used in the "Assets" section, the double click would be handled
+         * from within the asset component and caused the edit dialog to be opened.
+         */
+        assetDoubleclicked(id) {
+            this.assetSelected(id);
+            this.$emit('asset-doubleclicked');
         },
 
         /**

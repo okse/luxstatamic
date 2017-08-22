@@ -53,7 +53,7 @@ class Asset
         // change in URL here. For asset IDs (eg. S3) we'll just leave them alone.
         $fullUrl = (Str::contains($url, '::') || Str::startsWith($url, ['http://', 'https://']))
             ? $url
-            : URL::prependSiteRoot($url);
+            : URL::prependSiteRoot($url, Config::getDefaultLocale());
 
         // If a container can't be resolved, we'll assume there's no asset.
         if (! $container = self::resolveContainerFromUrl($fullUrl)) {

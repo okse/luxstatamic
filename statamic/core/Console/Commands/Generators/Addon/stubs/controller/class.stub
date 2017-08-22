@@ -9,7 +9,7 @@ class DummyAddonController extends Controller
     /**
      * Maps to your route definition in routes.yaml
      *
-     * @return Illuminate\Http\Response
+     * @return mixed
      */
     public function index()
     {

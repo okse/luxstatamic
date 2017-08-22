@@ -7,9 +7,20 @@ use Statamic\API\File;
 use Statamic\API\Path;
 use Statamic\API\Config;
 use Illuminate\Contracts\View\View;
+use Statamic\Extend\Management\AddonRepository;
 
 class FieldtypeJsComposer
 {
+    /**
+     * @var AddonRepository
+     */
+    private $repo;
+
+    public function __construct(AddonRepository $repo)
+    {
+        $this->repo = $repo;
+    }
+
     public function compose(View $view)
     {
         $view->with('fieldtype_js', $this->fieldtypeJs());
@@ -22,19 +33,17 @@ class FieldtypeJsComposer
             return '';
         }
 
-        $fieldtypes = addon_repo()->filter('Fieldtype.php')->getFiles();
-
         $defaults = [];
 
         $str = '';
 
-        foreach ($fieldtypes as $path) {
-            $dir = pathinfo($path)['dirname'];
+        foreach ($this->repo->fieldtypes()->files() as $path) {
+            $dir = collect(explode('/', $path))->take(3)->implode('/');
 
             // Add the default value to the array
             $name = explode('/', $dir)[2];
             $fieldtype = app('Statamic\CP\FieldtypeFactory')->create($name);
-            $defaults[$fieldtype->snakeName()] = $fieldtype->blank();
+            $defaults[$fieldtype->getHandle()] = $fieldtype->blank();
 
             if (File::exists(Path::assemble($dir, 'resources/assets/js/fieldtype.js'))) {
                 $str .= $fieldtype->js->tag('fieldtype');

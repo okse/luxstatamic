@@ -3,6 +3,7 @@
 namespace Statamic\Providers;
 
 use Carbon\Carbon;
+use Statamic\Outpost;
 use Statamic\API\File;
 use Statamic\DataStore;
 use Statamic\CP\Router;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Cache;
 use Statamic\Extend\Management\Loader;
 use Illuminate\Support\ServiceProvider;
 use Statamic\Extensions\FileUserProvider;
+use Statamic\Extend\Management\AddonRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -38,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
         // Let's enable it.
         try {
             setlocale(LC_TIME, Config::getFullLocale());
-            Carbon::setLocale(site_locale());
+            Carbon::setLocale(Config::getShortLocale());
         } catch(\Exception $e) {
             \Log::error("Your locale does not match any available language translations.");
         }
@@ -83,6 +85,10 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->singleton(Outpost::class, function ($app) {
+            return new Outpost($app['request'], $app[AddonRepository::class]);
+        });
+
         $this->app->singleton('Statamic\DataStore', function() {
             return new DataStore;
         });
@@ -92,7 +98,7 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton('Statamic\CP\Router', function ($app) {
-            return new Router($app['router'], addon_repo());
+            return new Router($app['router'], $app[AddonRepository::class]);
         });
 
         $this->registerPublishers();

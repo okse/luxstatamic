@@ -77,19 +77,23 @@ class ClientContext
     public $connectTimeout;
 
     /**
-     * ClientContext constructor.
-     *
-     * @param string $applicationID
-     * @param string $apiKey
-     * @param array  $hostsArray
-     * @param bool   $placesEnabled
+     * @var FailingHostsCache
+     */
+    private $failingHostsCache;
+
+    /**
+     * @param string|null            $applicationID
+     * @param string|null            $apiKey
+     * @param array|null             $hostsArray
+     * @param bool                   $placesEnabled
+     * @param FailingHostsCache|null $failingHostsCache
      *
      * @throws Exception
      */
-    public function __construct($applicationID, $apiKey, $hostsArray, $placesEnabled = false)
+    public function __construct($applicationID = null, $apiKey = null, $hostsArray = null, $placesEnabled = false, FailingHostsCache $failingHostsCache = null)
     {
-        // connect timeout of 2s by default
-        $this->connectTimeout = 2;
+        // connect timeout of 1s by default
+        $this->connectTimeout = 1;
 
         // global timeout of 30s by default
         $this->readTimeout = 30;
@@ -99,6 +103,7 @@ class ClientContext
 
         $this->applicationID = $applicationID;
         $this->apiKey = $apiKey;
+
         $this->readHostsArray = $hostsArray;
         $this->writeHostsArray = $hostsArray;
 
@@ -107,11 +112,11 @@ class ClientContext
             $this->writeHostsArray = $this->getDefaultWriteHosts();
         }
 
-        if ($this->applicationID == null || mb_strlen($this->applicationID) == 0) {
+        if (($this->applicationID == null || mb_strlen($this->applicationID) == 0) && $placesEnabled === false) {
             throw new Exception('AlgoliaSearch requires an applicationID.');
         }
 
-        if ($this->apiKey == null || mb_strlen($this->apiKey) == 0) {
+        if (($this->apiKey == null || mb_strlen($this->apiKey) == 0) && $placesEnabled === false) {
             throw new Exception('AlgoliaSearch requires an apiKey.');
         }
 
@@ -121,6 +126,14 @@ class ClientContext
         $this->algoliaUserToken = null;
         $this->rateLimitAPIKey = null;
         $this->headers = array();
+
+        if ($failingHostsCache === null) {
+            $this->failingHostsCache = new InMemoryFailingHostsCache();
+        } else {
+            $this->failingHostsCache = $failingHostsCache;
+        }
+
+        $this->rotateHosts();
     }
 
     /**
@@ -174,7 +187,7 @@ class ClientContext
      */
     public function __destruct()
     {
-        if ($this->curlMHandle != null) {
+        if (is_resource($this->curlMHandle)) {
             curl_multi_close($this->curlMHandle);
         }
     }
@@ -186,7 +199,7 @@ class ClientContext
      */
     public function getMHandle($curlHandle)
     {
-        if ($this->curlMHandle == null) {
+        if (!is_resource($this->curlMHandle)) {
             $this->curlMHandle = curl_multi_init();
         }
         curl_multi_add_handle($this->curlMHandle, $curlHandle);
@@ -247,5 +260,43 @@ class ClientContext
     public function setExtraHeader($key, $value)
     {
         $this->headers[$key] = $value;
+    }
+
+    /**
+     * @param string $host
+     */
+    public function addFailingHost($host)
+    {
+        $this->failingHostsCache->addFailingHost($host);
+    }
+
+    /**
+     * @return FailingHostsCache
+     */
+    public function getFailingHostsCache()
+    {
+        return $this->failingHostsCache;
+    }
+    /**
+     * This method is called to pass on failing hosts.
+     * If the host is first either in the failingHosts array, we
+     * rotate the array to ensure the next API call will be directly made with a working
+     * host. This mainly ensures we don't add the equivalent of the connection timeout value to each
+     * request to the API.
+     */
+    public function rotateHosts()
+    {
+        $failingHosts = $this->failingHostsCache->getFailingHosts();
+        $i = 0;
+        while ($i <= count($this->readHostsArray) && in_array($this->readHostsArray[0], $failingHosts)) {
+            $i++;
+            $this->readHostsArray[] = array_shift($this->readHostsArray);
+        }
+
+        $i = 0;
+        while ($i <= count($this->writeHostsArray) && in_array($this->writeHostsArray[0], $failingHosts)) {
+            $i++;
+            $this->writeHostsArray[] = array_shift($this->writeHostsArray);
+        }
     }
 }

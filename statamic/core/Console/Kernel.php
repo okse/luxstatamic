@@ -3,6 +3,7 @@
 namespace Statamic\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
+use Statamic\Extend\Management\AddonRepository;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
@@ -42,12 +43,22 @@ class Kernel extends ConsoleKernel
        'Statamic\Console\Commands\Generators\UserMakeCommand',
        'Statamic\Console\Commands\Generators\FieldsetMakeCommand',
        'Statamic\Console\Commands\Generators\AssetContainerMakeCommand',
+       'Statamic\Console\Commands\Generators\SiteHelpers\TagsMakeCommand',
+       'Statamic\Console\Commands\Generators\SiteHelpers\ModifiersMakeCommand',
+       'Statamic\Console\Commands\Generators\SiteHelpers\FiltersMakeCommand',
+       'Statamic\Console\Commands\Generators\SiteHelpers\ControllerMakeCommand',
        'Statamic\Console\Commands\RefreshAddonsCommand',
        'Statamic\Console\Commands\Config\ConfigSetCommand',
        'Statamic\Console\Commands\Convert\ConvertEmailLoginCommand',
        'Statamic\Console\Commands\SetCommand',
-       'Statamic\Console\Commands\UpdateAddonsCommand',
-       'Statamic\Console\Commands\UpdateHousekeepingCommand',
+       'Statamic\Console\Commands\Update\UpdateCommand',
+       'Statamic\Console\Commands\Update\UpdateAddonsCommand',
+       'Statamic\Console\Commands\Update\UpdateStatamicCommand',
+       'Statamic\Console\Commands\Update\UpdateHousekeepingCommand',
+       'Statamic\Console\Commands\Test\TestCommand',
+       'Statamic\Console\Commands\Test\TestSiteCommand',
+       'Statamic\Console\Commands\Test\TestAddonsCommand',
+       'Statamic\Console\Commands\Test\TestMakeCommand',
     ];
 
     /**
@@ -91,9 +102,7 @@ class Kernel extends ConsoleKernel
      */
     private function getCommands()
     {
-        $classes = addon_repo()->filter('Command.php')->getClasses();
-
-        foreach ($classes as $class) {
+        foreach ($this->repo()->commands()->classes() as $class) {
             $this->addon_commands[] = new $class;
         }
 
@@ -108,12 +117,15 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $tasks = addon_repo()->filter('Tasks.php')->getClasses();
-
         // In each addon's task class, we'll pass along the scheduler
         // instance and let the class define its own schedule.
-        foreach ($tasks as $class) {
+        foreach ($this->repo()->tasks()->classes() as $class) {
             (new $class)->schedule($schedule);
         }
+    }
+
+    private function repo()
+    {
+        return $this->app->make(AddonRepository::class);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Statamic\Testing;
 
-use Tests\Doubles\EventFake;
+use Statamic\Testing\Doubles\EventFake;
 
 class TestCase extends \Illuminate\Foundation\Testing\TestCase
 {

@@ -2,24 +2,25 @@
 
 namespace Statamic\Providers;
 
+use Statamic\API\File;
 use Statamic\API\Path;
 use Statamic\API\Folder;
 use Illuminate\Support\ServiceProvider;
-use Statamic\Repositories\AddonRepository;
 use Statamic\Extend\Management\AddonManager;
+use Statamic\Extend\Management\AddonRepository;
 use Statamic\Extend\Management\ComposerManager;
 
 class AddonServiceProvider extends ServiceProvider
 {
     /**
-     * @var Statamic\FileCollection
-     */
-    private $files;
-
-    /**
      * @var array
      */
     private $translated = [];
+
+    /**
+     * @var AddonRepository
+     */
+    private $repo;
 
     public function boot()
     {
@@ -31,18 +32,15 @@ class AddonServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->files = $this->findAddonFiles();
+        $this->repo = new AddonRepository($this->findAddonFiles());
 
-        $this->app->bind('Statamic\Repositories\AddonRepository', function () {
-            return $this->createRepo();
-        });
+        $this->app->instance(AddonRepository::class, $this->repo);
 
-        $this->app->singleton('Statamic\Contracts\Extend\Management\AddonManager', function() {
-            return new AddonManager(app('Statamic\Contracts\Extend\Management\ComposerManager'));
-        });
-
-        $this->app->bind('Statamic\Contracts\Extend\Management\ComposerManager', function() {
-            return new ComposerManager;
+        $this->app->singleton(AddonManager::class, function() {
+            return new AddonManager(
+                app(ComposerManager::class),
+                app(AddonRepository::class)
+            );
         });
 
         $this->app->singleton('Statamic\Extend\Contextual\Store');
@@ -52,7 +50,7 @@ class AddonServiceProvider extends ServiceProvider
 
     private function registerAddonServiceProviders()
     {
-        foreach ($this->getAddonProviders() as $provider) {
+        foreach ($this->repo->serviceProviders()->installed()->classes() as $provider) {
             $provider = $this->app->resolveProviderClass($provider);
 
             if (! empty($provider->providers)) {
@@ -67,11 +65,6 @@ class AddonServiceProvider extends ServiceProvider
         }
     }
 
-    private function createRepo()
-    {
-        return new AddonRepository($this->files);
-    }
-
     private function findAddonFiles()
     {
         $files = [];
@@ -80,20 +73,12 @@ class AddonServiceProvider extends ServiceProvider
             $files = array_merge($files, Folder::getFilesRecursively($path));
         }
 
-        return collect_files($files);
-    }
-
-    /**
-     * Get the addon defined service providers
-     */
-    private function getAddonProviders()
-    {
-        return $this->createRepo()->filter('ServiceProvider.php')->getClasses();
+        return collect_files($files)->removeHidden();
     }
 
     private function loadTranslations()
     {
-        $files = addon_repo()->getFiles()->filter(function ($path) {
+        $files = $this->repo->files()->filter(function ($path) {
             return preg_match('/resources\/lang/', $path);
         });
 

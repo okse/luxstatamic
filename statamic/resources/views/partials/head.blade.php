@@ -14,7 +14,8 @@
     	'cpRoot': '{!! $cp_root !!}',
     	'urlPath': '/{!! request()->path() !!}',
     	'resourceUrl': '{!! cp_resource_url('/') !!}',
-    	'locales': {!! json_encode(Statamic\API\Config::getLocales()) !!}
+    	'locales': {!! json_encode(Statamic\API\Config::getLocales()) !!},
+    	'flashSuccess': '{{ session('success') }}'
     };
 </script>
 

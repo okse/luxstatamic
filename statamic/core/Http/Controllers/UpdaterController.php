@@ -2,21 +2,27 @@
 
 namespace Statamic\Http\Controllers;
 
-use Statamic\API\Zip;
+use Exception;
 use GuzzleHttp\Client;
-use Statamic\API\File;
-use Statamic\API\Path;
-use Statamic\API\Addon;
-use Statamic\API\Cache;
-use Statamic\API\Event;
 use Statamic\API\Config;
-use Statamic\API\Folder;
-use Statamic\API\Stache;
-use Statamic\Events\SystemUpdated;
-use Statamic\Updater\Housekeeper;
+use Illuminate\Http\Request;
+use Statamic\Updater\Updater;
+use Statamic\Updater\ZipDownloadedException;
 
 class UpdaterController extends CpController
 {
+    /**
+     * @var Updater
+     */
+    private $updater;
+
+    public function __construct(Updater $updater)
+    {
+        parent::__construct(request());
+
+        $this->updater = $updater;
+    }
+
     /**
      * Show the available updates and changelogs
      *
@@ -65,82 +71,45 @@ class UpdaterController extends CpController
     {
         $this->authorize('updater:update');
 
-        $zip_path = Path::makeRelative(temp_path('backup/statamic-' . STATAMIC_VERSION . '-' . time() . '.zip'));
-
-        try {
-            Folder::make(temp_path('backup'));
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't create the backup folder.");
-        }
-
-        try {
-            $zip = Zip::make($zip_path);
-
-            foreach (Folder::getFilesRecursively(statamic_path()) as $path) {
-                $zip->put($path, File::get($path));
-            }
-
-            Zip::write($zip);
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't create the backup zip.", $e);
-        }
-
-        return $this->okay("Backup created and saved to <code>$zip_path</code>");
+        $this->updater->backup();
     }
 
     /**
      * Download Statamic
      *
+     * @param Request $request
      * @return array|\Illuminate\Http\JsonResponse
      */
-    public function download()
+    public function download(Request $request)
     {
         $this->authorize('updater:update');
 
-        $version = $this->request->input('version');
-
-        $zip_path = Path::makeRelative(temp_path('updates/statamic-'.$version.'.zip'));
-
-        $client = new Client();
-
-        if (File::exists($zip_path)) {
-            return $this->okay("Download skipped. Using previously downloaded zip detected at <code>$zip_path</code>.");
-        }
-
         try {
-            $response = $client->get('https://outpost.statamic.com/v2/get/' . $version);
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't get the latest release of Statamic from the server.");
+            $this->updater->setVersion($request->version)->download();
+        } catch (ZipDownloadedException $e) {
+            return $this->okay(sprintf(
+                'Download skipped. Using previously downloaded zip detected at <code>%s</code>.',
+                $e->getZipPath()
+            ));
+        } catch (Exception $e) {
+            return $this->fail($e->getMessage(), $e);
         }
-
-        try {
-            File::put($zip_path, $response->getBody());
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't write the new Statamic zip to file.");
-        }
-
-        return $this->okay("Statamic has been downloaded to <code>$zip_path</code>.");
     }
 
     /**
      * Unzip the Statamic download
      *
+     * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function unzip()
+    public function unzip(Request $request)
     {
         $this->authorize('updater:update');
 
-        $version = $this->request->input('version');
-
         try {
-            $zip = Path::makeRelative(temp_path('updates/statamic-'.$version.'.zip'));
-
-            $target = temp_path('update-unzipped');
-
-            Zip::extract($zip, $target);
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't extract contents of the the zip.", $e);
+            $this->updater->setVersion($request->version)->extract();
+        } catch (Exception $e) {
+            return $this->fail($e->getMessage(), $e);
         }
     }
 
@@ -154,23 +123,9 @@ class UpdaterController extends CpController
         $this->authorize('updater:update');
 
         try {
-            $temp_addons_path = temp_path('update-unzipped/statamic/site/addons/');
-
-            Folder::delete($temp_addons_path);
-
-            Folder::copy(addons_path(), $temp_addons_path);
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't copy addons folder.", $e);
-        }
-
-        try {
-            $manager = Addon::manager();
-
-            $manager->composer()->path(temp_path('update-unzipped/statamic/statamic/composer.json'));
-
-            $manager->updateDependencies();
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't install dependencies.", $e);
+            $this->updater->updateDependencies();
+        } catch (Exception $e) {
+            return $this->fail($e->getMessage(), $e->getPrevious());
         }
     }
 
@@ -183,35 +138,11 @@ class UpdaterController extends CpController
     {
         $this->authorize('updater:update');
 
-        $new_statamic = temp_path('update-unzipped/statamic/statamic');
-
-        // Out with the old...
         try {
-            foreach (Folder::getFolders(statamic_path()) as $folder) {
-                Folder::delete($folder);
-            }
-            foreach (Folder::getFiles(statamic_path()) as $file) {
-                File::delete($file);
-            }
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't delete the statamic folder.", $e);
+            $this->updater->swapFiles();
+        } catch (Exception $e) {
+            return $this->fail($e->getMessage(), $e);
         }
-
-        // In with the new.
-        try {
-            Folder::copy($new_statamic, statamic_path());
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't copy the new statamic folder.", $e);
-        }
-
-        // Clear the cache
-        try {
-            Cache::clear();
-        } catch (\Exception $e) {
-            return $this->fail("Couldn't clear the cache.", $e);
-        }
-
-        return $this->okay("Statamic folder swapped.");
     }
 
     /**
@@ -222,40 +153,16 @@ class UpdaterController extends CpController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function cleanUp()
+    public function cleanUp(Request $request)
     {
-        // Keep track of errors. These are not showstoppers.
-        $errors = [];
-
-        // Get rid of the extracted zip
         try {
-            Folder::delete(temp_path('update-unzipped'));
-        } catch (\Exception $e) {
-            $errors[] = ['message' => "Couldn't delete the unzipped contents.", 'e' => $e];
+            $this->updater
+                 ->setVersion($request->version)
+                 ->setPreviousVersion($request->oldVersion)
+                 ->cleanUp();
+        } catch (Exception $e) {
+            return $this->fail($e->getMessage(), $e);
         }
-
-        // Get rid of the zip itself
-        // try {
-        //     $zip_path = Path::makeRelative(temp_path('updates/statamic-'.$version.'.zip'));
-        //     File::delete($zip_path);
-        // } catch (\Exception $e) {
-        //     $errors[] = ['message' => "Couldn't delete the zip.", 'e' => $e]);
-        // }
-
-        try {
-            (new Housekeeper)->clean(
-                $this->request->input('version'),
-                $this->request->input('oldVersion', '2.0.0')
-            );
-        } catch (\Exception $e) {
-            $errors[] = ['message' => "There was a problem while running the system.updated event.", 'e' => $e];
-        }
-
-        if (! empty($errors)) {
-            return $this->fail($errors);
-        }
-
-        return $this->okay("Clean up successful.");
     }
 
     /**
@@ -273,7 +180,7 @@ class UpdaterController extends CpController
      * Generate a failure response
      *
      * @param string|array    $error  Either a message, or an array of messages and exceptions.
-     * @param \Exception|null $e      An exception when passing a single error message.
+     * @param Exception|null $e      An exception when passing a single error message.
      * @return \Illuminate\Http\JsonResponse
      */
     private function fail($data, $e = null)
@@ -288,7 +195,7 @@ class UpdaterController extends CpController
 
         foreach ($data as $error) {
             $message = $error['message'];
-            $e = ($error['e'] instanceof \Exception) ? $error['e']->getMessage() : null;
+            $e = ($error['e'] instanceof Exception) ? $error['e']->getMessage() : null;
 
             $errors[] = compact('message', 'e');
         }

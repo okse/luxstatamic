@@ -6,8 +6,6 @@ use Statamic\Extend\Fieldtype;
 
 class ArrFieldtype extends Fieldtype
 {
-    protected $snake_name = 'array';
-
     public function blank()
     {
         return [];

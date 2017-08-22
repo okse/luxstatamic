@@ -65,6 +65,10 @@ export default {
             this.$emit('asset-deleting', id);
         },
 
+        assetDoubleclicked(id) {
+            this.$emit('asset-doubleclicked');
+        },
+
         /**
          * Trigger editing of this folder.
          */

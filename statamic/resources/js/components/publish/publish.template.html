@@ -45,14 +45,18 @@
             </div>
 
             <div class="btn-group" v-if="!editingLayout">
-                <button type="button" class="btn btn-primary" v-on:click="publish" :disabled="saving">{{ translate('cp.save') }}</button>
+                
+                <button v-if="! continuing" type="button" class="btn btn-primary" @click="publish" :disabled="saving">{{ translate('cp.save') }}</button>
+                <button v-else type="button" class="btn btn-primary" @click="publishAndContinue" :disabled="saving">{{ translate('cp.save_and_continue') }}</button>
+                
                 <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" :disabled="saving">
                     <span class="caret"></span>
                     <span class="sr-only">{{ translate('cp.toggle_dropdown') }}</span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li><a href="" id="publish-continue" @click.prevent="publishAndContinue">{{ translate('cp.save_and_continue') }}</a></li>
-                    <li v-if="canEditLayout"><a href="" @click.prevent="editLayout(true)">{{ translate('cp.edit_layout') }}</a></li>
+                    <li v-if="! continuing"><a id="publish-continue" @click="publishAndContinue">{{ translate('cp.save_and_continue') }}</a></li>
+                    <li v-else><a @click="publish">{{ translate('cp.save') }}</a></li>
+                    <li v-if="canEditLayout"><a @click="editLayout(true)">{{ translate('cp.edit_layout') }}</a></li>
                 </ul>
             </div>
         </div>

@@ -400,4 +400,15 @@ abstract class Content extends Data implements ContentContract
     {
         return true;
     }
+
+    public function toSearchableArray($fields)
+    {
+        $array = [];
+
+        foreach ($fields as $field) {
+            $array[$field] = method_exists($this, $field) ? $this->$field() : $this->get($field);
+        }
+
+        return $array;
+    }
 }

@@ -15,13 +15,19 @@ abstract class AbstractProtector implements Protector
     protected $url;
 
     /**
+     * @var bool
+     */
+    protected $siteWide;
+
+    /**
      * @param string $url
      * @param array  $scheme
      */
-    public function __construct($url, array $scheme)
+    public function __construct($url, array $scheme, $siteWide = false)
     {
         $this->scheme = $scheme;
         $this->url = $url;
+        $this->siteWide = $siteWide;
     }
 
     /**

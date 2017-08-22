@@ -207,27 +207,11 @@ function carbon($value)
 }
 
 /**
- * @return \Statamic\Repositories\AddonRepository
- */
-function addon_repo()
-{
-    return app('Statamic\Repositories\AddonRepository');
-}
-
-/**
  * @return \Statamic\DataStore
  */
 function datastore()
 {
     return app('Statamic\DataStore');
-}
-
-/**
- * @return \Statamic\Extend\Management\Loader
- */
-function resource_loader()
-{
-    return app('Statamic\Extend\Management\Loader');
 }
 
 /**
@@ -325,24 +309,6 @@ function addon($addon)
 function nav()
 {
     return app('Statamic\CP\Navigation\Nav');
-}
-
-/**
- * Instantiate a custom collection filter instance
- *
- * @param string                        $plugin_name
- * @param \Statamic\Data\DataCollection $collection
- * @param array                         $context
- * @param array                         $params
- * @return \Statamic\Extend\FilterInterface
- */
-function collection_filter($plugin_name, DataCollection $collection, $context = [], $params = [])
-{
-    $class = Str::studly($plugin_name);
-
-    $class = "Statamic\\Addons\\{$class}\\{$class}Filter";
-
-    return new $class($collection, $context, $params);
 }
 
 /**
@@ -589,7 +555,7 @@ function refreshing_addons()
  */
 function cp_middleware()
 {
-    return ['locale', 'outpost'];
+    return ['cp-enabled', 'enforce-default-cp-locale', 'set-cp-locale', 'outpost'];
 }
 
 /**
@@ -653,5 +619,20 @@ if (! function_exists('array_filter_use_both')) {
         }
 
         return $items;
+    }
+}
+
+if (! function_exists('tap')) {
+    /**
+     * Call the given Closure with the given value then return the value.
+     *
+     * @param  mixed  $value
+     * @param  callable  $callback
+     * @return mixed
+     */
+    function tap($value, $callback)
+    {
+        $callback($value);
+        return $value;
     }
 }

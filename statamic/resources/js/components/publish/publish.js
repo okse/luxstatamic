@@ -62,7 +62,8 @@ module.exports = {
             isSlugModified: false,
             iframeLoading: false,
             previewRequestQueued: false,
-            errors: []
+            errors: [],
+            continuing: false
         };
     },
 
@@ -214,7 +215,16 @@ module.exports = {
 
                 if (data.success) {
                     this.$dispatch('changesMade', false);
-                    window.location = data.redirect;
+                    if (! this.formData.continue || this.isNew) {
+                        localStorage.setItem('continuing', false)
+                        window.location = data.redirect;
+                        return;
+                    }
+                    this.continuing = true;
+                    this.formData.continue = null;
+                    this.saving = false;
+                    this.title = this.formData.fields.title;
+                    this.$dispatch('setFlashSuccess', data.message, 1000);
                 } else {
                     this.saving = false;
                     this.errors = data.errors;
@@ -228,7 +238,9 @@ module.exports = {
         },
 
         publishAndContinue: function() {
+            this.continuing = true;
             this.formData.continue = true;
+
             this.publish();
         },
 

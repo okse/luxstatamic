@@ -6,9 +6,8 @@ use Statamic\API\File;
 use Statamic\API\Str;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Process\Exception\ProcessFailedException;
-use Statamic\Contracts\Extend\Management\ComposerManager as ManagerContract;
 
-class ComposerManager implements ManagerContract
+class ComposerManager
 {
     /**
      * Path to the composer.json file

@@ -142,10 +142,5 @@ class DataServiceProvider extends ServiceProvider
             \Statamic\Contracts\Forms\Submission::class,
             \Statamic\Forms\Submission::class
         );
-
-        $this->app->bind(
-            \Statamic\Contracts\Search\Search::class,
-            \Statamic\Search\Search::class
-        );
     }
 }

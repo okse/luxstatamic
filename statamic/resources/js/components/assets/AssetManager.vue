@@ -10,7 +10,7 @@
             @selections-updated="updateSelections">
 
             <template slot="contextual-actions" v-if="selectedAssets.length">
-                <div class="btn-group">
+                <div class="btn-group action">
                     <button class="btn action" @click="selectedAssets = []">{{ translate('cp.uncheck_all') }}</button>
                     <button class="btn action" @click="openAssetMover">{{ translate('cp.move') }}</button>
                 </div>

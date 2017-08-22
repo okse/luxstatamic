@@ -20,7 +20,7 @@
 			</div>
 
 			<component v-else
-						:is="field.type + '-fieldtype'"
+						:is="componentName(field)"
 						:name="field.name"
 						:data.sync="fieldData[field.name]"
 						:config="fields[$index]"

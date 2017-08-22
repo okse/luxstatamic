@@ -114,7 +114,7 @@
                 <a v-if="updated" href="{{ route('dashboard') }}" class="btn btn-lg">{{ t('return_to_dashboard') }}</a>
 
                 <audio v-el:audio>
-                    <source src="{{ cp_resource_url('audio/1up.mp3') }}" type="audio/mp3">
+                    <source src="{{ cp_resource_url('audio/powerup.mp3') }}" type="audio/mp3">
                 </audio>
 
         </div>

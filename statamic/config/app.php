@@ -157,7 +157,9 @@ return [
         'Statamic\Providers\EmailServiceProvider',
         'Statamic\Providers\TranslationServiceProvider',
         'Statamic\Providers\ValidationServiceProvider',
+        'Statamic\Providers\SearchServiceProvider',
         'Statamic\StaticCaching\ServiceProvider',
+        'Wilderborn\Partyline\ServiceProvider',
         'Collective\Html\HtmlServiceProvider',
         'SocialiteProviders\Manager\ServiceProvider',
 
@@ -217,7 +219,8 @@ return [
         'Form'      => Collective\Html\FormFacade::class,
         'Html'      => Collective\Html\HtmlFacade::class,
         'Socialite' => Laravel\Socialite\Facades\Socialite::class,
-        'Please'    => 'Statamic\Console\Please'
+        'Please'    => 'Statamic\Console\Please',
+        'Partyline' => \Wilderborn\Partyline\Facade::class,
     ],
 
 ];

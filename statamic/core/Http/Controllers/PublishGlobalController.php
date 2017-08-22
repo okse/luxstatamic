@@ -70,4 +70,17 @@ class PublishGlobalController extends PublishController
             'slug' => $global->slug(),
         ]);
     }
+
+    /**
+     * Whether the user is authorized to publish the object.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    protected function canPublish(Request $request)
+    {
+        $slug = $request->input('extra.default_slug');
+
+        return $request->user()->can("globals:$slug:edit");
+    }
 }

@@ -9,7 +9,13 @@
                 :selected-assets="browserSelections"
                 :restrict-navigation="restrictNavigation"
                 :max-files="maxFiles"
-                @selections-updated="selectionsUpdated">
+                @selections-updated="selectionsUpdated"
+                @asset-doubleclicked="select">
+
+                <template slot="contextual-actions" v-if="browserSelections.length">
+                    <button class="btn action" @click="browserSelections = []">{{ translate('cp.uncheck_all') }}</button>
+                </template>
+
             </asset-browser>
 
             <div class="modal-footer">

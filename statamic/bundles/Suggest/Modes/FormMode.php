@@ -10,7 +10,7 @@ class FormMode extends AbstractMode
     {
         $suggestions = [];
 
-        foreach (Form::all() as $form) {
+        foreach (Form::getAllFormsets() as $form) {
             $suggestions[] = [
                 'value' => $form['name'],
                 'text'  => $form['title']

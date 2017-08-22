@@ -31,6 +31,13 @@ class NavTags extends Tags
 
         $tree->sort($this->get('sort'));
 
+        // Convert taxonomy fields to actual taxonomy terms.
+        // This will allow taxonomy term data to be available in the template without additional tags.
+        // If terms are not needed, there's a slight performance benefit in disabling this.
+        if ($this->getBool('supplement_taxonomies', true)) {
+            $tree->supplementTaxonomies();
+        }
+
         return $this->parseLoop($tree->toArray());
     }
 
@@ -46,6 +53,24 @@ class NavTags extends Tags
         $tree = $this->factory->create();
 
         if ($tree->isEmpty()) {
+            return null;
+        }
+
+        return $this->parse([]);
+    }
+
+    /**
+     * The {{ nav:doesnt_exist }} tag
+     *
+     * @return  string|null
+     */
+    public function doesntExist()
+    {
+        $this->factory = new TreeFactory($this->getParams());
+
+        $tree = $this->factory->create();
+
+        if (! $tree->isEmpty()) {
             return null;
         }
 

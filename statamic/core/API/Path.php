@@ -78,7 +78,12 @@ class Path
      */
     public static function resolve($path)
     {
-        return Util::normalizeRelativePath(self::tidy($path));
+        $leadingSlash = Str::startsWith($path, '/');
+
+        $path = Util::normalizeRelativePath(self::tidy($path));
+
+        // Flysystem's method removes the leading slashes. We want to maintain them.
+        return $leadingSlash ? Str::ensureLeft($path, '/') : $path;
     }
 
     /**

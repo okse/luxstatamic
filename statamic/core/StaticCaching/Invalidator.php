@@ -56,7 +56,7 @@ class Invalidator
         }
 
         // Get the invalidation rule scheme
-        $this->rules = Config::get('caching.static_caching_invalidation');
+        $this->rules = $this->cacher->config('invalidation');
 
         // If we've opted to clear all items, we'll just flush it all and call it a day.
         if ($this->rules === 'all') {

@@ -44,7 +44,7 @@ abstract class DataCollection extends IlluminateCollection
 
         $arr = $this->all();
 
-        usort($arr, function ($a, $b) use ($sorts) {
+        uasort($arr, function ($a, $b) use ($sorts) {
             foreach ($sorts as $sort) {
                 $bits = explode(':', $sort);
                 $sort_by = $bits[0];
@@ -77,8 +77,8 @@ abstract class DataCollection extends IlluminateCollection
     {
         $method = Str::camel($sort);
 
-        $one = (method_exists($a, $method)) ? call_user_func([$a, $method]) : $a->get($sort);
-        $two = (method_exists($b, $method)) ? call_user_func([$b, $method]) : $b->get($sort);
+        $one = (method_exists($a, $method)) ? call_user_func([$a, $method]) : $a->getWithDefaultLocale($sort);
+        $two = (method_exists($b, $method)) ? call_user_func([$b, $method]) : $b->getWithDefaultLocale($sort);
 
         return [$this->normalizeSortableValue($one), $this->normalizeSortableValue($two)];
     }

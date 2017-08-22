@@ -53,9 +53,12 @@ class Router
     public function getWildcardRoute($route, $url, $routeData)
     {
         // If this route doesn't have any wildcards at all, don't bother going any farther.
-        if (! $this->hasNamedWildcard($route)) {
+        if (! $this->hasWildcard($route)) {
             return null;
         }
+
+        // Convert unnamed wildcards from * to {wildcard_1} etc
+        $route = $this->nameUnnamedWildcards($route);
 
         // Get the wildcard matches from the route. If it isn't a match, we'll just return here.
         if (! $matches = $this->getRouteMatches($route, $url)) {
@@ -113,6 +116,17 @@ class Router
         }
 
         return $standardized;
+    }
+
+    /**
+     * Check if a given route schema contains any wildcards
+     *
+     * @param string $route
+     * @return bool
+     */
+    public function hasWildcard($route)
+    {
+        return $this->hasUnnamedWildcard($route) || $this->hasNamedWildcard($route);
     }
 
     /**

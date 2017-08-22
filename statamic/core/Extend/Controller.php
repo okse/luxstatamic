@@ -2,10 +2,9 @@
 
 namespace Statamic\Extend;
 
-use Statamic\API\Path;
-use Statamic\Http\Controllers\CpController;
+use Statamic\Http\Controllers\Controller as AbstractController;
 
-class Controller extends CpController
+class Controller extends AbstractController
 {
     /**
      * Provides access to addon helper methods
@@ -17,8 +16,7 @@ class Controller extends CpController
      */
     public function __construct()
     {
-        parent::__construct(app('request'));
-
+        $this->bootstrap();
         $this->init();
     }
 }

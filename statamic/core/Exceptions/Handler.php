@@ -76,10 +76,6 @@ class Handler extends ExceptionHandler
             return $this->appKeyResponse();
         }
 
-        if ($e instanceof UnlicensedException) {
-            return response()->view('errors.unlicensed');
-        }
-
         if ($e instanceof UnauthorizedHttpException) {
             if (! $request->header('referer')) {
                 return $this->renderHttpException($e);
@@ -109,7 +105,10 @@ class Handler extends ExceptionHandler
 
             $template = Str::removeLeft(Path::assemble(Config::get('theming.error_template_folder'), '404'), '/');
 
-            return response(app('Statamic\Http\View')->render([], $template), 404);
+            return response(
+                app('Statamic\Http\View')->render(new ExceptionRoute($request->getPathInfo(), []), $template),
+                404
+            );
         }
 
         // Change the exception into an HttpException so we can display a custom view, if desired.

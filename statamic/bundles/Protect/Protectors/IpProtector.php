@@ -11,8 +11,7 @@ class IpProtector extends AbstractProtector
      */
     public function providesProtection()
     {
-        return array_key_exists('ip_address', $this->scheme)
-               && !empty(array_get($this->scheme, 'ip_address.allowed', []));
+        return ! empty($this->getAllowedIps());
     }
 
     /**
@@ -29,6 +28,6 @@ class IpProtector extends AbstractProtector
 
     protected function getAllowedIps()
     {
-        return array_get($this->scheme, 'ip_address.allowed');
+        return array_get($this->scheme, 'allowed', []);
     }
 }

@@ -13,7 +13,9 @@ class Taxonomy
      */
     public static function all()
     {
-        return app(TaxonomiesService::class)->all();
+        return app(TaxonomiesService::class)->all()->sortBy(function ($taxonomy) {
+            return $taxonomy->title();
+        });
     }
 
     /**

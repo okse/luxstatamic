@@ -19,7 +19,7 @@ trait HasParameters
      * @param null         $default
      * @return mixed
      */
-    protected function get($keys, $default = null)
+    public function get($keys, $default = null)
     {
         return Helper::pick(
             $this->getParam($keys),
@@ -35,7 +35,7 @@ trait HasParameters
      * @param false         $default
      * @return bool
      */
-    protected function getBool($keys, $default = false)
+    public function getBool($keys, $default = false)
     {
         return bool($this->get($keys, $default));
     }
@@ -47,7 +47,7 @@ trait HasParameters
      * @param null         $default
      * @return float
      */
-    protected function getFloat($keys, $default = null)
+    public function getFloat($keys, $default = null)
     {
         return (float) $this->get($keys, $default);
     }
@@ -59,7 +59,7 @@ trait HasParameters
      * @param null         $default
      * @return int
      */
-    protected function getInt($keys, $default = null)
+    public function getInt($keys, $default = null)
     {
         return int($this->get($keys, $default));
     }
@@ -71,7 +71,7 @@ trait HasParameters
      * @param mixed $default  Default value to return if not set
      * @return mixed
      */
-    protected function getParam($keys, $default = null)
+    public function getParam($keys, $default = null)
     {
         if (! is_array($keys)) {
             $keys = [$keys];
@@ -93,7 +93,7 @@ trait HasParameters
      * @param null         $default
      * @return bool
      */
-    protected function getParamBool($keys, $default = null)
+    public function getParamBool($keys, $default = null)
     {
         return bool($this->getParam($keys, $default));
     }
@@ -105,7 +105,7 @@ trait HasParameters
      * @param null         $default
      * @return int
      */
-    protected function getParamInt($keys, $default = null)
+    public function getParamInt($keys, $default = null)
     {
         return int($this->getParam($keys, $default));
     }
@@ -117,7 +117,7 @@ trait HasParameters
      * @param null         $default
      * @return int
      */
-    protected function getList($keys, $default = null)
+    public function getList($keys, $default = null)
     {
         $keys = $this->getParam($keys, $default);
 

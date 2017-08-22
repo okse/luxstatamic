@@ -43,14 +43,15 @@ class Fieldtype implements FieldtypeInterface
 
     /**
      * Create a new fieldtype instance
-     *
-     * @param array $config Field configuration
      */
-    public function __construct($config)
+    public function __construct()
     {
         $this->bootstrap();
         $this->init();
+    }
 
+    public function setFieldConfig($config)
+    {
         $this->field_config = $config;
     }
 
@@ -80,42 +81,32 @@ class Fieldtype implements FieldtypeInterface
         return array_get($this->field_config, 'name');
     }
 
-    public function snakeName()
+    public function getHandle()
     {
-        return $this->snake_name ?: Str::snake($this->getAddonClassName());
+        $name = $this->snake_name ?: Str::snake($this->getFieldtypeName());
+
+        if (! $this->isPrimaryFieldtype()) {
+            $name = Str::snake($this->getAddonName()) . '.' . $name;
+        }
+
+        return $name;
     }
 
     /**
-     * Returns the field's HTML input name
+     * Get the "display" name of the fieldtype.
+     *
+     * This will be used in things like a dropdown of all fieldtypes.
      *
      * @return string
      */
-    public function getInputName()
+    public function getFieldtypeName()
     {
-        return 'fields[' . $this->getName() . ']';
+        return ($this->isPrimaryFieldtype()) ? $this->getAddonName() : $this->getClassNameWithoutSuffix();
     }
 
-    /**
-     * Get the field's data
-     *
-     * @param mixed $default
-     * @return mixed
-     */
-    public function getData($default = null)
+    public function isPrimaryFieldtype()
     {
-        $data = $this->field_data ?: $default;
-
-        return $this->preProcess($data);
-    }
-
-    /**
-     * Set the field's data
-     *
-     * @param mixed $data
-     */
-    public function setData($data)
-    {
-        $this->field_data = $data;
+        return $this->getAddonClassName() === $this->getClassNameWithoutSuffix();
     }
 
     /**
@@ -125,7 +116,7 @@ class Fieldtype implements FieldtypeInterface
      * @param null         $default
      * @return mixed
      */
-    protected function get($keys, $default = null)
+    public function get($keys, $default = null)
     {
         return Helper::pick(
             $this->getParam($keys, $default),
@@ -140,7 +131,7 @@ class Fieldtype implements FieldtypeInterface
      * @param mixed $default  Default value to return if not set
      * @return mixed
      */
-    protected function getParam($keys, $default = null)
+    public function getParam($keys, $default = null)
     {
         if (! is_array($keys)) {
             $keys = [$keys];
@@ -162,7 +153,7 @@ class Fieldtype implements FieldtypeInterface
      * @param null         $default
      * @return bool
      */
-    protected function getParamBool($keys, $default = null)
+    public function getParamBool($keys, $default = null)
     {
         return bool($this->getParam($keys, $default));
     }
@@ -174,7 +165,7 @@ class Fieldtype implements FieldtypeInterface
      * @param null         $default
      * @return int
      */
-    protected function getParamInt($keys, $default = null)
+    public function getParamInt($keys, $default = null)
     {
         return int($this->getParam($keys, $default));
     }

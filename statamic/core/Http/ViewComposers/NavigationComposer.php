@@ -14,6 +14,8 @@ class NavigationComposer
 
         event('cp.nav.created', $nav);
 
+        $nav->trim();
+
         $view->with('nav', $nav);
     }
 }

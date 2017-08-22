@@ -1,6 +1,6 @@
 <template>
 
-    <tr @click="toggle" @dblclick="editAsset" :class="{ 'selected': isSelected }">
+    <tr @click="toggle" @dblclick="doubleClicked" :class="{ 'selected': isSelected }">
 
         <td class="thumbnail-col" @dragstart="assetDragStart">
             <div v-if="canShowSvg"

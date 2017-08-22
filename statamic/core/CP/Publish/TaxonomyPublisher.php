@@ -19,7 +19,7 @@ class TaxonomyPublisher extends Publisher
 
     public function publish()
     {
-        $this->group = $this->request->input('extra.group');
+        $this->group = $this->request->input('extra.taxonomy');
 
         return parent::publish();
     }

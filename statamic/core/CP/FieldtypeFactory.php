@@ -4,12 +4,23 @@ namespace Statamic\CP;
 
 use Statamic\Exceptions\FatalException;
 use Statamic\Exceptions\ResourceNotFoundException;
+use Statamic\Extend\Management\FieldtypeLoader;
 
 /**
  * Creates a Fieldtype instance
  */
 class FieldtypeFactory
 {
+    /**
+     * @var FieldtypeLoader
+     */
+    private $loader;
+
+    public function __construct(FieldtypeLoader $loader)
+    {
+        $this->loader = $loader;
+    }
+
     /**
      * Create a new fieldtype
      *
@@ -20,12 +31,14 @@ class FieldtypeFactory
      */
     public static function create($type, array $config = [])
     {
+        $instance = app(static::class);
+
         try {
-            $fieldtype = resource_loader()->loadFieldtype($type, $config);
+            $fieldtype = $instance->loader->load($type, $config);
         } catch (ResourceNotFoundException $e) {
             $message = "Fieldtype [$type] does not exist.";
 
-            if ($suggestion = self::getSuggestion($type)) {
+            if ($suggestion = $instance->getSuggestion($type)) {
                 $message .= " Try [$suggestion].";
             }
 
@@ -41,7 +54,7 @@ class FieldtypeFactory
      * @param  string $type
      * @return null|string
      */
-    private static function getSuggestion($type)
+    private function getSuggestion($type)
     {
         switch ($type) {
             case 'file':

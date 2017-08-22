@@ -13,6 +13,6 @@ class DummyAddonWidget extends Widget
      */
     public function html()
     {
-        // $this->view('widget');
+        // return $this->view('widget');
     }
 }

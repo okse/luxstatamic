@@ -13,7 +13,9 @@ class Collection
      */
     public static function all()
     {
-        return app(CollectionsService::class)->all();
+        return app(CollectionsService::class)->all()->sortBy(function ($collection) {
+            return $collection->title();
+        });
     }
 
     /**

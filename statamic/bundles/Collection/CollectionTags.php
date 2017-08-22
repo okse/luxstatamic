@@ -10,9 +10,11 @@ use Statamic\API\Str;
 use Statamic\API\Helper;
 use Statamic\API\Request;
 use Statamic\Extend\Tags;
+use Statamic\Extend\Management\FilterLoader;
 use Statamic\Data\Content\ContentCollection;
 use Statamic\Presenters\PaginationPresenter;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Statamic\SiteHelpers\Filters as SiteHelperFilters;
 
 class CollectionTags extends Tags
 {
@@ -144,9 +146,9 @@ class CollectionTags extends Tags
     {
         // If a boolean taxonomy parameter has been provided, retrieve the collection
         // associated with the URI. Otherwise, get it from any taxonomy parameters.
-        if ($this->get('taxonomy') === 'false') {
+        if ($this->get('taxonomy') === false) {
             return false;
-        } elseif ($this->get('taxonomy') === 'true') {
+        } elseif ($this->get('taxonomy') === true) {
             $taxonomyCollection = $this->getTaxonomyCollectionFromUri();
         } else {
             $taxonomyCollection = $this->getTaxonomyCollectionFromParams($collection);
@@ -399,7 +401,7 @@ class CollectionTags extends Tags
     private function sort()
     {
         if ($sort = $this->getSortOrder()) {
-            $this->collection = $this->collection->multisort($sort);
+            $this->collection = $this->collection->multisort($sort)->values();
         }
     }
 
@@ -456,7 +458,7 @@ class CollectionTags extends Tags
         ];
     }
 
-    private function limit()
+    protected function limit()
     {
         $limit = $this->getInt('limit');
         $this->limit = ($limit == 0) ? $this->collection->count() : $limit;
@@ -498,7 +500,7 @@ class CollectionTags extends Tags
 
         $paginator = new LengthAwarePaginator($items, $count, $this->limit, $page);
 
-        $paginator->setPath(URL::getCurrent());
+        $paginator->setPath(request()->url());
         $paginator->appends(Request::all());
 
         $this->pagination_data = [
@@ -519,7 +521,7 @@ class CollectionTags extends Tags
     {
         if ($filter = $this->get('filter')) {
             // If a "filter" parameter has been specified, we want to use a custom filter class.
-            $this->collection = collection_filter($filter, $this->collection, $this->context, $this->parameters)->filter();
+            $this->collection = $this->customFilter($filter);
         }
 
         // Filter by condition parameters
@@ -530,6 +532,22 @@ class CollectionTags extends Tags
         if (! empty($conditions)) {
             $this->collection = $this->collection->conditions($conditions);
         }
+    }
+
+    private function customFilter($filter)
+    {
+        $class = app(FilterLoader::class)->load($filter, [
+            'collection' => $this->collection,
+            'context' => $this->context,
+            'parameters' => $this->parameters,
+        ]);
+
+        if ($class instanceof SiteHelperFilters) {
+            $method = Str::studly($filter);
+            return $class->$method($this->collection);
+        }
+
+        return $class->filter($this->collection);
     }
 
     private function groupByDate()
@@ -598,7 +616,11 @@ class CollectionTags extends Tags
         if (! $this->collection) {
             $collection = $this->get(['collection', 'in']);
 
-            $this->collection = Entry::whereCollection($collection);
+            $this->collection = Entry::whereCollection($collection)->values();
+        }
+
+        if ($this->getBool('supplement_taxonomies', true)) {
+            $this->collection = $this->collection->supplementTaxonomies();
         }
 
         $this->filter(false);

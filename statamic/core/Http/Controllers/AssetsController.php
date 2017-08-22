@@ -13,6 +13,7 @@ use Statamic\API\Helper;
 use Statamic\API\Path;
 use Statamic\API\Stache;
 use Statamic\API\Str;
+use Illuminate\Http\Request;
 use Statamic\Assets\AssetCollection;
 use Statamic\Imaging\ImageGenerator;
 use Statamic\Imaging\ThumbnailUrlBuilder;
@@ -78,17 +79,7 @@ class AssetsController extends CpController
         $assets = $assets->slice($offset, $perPage);
         $paginator = new LengthAwarePaginator($assets, $totalAssetCount, $perPage, $currentPage);
 
-        foreach ($assets as &$asset) {
-            // Add thumbnails to all image assets.
-            if ($asset->isImage()) {
-                $asset->set('thumbnail', $this->thumbnail($asset, 'small'));
-                $asset->set('toenail', $this->thumbnail($asset, 'large'));
-            }
-
-            // Set some values for better listing formatting.
-            $asset->set('size_formatted', Str::fileSizeForHumans($asset->size(), 0));
-            $asset->set('last_modified_formatted', $asset->lastModified()->format(Config::get('cp.date_format')));
-        }
+        $assets = $this->supplementAssetsForDisplay($assets);
 
         // Get data about the subfolders in the requested asset folder.
         $folders = [];
@@ -115,6 +106,42 @@ class AssetsController extends CpController
                 'segments'      => array_get($paginator->render(new PaginationPresenter($paginator)), 'segments')
             ]
         ];
+    }
+
+    public function search(Request $request)
+    {
+        $term = $request->term;
+
+        $assets = ($request->restrictNavigation)
+            ? AssetContainer::find($request->container)->assetFolder($request->folder)->assets()
+            : Asset::all();
+
+        $assets = $assets->filterWithKey(function ($asset, $path) use ($term) {
+            return str_contains($path, $term);
+        });
+
+        $assets = $this->supplementAssetsForDisplay($assets);
+
+        return [
+            'assets' => $assets->toArray()
+        ];
+    }
+
+    private function supplementAssetsForDisplay($assets)
+    {
+        foreach ($assets as &$asset) {
+            // Add thumbnails to all image assets.
+            if ($asset->isImage()) {
+                $asset->set('thumbnail', $this->thumbnail($asset, 'small'));
+                $asset->set('toenail', $this->thumbnail($asset, 'large'));
+            }
+
+            // Set some values for better listing formatting.
+            $asset->set('size_formatted', Str::fileSizeForHumans($asset->size(), 0));
+            $asset->set('last_modified_formatted', $asset->lastModified()->format(Config::get('cp.date_format')));
+        }
+
+        return $assets;
     }
 
     /**

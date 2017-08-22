@@ -571,7 +571,7 @@ class Parser
                     if (is_null($callback)) {
                         // @todo what does this do?
                         $text = $this->createExtraction('__variables_not_callbacks', $text, $text, $text);
-                    } elseif (isset($cb_data[$name])) {
+                    } elseif (! empty($cb_data[$name])) {
                         // value not found in the data block, so we check the
                         // cumulative callback data block for a value and use that
                         $text = $this->extractLoopedTags($text, $cb_data, $callback);

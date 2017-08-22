@@ -112,6 +112,19 @@ class Config
     }
 
     /**
+     * Get the current locale's short code
+     *
+     * @param string|null $locale
+     * @return string
+     */
+    public static function getShortLocale($locale = null)
+    {
+        $full = str_replace('_', '-', self::getFullLocale($locale));
+
+        return explode('-', $full)[0];
+    }
+
+    /**
      * Get the current locale's name
      *
      * @param string|null $locale

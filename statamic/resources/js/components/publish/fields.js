@@ -53,6 +53,10 @@ module.exports = {
             });
         },
 
+        componentName: function (field) {
+            return field.type.replace('.', '-') + '-fieldtype';
+        },
+
         /**
          * Bootstrap Column Width class
          * Takes a percentage based integer and converts it to a bootstrap column number

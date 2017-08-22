@@ -1,21 +1,8 @@
 <div class="flashdance">
-	@if (!$is_trial && !$is_correct_domain)
+	@if ($license_issue)
 	<div class="alert alert-danger alert-dismissible" role="alert">
 		<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <p>{!! t('license_unauthorized', ['url' => 'https://account.statamic.com/licenses']) !!}</p>
-	</div>
-	@endif
-
-	@if ($is_unlicensed)
-	<div class="alert alert-danger alert-dismissible" role="alert">
-        <p>{!! t('license_missing', ['url' => route('settings', 'system')]) !!}</p>
-	</div>
-	@endif
-
-	@if (session('success'))
-	<div class="alert alert-success alert-dismissible" role="alert">
-	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	  {{ session('success') }}
+        <p>You are using unlicensed software. <a href="{{ route('licensing') }}">More details</a></p>
 	</div>
 	@endif
 
@@ -27,12 +14,12 @@
 	@endif
 
     <div class="alert alert-success alert-dismissible" role="alert" v-if="flashSuccess" v-cloak>
-	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <button type="button" class="close" aria-label="Close" @click="flashSuccess = null"><span aria-hidden="true">&times;</span></button>
 	  @{{ flashSuccess }}
 	</div>
 
     <div class="alert alert-danger alert-dismissible" role="alert" v-if="flashError" v-cloak>
-	  <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	  <button type="button" class="close" aria-label="Close" @click="flashError = null"><span aria-hidden="true">&times;</span></button>
 	  @{{ flashError }}
 	</div>
 

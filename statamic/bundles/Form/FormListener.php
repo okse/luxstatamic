@@ -33,7 +33,11 @@ class FormListener extends Listener
     {
         $fields = Request::all();
 
-        $params = Crypt::decrypt(Request::input('_params'));
+        if (! $params = Request::input('_params')) {
+            return response('Invalid request.', 400);
+        }
+
+        $params = Crypt::decrypt($params);
         unset($fields['_params']);
         $formset = array_get($params, 'formset');
 

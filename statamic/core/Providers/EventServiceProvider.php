@@ -3,6 +3,7 @@
 namespace Statamic\Providers;
 
 use Statamic\API\Helper;
+use Statamic\Extend\Management\AddonRepository;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
@@ -11,11 +12,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         \Statamic\Events\DataIdCreated::class => [
             \Statamic\Stache\Listeners\SaveCreatedId::class
-        ],
-        \Statamic\Events\SearchSettingsUpdated::class => [
-            \Statamic\Listeners\UpdateSearchIndex::class,
-            \Statamic\Listeners\FlushCache::class,
-        ],
+        ]
     ];
 
     protected $subscribe = [
@@ -39,11 +36,8 @@ class EventServiceProvider extends ServiceProvider
             return;
         }
 
-        // We only care about the listener classes
-        $listeners = app('Statamic\Repositories\AddonRepository')->filter('Listener.php')->getClasses();
-
         // Register all the events specified in each listener class
-        foreach ($listeners as $class) {
+        foreach ($this->app->make(AddonRepository::class)->listeners()->installed()->classes() as $class) {
             $listener = app($class);
 
             foreach ($listener->events as $event => $methods) {

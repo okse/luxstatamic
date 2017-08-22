@@ -131,4 +131,17 @@ class PublishPageController extends PublishController
     {
         return $request->query('locale', site_locale());
     }
+
+    /**
+     * Whether the user is authorized to publish the object.
+     *
+     * @param Request $request
+     * @return bool
+     */
+    protected function canPublish(Request $request)
+    {
+        return $request->user()->can(
+            $request->new ? 'pages:create' : 'pages:edit'
+        );
+    }
 }

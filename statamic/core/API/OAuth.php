@@ -11,7 +11,8 @@ class OAuth
      */
     public static function enabled()
     {
-        return class_exists('Statamic\Addons\OAuthBridge\OAuthBridgeServiceProvider');
+        return Addon::create('OAuthBridge')->isInstalled()
+            && class_exists('Statamic\Addons\OAuthBridge\OAuthBridgeServiceProvider');
     }
 
     /**

@@ -2,23 +2,27 @@
 
 namespace Statamic\API;
 
+use Statamic\Extend\Addon as AddonInstance;
+use Statamic\Extend\Management\AddonManager;
+
 class Addon
 {
     /**
-     * @return \Statamic\Contracts\Extend\Management\AddonManager
+     * @return AddonManager
      */
     public static function manager()
     {
-        return app('Statamic\Contracts\Extend\Management\AddonManager');
+        return app(AddonManager::class);
     }
 
     /**
-     * Update dependencies for all addons, one addon, or multiple addons.
+     * Create an addon instance.
      *
-     * @param string|array|null $packages
+     * @param string $name  The name of the addon. This will be converted to StudlyCase.
+     * @return AddonInstance
      */
-    public static function updateDependencies($packages = null)
+    public static function create($name)
     {
-        self::manager()->updateDependencies($packages);
+        return new AddonInstance($name);
     }
 }
