@@ -10,16 +10,16 @@
         </td>
 
         <td>
-            <a href="" @click.prevent="selectFolder(folder.path)">
+            <a @click="selectFolder(folder.path)">
                 {{ folder.title }}
             </a>
         </td>
 
-        <td colspan="2"></td>
+        <td colspan="2" class="extra-col"></td>
 
         <td class="column-actions">
 
-            <div class="btn-group" :class="{ open: showActionsDropdown }">
+            <div class="btn-group action-more" :class="{ open: showActionsDropdown }">
 
                 <button type="button" class="btn-more dropdown-toggle"
                         aria-haspopup="true" aria-expanded="false"

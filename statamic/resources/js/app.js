@@ -1,30 +1,10 @@
-var $ = require('jquery');
-var Mousetrap = require('mousetrap');
-
-Vue.config.debug = false;
-Vue.config.silent = true;
-
-require('./plugins');
-require('./filters');
-require('./mixins');
-require('./components');
-require('./fieldtypes');
-require('./directives');
-
-Vue.http.headers.common['X-CSRF-TOKEN'] = document.querySelector('#csrf-token').getAttribute('value');
-
-Vue.http.interceptors.push({
-    response: function (response) {
-        if (response.status === 401) {
-            window.location = response.data.redirect;
-        }
-
-        return response;
-    }
-});
+import Notifications from './mixins/Notifications.js';
+require('./components/NotificationBus');
 
 var vm = new Vue({
     el: '#statamic',
+
+    mixins: [ Notifications ],
 
     data: {
         isPublishPage: false,
@@ -32,17 +12,12 @@ var vm = new Vue({
         showShortcuts: false,
         navVisible: false,
         version: Statamic.version,
-        flashSuccess: Statamic.flashSuccess,
-        flashError: false,
-        flashSuccessTimer: null,
-        draggingNonFile: false
+        draggingNonFile: false,
+        sneakPeekViewport: null,
+        sneakPeekFields: null,
     },
 
     computed: {
-        showPage: function() {
-            return !this.hasSearchResults;
-        },
-
         hasSearchResults: function() {
             return this.$refs.search.hasItems;
         }
@@ -54,34 +29,59 @@ var vm = new Vue({
             self.$broadcast('previewing');
             self.isPreviewing = true;
 
-            $('.sneak-peek-viewport').addClass('on');
+            this.sneakPeekViewport = $('.sneak-peek-viewport')[0];
+            this.sneakPeekFields = $('.page-wrapper')[0];
 
-            setTimeout(function() {
-                $(self.$el).addClass('sneak-peeking');
-                $('#sneak-peek').find('iframe').show();
-                setTimeout(function() {
-                    $(self.$el).addClass('sneak-peek-editing');
-                }, 200);
-            }, 200);
+            $('.sneak-peek-wrapper').addClass('animating on');
+
+            this.wait(200).then(() => {
+                let width = localStorage.getItem('statamic.sneakpeek.width') || 400;
+                this.sneakPeekViewport.style.left = width + 'px';
+                this.sneakPeekFields.style.width = width + 'px';
+                $(this.$el).addClass('sneak-peeking');
+                return this.wait(200);
+            }).then(() => {
+                $('#sneak-peek-iframe').show();
+                $(this.$el).addClass('sneak-peek-editing sneak-peek-animating');
+                return this.wait(500);
+            }).then(() => {
+                $(this.$el).removeClass('sneak-peek-animating');
+            });
         },
 
         stopPreviewing: function() {
-            var self = this;
-            var $viewport = $('.sneak-peek-viewport');
-            var $icon = $viewport.find('.icon');
+            this.isPreviewing = false;
+            this.$broadcast('previewing.stopped');
 
-            $(self.$el).removeClass('sneak-peek-editing');
-            $('#sneak-peek').find('iframe').fadeOut().remove();
-            $icon.hide();
-            setTimeout(function() {
-                $(self.$el).removeClass('sneak-peeking');
-                $viewport.removeClass('on');
-                setTimeout(function(){
-                    $icon.show();
-                    self.isPreviewing = false;
-                    self.$broadcast('previewing.stopped');
-                }, 200);
-            }, 500);
+            $('.sneak-peek-wrapper').addClass('animating');
+            $(this.$el).addClass('sneak-peek-animating');
+            $(this.$el).removeClass('sneak-peek-editing');
+            $('#sneak-peek-iframe').fadeOut();
+            $('.sneak-peek-wrapper .icon').hide();
+
+            this.wait(500).then(() => {
+                this.sneakPeekViewport.style.left = null;
+                this.sneakPeekFields.style.width = null;
+                $(this.$el).removeClass('sneak-peek-animating');
+                $(this.$el).removeClass('sneak-peeking');
+                return this.wait(200);
+            }).then(() => {
+                $('.sneak-peek-wrapper').removeClass('on');
+                return this.wait(200);
+            }).then(() => {
+                $('.sneak-peek-wrapper').removeClass('animating');
+            });
+        },
+
+        /**
+         * Returns a promise after specified milliseconds
+         *
+         * A nice alternative to nested setTimeouts.
+         */
+        wait(ms) {
+            return new Promise(resolve => {
+                setTimeout(resolve, ms);
+            });
         },
 
         toggleNav: function () {
@@ -106,7 +106,44 @@ var vm = new Vue({
          */
         dragEnd() {
             this.draggingNonFile = false;
-        }
+        },
+
+        sneakPeekResizeStart(e) {
+            window.addEventListener('mousemove', this.sneakPeekResizing);
+            window.addEventListener('mouseup', this.sneakPeekResizeEnd);
+            $('.sneak-peek-iframe-wrap').css('pointer-events', 'none');
+        },
+
+        sneakPeekResizeEnd(e) {
+            window.removeEventListener('mousemove', this.sneakPeekResizing, false);
+            window.removeEventListener('mouseup', this.sneakPeekResizeEnd, false);
+            $('.sneak-peek-iframe-wrap').css('pointer-events', 'auto');
+        },
+
+        sneakPeekResizing(e) {
+            e.preventDefault();
+
+            let width = e.clientX;
+
+            // Prevent the width being too narrow.
+            width = (width < 350) ? 350 : width;
+
+            this.sneakPeekViewport.style.left = width + 'px';
+            this.sneakPeekFields.style.width = width + 'px';
+
+            localStorage.setItem('statamic.sneakpeek.width', width);
+        },
+
+        stickyHeader() {
+            const header = $('.sticky').first();
+
+            if (! header.length) return;
+
+            document.addEventListener('scroll', (e) => {
+                const win = $(window);
+                header.parent().toggleClass('stuck', win.scrollTop() > 90);
+            });
+        },
     },
 
     ready: function() {
@@ -125,32 +162,15 @@ var vm = new Vue({
             this.$broadcast('close-dropdown', null);
         }.bind(this), 'keyup');
 
-        // Clear the initial flash message after a second.
-        this.flashSuccessTimer = setTimeout(() => {
-            this.flashSuccess = null;
-        }, 1000);
-
         // Keep track of whether something other than a file is being dragged
         // so that components can tell when a file is being dragged.
         window.addEventListener('dragstart', this.dragStart);
         window.addEventListener('dragend', this.dragEnd);
+
+        this.stickyHeader();
     },
 
     events: {
-        'setFlashSuccess': function (msg, timeout) {
-            this.flashSuccess = msg
-
-            clearTimeout(this.flashSuccessTimer);
-
-            if (timeout) {
-                this.flashSuccessTimer = setTimeout(() => {
-                    this.flashSuccess = null;
-                }, timeout);
-            }
-        },
-        'setFlashError': function (msg) {
-            this.flashError = msg
-        },
         'changesMade': function (changed) {
             // If true, a confirmation dialog will be displayed when the user tries to
             // navigate away (or refresh, etc). If false, the dialog will no longer show.

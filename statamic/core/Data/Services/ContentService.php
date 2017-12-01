@@ -67,6 +67,12 @@ class ContentService extends AbstractService
      */
     public function uriExists($uri)
     {
+        // Temporarily do a different check for taxonomy terms.
+        // @todo
+        if ($term = app(TermsService::class)->uri($uri)) {
+            return true;
+        }
+
         return $this->uris()->has(default_locale() . '::' . Str::ensureLeft($uri, '/'));
     }
 

@@ -8,8 +8,12 @@ import Branch from './Branch.vue';
 import Branches from './Branches.vue';
 import CreatePage from './CreatePage.vue';
 import MountCollection from './MountCollection.vue';
+import HasLocaleSelector from '../HasLocaleSelector';
+import HasShowDraftsSelector from '../HasShowDraftsSelector';
 
 export default {
+
+    mixins: [HasShowDraftsSelector, HasLocaleSelector],
 
     components: {
         Branches,
@@ -30,8 +34,28 @@ export default {
         }
     },
 
+    computed: {
+
+        homeEditUrl() {
+            let url = cp_url('pages/edit');
+
+            if (this.locale !== Object.keys(Statamic.locales)[0]) {
+                url += '?locale=' + this.locale;
+            }
+
+            return url;
+        },
+
+        hasChildren() {
+            return _.some(this.pages, page => page.items.length);
+        }
+
+    },
+
     ready: function() {
         this.getPages();
+        this.bindLocaleWatcher();
+        this.bindShowDraftsWatcher();
         Mousetrap.bindGlobal('mod+s', (e) => {
             e.preventDefault();
             this.save();
@@ -41,7 +65,9 @@ export default {
     methods: {
 
         getPages: function() {
-            var url = cp_url('/pages/get');
+            this.pages = [];
+            this.loading = true;
+            var url = cp_url('/pages/get?locale='+this.locale+'&drafts='+(this.showDrafts ? 1 : 0));
 
             this.$http.get(url, function(data) {
                 this.arePages = data.pages.length > 0;
@@ -206,6 +232,14 @@ export default {
 
         createPage: function(parent) {
             this.$broadcast('pages.create', parent);
+        },
+
+        onShowDraftsChanged() {
+            this.getPages();
+        },
+
+        onLocaleChanged() {
+            this.getPages();
         }
 
     },

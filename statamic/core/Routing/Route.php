@@ -39,7 +39,7 @@ class Route
 
     public function url()
     {
-        return $this->uri;
+        return e($this->uri);
     }
 
     public function absoluteUrl()

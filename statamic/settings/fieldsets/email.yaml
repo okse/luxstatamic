@@ -15,20 +15,42 @@ fields:
 
   section_smtp:
     type: section
+    show_when:
+      driver: smtp
   host:
+    show_when:
+      driver: smtp
   port:
+    show_when:
+      driver: smtp
   encryption:
     type: select
     options:
       tls: TLS
+    show_when:
+      driver: smtp
   username:
+    show_when:
+      driver: smtp
   password:
+    show_when:
+      driver: smtp
 
   section_mandrill:
     type: section
+    show_when:
+      driver: mandrill
   mandrill_secret:
+    show_when:
+      driver: mandrill
 
   section_mailgun:
     type: section
+    show_when:
+      driver: mailgun
   mailgun_secret:
+    show_when:
+      driver: mailgun
   mailgun_domain:
+    show_when:
+      driver: mailgun

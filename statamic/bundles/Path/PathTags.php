@@ -2,6 +2,7 @@
 
 namespace Statamic\Addons\Path;
 
+use Statamic\API\URL;
 use Statamic\API\Path;
 use Statamic\API\Config;
 use Statamic\Extend\Tags;
@@ -20,6 +21,12 @@ class PathTags extends Tags
             return array_get($this->context, 'path');
         }
 
-        return Path::tidy(Config::getSiteUrl() . $src);
+        $url = Path::tidy(Config::getSiteUrl() . $src);
+
+        if ($this->getBool('absolute', false)) {
+            $url = URL::makeAbsolute($url);
+        }
+
+        return $url;
     }
 }

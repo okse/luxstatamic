@@ -4,6 +4,6 @@
 
 <script>
 module.exports = {
-    props: ['data', 'config', 'name'],
+    mixins: [Fieldtype]
 };
 </script>

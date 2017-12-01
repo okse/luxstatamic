@@ -4,6 +4,7 @@ namespace Statamic\Providers;
 
 use Statamic\API\URL;
 use Statamic\API\File;
+use Statamic\API\Image;
 use League\Glide\Server;
 use Statamic\API\Config;
 use League\Glide\ServerFactory;
@@ -34,6 +35,11 @@ class GlideServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(Server::class, function () {
+            $presets = Config::getImageManipulationPresets();
+            if (CP_ROUTE) {
+                $presets = array_merge($presets, Image::getCpImageManipulationPresets());
+            }
+
             return ServerFactory::create([
                 'source'   => path(STATAMIC_ROOT), // this gets overriden on the fly by the image generator
                 'cache'    => File::disk('glide')->filesystem()->getDriver(),
@@ -41,7 +47,7 @@ class GlideServiceProvider extends ServiceProvider
                 'response' => new LaravelResponseFactory(app('request')),
                 'driver'   => Config::get('assets.image_manipulation_driver'),
                 'cache_with_file_extensions' => true,
-                'presets' => Config::getImageManipulationPresets(),
+                'presets' => $presets,
             ]);
         });
 

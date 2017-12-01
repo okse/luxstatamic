@@ -42,18 +42,18 @@ class EntriesSearchController extends CpController
 
     private function searchDefaultIndex($collection, $query)
     {
-        $results = Search::get($query)->filter(function ($result) use ($collection) {
-            return array_get($result, 'collection') === $collection;
-        });
+        $results = Search::get($query);
 
-        return $this->convertToEntries($results);
+        return $this->convertToEntries($results)->filter(function ($entry) use ($collection) {
+            return $entry->collectionName() === $collection;
+        });
     }
 
     private function convertToEntries($results)
     {
         return collect_entries($results->map(function ($entry) {
             return Entry::find($entry['id']);
-        }));
+        }))->filter();
     }
 
     private function searchByFiltering($collection, $query)

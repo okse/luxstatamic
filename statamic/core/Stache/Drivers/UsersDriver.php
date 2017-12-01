@@ -33,7 +33,7 @@ class UsersDriver extends AbstractDriver
 
     public function isMatchingFile($file)
     {
-        return $file['type'] === 'file' && $file['extension'] === 'yaml';
+        return $file['type'] === 'file' && array_get($file, 'extension') === 'yaml';
     }
 
     public function toPersistentArray($repo)

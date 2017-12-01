@@ -5,22 +5,12 @@
     <form method="post" action="{{ route('collection.update', $collection->path()) }}">
         {!! csrf_field() !!}
 
-        <div class="publish-form card">
-            <div class="head">
-
-                <h1>
-                    <i class="icon icon-cog"></i>
-                    {{ $collection->title() }}
-                </h1>
-
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-primary">{{ translate('cp.save') }}</button>
-                </div>
+            <div class="flexy mb-24">
+                <h1 class="fill">{{ t('thing_configure', ['thing' => $collection->title()]) }}</h1>
+                <button type="submit" class="btn btn-primary">{{ translate('cp.save') }}</button>
             </div>
 
-            <hr>
-
-            <div class="publish-fields">
+            <div class="card">
 
                 <div class="form-group">
                     <label class="block">{{ t('title') }}</label>

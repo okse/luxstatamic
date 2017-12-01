@@ -1,11 +1,7 @@
-body {
-    color: $color_gray_dark;
-	font-family: $font_sans;
-    font-size: 16px;
-}
-
 h1 {
-	font: normal 21px $font_sans;
+	font-size: 24px;
+    font-family: $font;
+    font-weight: 300;
 	margin: 0;
     -webkit-font-smoothing: antialiased;
 
@@ -19,7 +15,8 @@ h2 { font-size: 18px; }
 h3 { font-size: 16px; }
 
 a {
-    color: $brand-darker;
+    color: #4e5e73;
+    cursor: pointer;
 	&:hover {
 		color: $brand-primary;
 		text-decoration: none;
@@ -27,7 +24,7 @@ a {
 }
 
 .subhead {
-    font: 11px $font_montserrat;
+    font: 11px $font;
     letter-spacing: .1em;
     text-transform: uppercase;
 }
@@ -41,10 +38,9 @@ sup {
 }
 
 .little-heading {
-    font: 11px $font_montserrat;
+    font-size: 11px;
+    font-weight: bold;
     padding: 15px 0 0 20px;
-    letter-spacing: .1em;
+    letter-spacing: 1px;
     text-transform: uppercase;
 }
-
-.m-t-0 { margin-top: 0; }

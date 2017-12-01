@@ -20,6 +20,8 @@
 <script>
 export default {
 
+    props: ['locale'],
+
     data: function() {
         return {
             parent: null,
@@ -48,6 +50,10 @@ export default {
             let parent = (this.parent === '/') ? '' : this.parent;
 
             let url = cp_url('pages/create' + parent + '?fieldset=' + fieldset);
+
+            if (this.locale !== Object.keys(Statamic.locales)[0]) {
+                url += '&locale=' + this.locale;
+            }
 
             window.location = url;
         },

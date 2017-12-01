@@ -24,7 +24,7 @@ class Submission implements SubmissionContract
     /**
      * @var Form
      */
-    private $form;
+    public $form;
 
     /**
      * @var array

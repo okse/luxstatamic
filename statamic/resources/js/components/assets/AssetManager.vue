@@ -10,11 +10,11 @@
             @selections-updated="updateSelections">
 
             <template slot="contextual-actions" v-if="selectedAssets.length">
-                <div class="btn-group action">
-                    <button class="btn action" @click="selectedAssets = []">{{ translate('cp.uncheck_all') }}</button>
-                    <button class="btn action" @click="openAssetMover">{{ translate('cp.move') }}</button>
-                </div>
-                <button class="btn btn-danger action" @click="deleteSelected">{{ translate('cp.delete') }}</button>
+                    <button class="btn btn-danger ml-16 mr-16 mb-24" @click="deleteSelected">{{ translate('cp.delete') }}</button>
+                    <div class="btn-group mb-24">
+                        <button class="btn" @click="selectedAssets = []">{{ translate('cp.uncheck_all') }}</button>
+                        <button class="btn" @click="openAssetMover">{{ translate('cp.move') }}</button>
+                    </div>
             </template>
 
         </asset-browser>

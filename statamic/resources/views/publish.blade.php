@@ -4,10 +4,14 @@
 @section('content')
 
     <script>
-        <?php $taxonomies = isset($taxonomies) ? $taxonomies : []; ?>
+        <?php
+            $taxonomies = isset($taxonomies) ? $taxonomies : [];
+            $suggestions = isset($suggestions) ? $suggestions : [];
+        ?>
         Statamic.Publish = {
             contentData: {!! json_encode($content_data) !!},
-            taxonomies: {!! json_encode($taxonomies) !!}
+            taxonomies: {!! json_encode($taxonomies) !!},
+            suggestions: {!! json_encode($suggestions) !!}
         };
     </script>
 

@@ -94,6 +94,8 @@ class StacheServiceProvider extends ServiceProvider
      */
     public function boot(Request $request)
     {
+        $this->cleanUpForConsole();
+
         $this->request = $request;
 
         $this->app->make(Stache::class)->locales(Config::getLocales());
@@ -216,10 +218,21 @@ class StacheServiceProvider extends ServiceProvider
      */
     private function outputRefreshResponse()
     {
-        $url = Str::ensureLeft(request()->path(), '/');
-
-        $html = sprintf('<meta http-equiv="refresh" content="1; URL=\'%s\'" />', $url);
+        $html = sprintf('<meta http-equiv="refresh" content="1; URL=\'%s\'" />', request()->getUri());
 
         exit($html);
+    }
+
+    private function cleanUpForConsole()
+    {
+        if (! app()->runningInConsole()) {
+            return;
+        }
+
+        if (File::exists($lock = $this->stache->building_path)) {
+            File::delete($lock);
+        }
+
+        Config::set('system.ensure_unique_ids', false);
     }
 }

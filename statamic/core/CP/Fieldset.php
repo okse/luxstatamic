@@ -330,7 +330,7 @@ class Fieldset implements FieldsetContract
             unset($field['required']);
 
             // Blank keys can be discarded.
-            $field = array_filter_recursive($field);
+            $field = $this->discardBlankKeys($field);
 
             // Replace it, making sure to use the name as the key.
             $fields[$name] = $field;
@@ -351,6 +351,32 @@ class Fieldset implements FieldsetContract
         $yaml = YAML::dump($contents);
 
         File::put($this->path(), $yaml);
+    }
+
+    /**
+     * Discard any blank/falsey keys
+     *
+     * @param  array $array
+     * @return array
+     */
+    private function discardBlankKeys($array)
+    {
+        foreach ($array as $key => $value) {
+            // We want to keep falsey values in these keys.
+            if (in_array($key, ['show_when', 'hide_when'])) {
+                continue;
+            }
+
+            if (is_array($value)) {
+                $array[$key] = array_filter_recursive($value);
+            } else {
+                if (empty($value)) {
+                    unset($array[$key]);
+                }
+            }
+        }
+
+        return $array;
     }
 
     public function delete()

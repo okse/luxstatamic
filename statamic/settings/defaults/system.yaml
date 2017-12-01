@@ -40,3 +40,7 @@ redactor:
       buttons: [bold, italic]
 
 csrf_exclude: []
+
+# The max amount of memory Statamic will try to use when performing memory intensive
+# operations like image manipulation. Leave null to use as much memory as possible.
+php_max_memory_limit: null

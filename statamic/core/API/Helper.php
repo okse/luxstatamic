@@ -338,7 +338,7 @@ class Helper
 
         // string based
         if (!is_numeric($one) || !is_numeric($two)) {
-            return strcasecmp($one, $two);
+            return Str::compare($one, $two, null, false);
         }
 
         // number-based

@@ -21,7 +21,8 @@ import RadioFieldtype from './components/fieldtypes/RadioFieldtype.vue'
 import RedactorFieldtype from './components/fieldtypes/redactor/RedactorFieldtype.vue'
 import RedactorSettingsFieldtype from './components/fieldtypes/redactor/RedactorSettingsFieldtype.vue'
 import RelateFieldtype from './components/fieldtypes/relate/RelateFieldtype.vue'
-import ReplicatorFieldtype from './components/fieldtypes/ReplicatorFieldtype.vue'
+import ReplicatorFieldtype from './components/fieldtypes/replicator/ReplicatorFieldtype.vue'
+import RevealerFieldtype from './components/fieldtypes/RevealerFieldtype.vue'
 import SectionFieldtype from './components/fieldtypes/SectionFieldtype.vue'
 import SelectFieldtype from './components/fieldtypes/SelectFieldtype.vue'
 import StatusFieldtype from './components/fieldtypes/StatusFieldtype.vue'
@@ -63,6 +64,7 @@ Vue.component('redactor-fieldtype', RedactorFieldtype);
 Vue.component('redactor_settings-fieldtype', RedactorSettingsFieldtype);
 Vue.component('relate-fieldtype', RelateFieldtype);
 Vue.component('replicator-fieldtype', ReplicatorFieldtype);
+Vue.component('revealer-fieldtype', RevealerFieldtype);
 Vue.component('section-fieldtype', SectionFieldtype);
 Vue.component('select-fieldtype', SelectFieldtype);
 Vue.component('status-fieldtype', StatusFieldtype);

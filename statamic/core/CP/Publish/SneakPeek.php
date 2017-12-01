@@ -63,18 +63,16 @@ class SneakPeek
     {
         $this->content = $content;
 
-        $fields = array_get($this->request->all(), 'fields', []);
+        $fields = $this->request->input('fields', []);
 
         $fields = $this->processFields($fields);
-
-        $data = $this->request->all();
 
         // For entries...
         if ($this->content instanceof EntryObject) {
             // For date-based entries...
             // Modify the date/order.
             if ($this->content->orderType() === 'date') {
-                $date = array_get($data, 'extra.datetime');
+                $date = $this->request->input('extra.datetime');
                 if (strlen($date) > 10) {
                     $date = str_replace(':', '', $date);
                     $date = str_replace(' ', '-', $date);
@@ -83,11 +81,7 @@ class SneakPeek
             }
         }
 
-        unset($data['fields'], $data['extra']);
-
-        $data = array_merge($data, $fields);
-
-        return array_merge($this->content->data(), $data);
+        return array_merge($this->content->data(), $fields);
     }
 
     /**

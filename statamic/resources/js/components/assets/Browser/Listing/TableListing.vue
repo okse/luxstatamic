@@ -7,14 +7,28 @@
             <thead>
                 <tr>
                     <th></th>
-                    <th>{{ translate('cp.title') }}</th>
-                    <th>{{ translate('cp.filesize') }}</th>
-                    <th>{{ translate('cp.date_modified') }}</th>
+                    <th class="title-col">{{ translate('cp.title') }}</th>
+                    <th class="size-col extra-col">{{ translate('cp.filesize') }}</th>
+                    <th class="modified-col extra-col">{{ translate('cp.date_modified') }}</th>
                     <th class="column-actions"></th>
                 </tr>
             </thead>
 
             <tbody>
+
+                <tr v-if="hasParent && !restrictNavigation">
+                    <td>
+                        <div class="img">
+                            <a @click.prevent="selectFolder(folder.parent_path)">
+                                <file-icon extension="folder"></file-icon>
+                            </a>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="" @click.prevent="selectFolder(folder.parent_path)">..</a>
+                    </td>
+                    <td colspan="3">..</td>
+                </tr>
 
                 <tr is="folderRow"
                     v-for="folder in subfolders"

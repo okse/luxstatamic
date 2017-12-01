@@ -19,6 +19,8 @@ class CollectionsServiceProvider extends ServiceProvider
         $this->keyByWithKey();
         $this->filterWithKey();
         $this->l10n();
+        $this->pipe();
+        $this->transpose();
     }
 
     /**
@@ -108,6 +110,61 @@ class CollectionsServiceProvider extends ServiceProvider
                 ->map(function ($item) {
                     return require root_path($item);
                 });
+        });
+    }
+
+    /**
+     * Backport of the pipe method from 5.2
+     *
+     * @return void
+     */
+    private function pipe()
+    {
+        Collection::macro('pipe', function (callable $callback) {
+            return $callback($this);
+        });
+    }
+
+    /**
+     * "Transpose" a multidimensional array.
+     *
+     * Rotate a multidimensional array, turning the rows into columns and columns into rows.
+     * For example:
+     *
+     * $before = [
+     *   [1, 2, 3],
+     *   [4, 5, 6],
+     *   [7, 8, 9],
+     * ];
+     *
+     * $after = [
+     *   [1, 4, 7],
+     *   [2, 5, 8],
+     *   [3, 6, 9],
+     * ];
+     *
+     * @see https://adamwathan.me/2016/04/06/cleaning-up-form-input-with-transpose
+     * @return void
+     */
+    private function transpose()
+    {
+        // Simpler way, but only works on PHP 5.6
+        // Collection::macro('transpose', function () {
+        //     $items = array_map(function (...$items) {
+        //         return $items;
+        //     }, ...$this->values());
+
+        //     return new static($items);
+        // });
+
+        Collection::macro('transpose', function () {
+            $transposed = [];
+            foreach ($this->values() as $value) {
+                foreach ($value as $k => $v) {
+                    $transposed[$k][] = $v;
+                }
+            }
+            return new static($transposed);
         });
     }
 }

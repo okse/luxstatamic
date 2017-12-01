@@ -2,6 +2,7 @@
 
 namespace Statamic\Assets;
 
+use Statamic\API\URL;
 use Statamic\API\Path;
 use Statamic\API\Cache;
 
@@ -96,7 +97,7 @@ class DimensionBuilder
      */
     private function getS3Path()
     {
-        return $this->asset->url();
+        return URL::encode($this->asset->url());
     }
 
     /**

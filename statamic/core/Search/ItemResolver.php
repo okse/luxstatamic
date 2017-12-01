@@ -3,6 +3,7 @@
 namespace Statamic\Search;
 
 use Statamic\API\Page;
+use Statamic\API\Term;
 use Statamic\API\Entry;
 use Statamic\API\Config;
 use Statamic\API\Collection;
@@ -53,7 +54,7 @@ class ItemResolver
     public function getItems()
     {
         if ($this->isDefaultIndex()) {
-            return Entry::all()->merge(Page::all());
+            return Entry::all()->merge(Page::all())->merge(Term::all());
         }
 
         list($type, $handle) = explode('/', $this->index->name());

@@ -49,7 +49,7 @@ class GridFieldtype extends Fieldtype
             }
         }
 
-        return $processed;
+        return array_values($processed);
     }
 
     private function processRow($row_data)

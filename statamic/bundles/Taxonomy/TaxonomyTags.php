@@ -102,9 +102,11 @@ class TaxonomyTags extends Tags
 
         $collections = Helper::explodeOptions($collections);
 
-        $this->terms = $this->terms->filterContent(function($content) use ($collections) {
-            return $content->filter(function($item) use ($collections) {
-                return in_array($item->collectionName(), $collections);
+        $this->terms = $this->terms->filterContent(function ($content) use ($collections) {
+            return $content->filter(function ($item) use ($collections) {
+                if ($item instanceof \Statamic\Data\Entries\Entry) {
+                    return in_array($item->collectionName(), $collections);
+                }
             });
         });
     }

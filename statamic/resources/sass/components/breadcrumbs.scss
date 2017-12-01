@@ -9,6 +9,7 @@
     border-top: 1px solid $border;
     border-bottom: 1px solid $border;
     margin-top: -1px; // do this so we dont have to check if there are or aren't breadcrumbs.
+    background: #f4f5f5;
     font-size: 13px;
 
     a, .step {
@@ -34,7 +35,7 @@
 
         &:before {
             right: 1px;
-            border-left-color: white;
+            border-left-color: #f4f5f5;
             z-index: 2;
         }
 

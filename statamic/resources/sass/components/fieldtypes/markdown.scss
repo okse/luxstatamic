@@ -1,14 +1,21 @@
+/* ==========================================================================
+   MARKDOWN FIELDTYPE
+   ========================================================================== */
+
 .markdown-fieldtype {
 
     .markdown-fieldtype-wrapper {
-        border: 1px solid #cecece;
+        border: 1px solid $border;
         border-radius: 3px;
+        overflow: hidden;
     }
 
     .markdown-toolbar {
+        background: #fff;
         box-shadow: none;
-        padding: 8px 10px;
+        padding: 9px 10px 7px;
         border-bottom: 1px solid #cecece;
+        font-size: 14px;
     }
 
     .markdown-modes, .markdown-buttons {
@@ -31,6 +38,7 @@
 
         a {
             color: #aaa;
+            outline: none;
             &:hover {
                 color: #333;
             }
@@ -42,9 +50,9 @@
             &:before, &:after {
                 content: '';
                 border: 5px solid transparent;
-                border-bottom-color: #F2F2F2;
+                border-bottom-color: $border;
                 position: absolute;
-                top: 85%;
+                top: 18px;
                 left: 50%;
                 z-index: 2;
                 margin-top: 2px;
@@ -73,12 +81,14 @@
     }
 
     .CodeMirror {
-        @extend .form-control;
-        box-shadow: none;
+        @include input-shadow;
+        background: $bg;
         height: auto;
         line-height: 1.5;
         font-family: $font_monospace;
         padding: 10px;
+        font-size: 13px;
+        border-radius: 0 0 3px 3px;
 
         .cm-comment {
             font-family: $font_monospace;
@@ -87,6 +97,11 @@
     }
 
     .CodeMirror-code { min-height: 100px; }
+
+    .CodeMirror-lines {
+        max-width: 860px;
+        border-right: 1px solid #f8f8f8;
+    }
 
     .helpers {
         border-top: 1px solid #ddd;
@@ -116,8 +131,15 @@
         }
     }
 
+    .mode-preview {
+        background: #fff;
+    }
+
     .markdown-preview {
-        padding: 30px;
+        background: #fff;
+        padding: 64px 32px;
+        max-width: 860px;
+        margin: 0 auto;
         h1, h2, h3, h4, h5, h6, p, blockquote {
             color: #333;
             font-size: 16px;
@@ -153,11 +175,22 @@
     }
 }
 
-// The Grid
-.grid-fieldtype .markdown-fieldtype {
-    .markdown-wrap {
+
+
+
+/* Inside a Grid Fieldtype
+  ========================================================================== */
+
+.grid-fieldtype .grid-table .markdown-fieldtype {
+    .markdown-fieldtype-wrapper {
         border: 0;
         border-radius: 0;
+    }
+
+    .markdown-toolbar { }
+
+    .CodeMirror {
+        background: #fff;
     }
 
     .markdown-preview {
@@ -166,10 +199,23 @@
         text-align: left;
         p { line-height: 1.2; }
     }
-
 }
 
-// Preview Style
+/* Inside a Replicator Fieldtype
+  ========================================================================== */
+
+  .replicator-fieldtype .markdown-fieldtype,
+  .grid-fieldtype .grid-stacked .markdown-fieldtype {
+      .CodeMirror {
+          background: #fff;
+      }
+  }
+
+
+
+
+/* Markdown Preview typography
+  ========================================================================== */
 
 .markdown-fieldtype .markdown-preview {
     font: 1em/1.5em sans-serif;
@@ -259,5 +305,89 @@
 
     img {
         max-width: 100%;
+    }
+}
+
+.markdown-fullscreen {
+    background: #fff;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    padding: 0;
+    z-index: 1000;
+    will-change: transform;
+    height: 100vh;
+
+    .CodeMirror {
+        box-shadow: none !important;
+        background: #fff;
+        padding: 64px 32px;
+        max-width: 860px;
+        margin: 0 auto;
+    }
+
+    .CodeMirror-lines {
+        border-right: none !important;
+    }
+}
+
+
+
+
+/* Sneak Peek mode
+  ========================================================================== */
+
+.sneak-peeking .markdown-fieldtype {
+    .markdown-toolbar { padding: 9px 4px 7px; }
+    .CodeMirror { font-size: 13px; }
+    .markdown-preview { padding: 10px; }
+}
+
+
+
+
+/* Reponsive Wangjangling
+  ========================================================================== */
+
+@media (max-width: 1180px) {
+    .markdown-fieldtype .CodeMirror-lines { max-width: 700px; }
+}
+
+@media (max-width: 1020px) {
+    .markdown-fieldtype .CodeMirror-lines { max-width: 640px; }
+}
+
+@media (min-width: 768px) and (max-width: 900px) {
+    .markdown-fieldtype .CodeMirror-lines {
+        max-width: 520px;
+        border-right: none !important;
+    }
+}
+
+@media (max-width: 766px) {
+    .markdown-fieldtype .CodeMirror-lines { max-width: 600px; }
+}
+
+@media (max-width: 720px) {
+    .markdown-fieldtype .CodeMirror-lines { max-width: 500px; }
+}
+
+@media (max-width: 620px) {
+    .markdown-fieldtype .CodeMirror-lines { max-width: 400px; }
+}
+
+@media (max-width: 520px) {
+    .markdown-fieldtype .CodeMirror-lines { max-width: 320px; }
+}
+
+@media (max-width: 420px) {
+    .markdown-fieldtype .CodeMirror-lines { max-width: 280px; }
+}
+
+@media (min-width: 1400px) and (max-width: 1600px) {
+.markdown-fieldtype .CodeMirror-lines {
+        max-width: 720px;
     }
 }

@@ -9,12 +9,10 @@
     <importer inline-template>
 
         <template v-if="!importing && !imported">
-            <div class="card flat-bottom">
-                <div class="head">
-                    <h1>{{ t('import_summary') }}</h1>
-                </div>
+            <div class="flexy mb-24">
+                <h1>{{ t('import_summary') }}</h1>
             </div>
-            <div class="card flat-top flat-bottom">
+            <div class="card">
                 <h2>{{ trans_choice('cp.pages', 2) }}</h2>
                 <div class="alert alert-warning" role="alert" v-if="hasDuplicates(summary.pages)">
                     @{{ translate_choice('cp.duplicate_item_warning', duplicateCount(summary.pages)) }}
@@ -23,8 +21,8 @@
                 </div>
                 <p>
                     @{{ totalPages }} pages.
-                    <a href="#" @click.prevent="showAllPages = true" v-if="!showAllPages">{{ t('show') }}</a>
-                    <a href="#" @click.prevent="showAllPages = false" v-else>{{ t('hide') }}</a>
+                    <a @click="showAllPages = true" v-if="!showAllPages">{{ t('show') }}</a>
+                    <a @click="showAllPages = false" v-else>{{ t('hide') }}</a>
                 </p>
 
                 <table v-if="showAllPages">

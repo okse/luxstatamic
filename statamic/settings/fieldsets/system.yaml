@@ -36,3 +36,6 @@ fields:
 
 #  protect:
 #    type: yaml
+
+  php_max_memory_limit:
+    type: text

@@ -170,7 +170,9 @@ class Entry extends Content implements EntryContract
      */
     public function editUrl()
     {
-        return cp_route('entry.edit', $this->collectionName() . '/' . $this->slug());
+        $slug = $this->in(default_locale())->slug();
+
+        return cp_route('entry.edit', $this->collectionName() . '/' . $slug);
     }
 
     /**

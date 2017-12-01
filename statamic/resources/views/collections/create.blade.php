@@ -5,16 +5,12 @@
     <form method="post" action="{{ route('collection.store') }}">
         {!! csrf_field() !!}
 
-        <div class="card flat-bottom sticky">
-            <div class="head">
-                <h1>{{ translate('cp.create_collection') }}</h1>
-
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-primary">{{ translate('cp.save') }}</button>
-                </div>
-            </div>
+        <div class="flexy mb-24">
+            <h1 class="fill">{{ translate('cp.create_collection') }}</h1>
+            <button type="submit" class="btn btn-primary">{{ translate('cp.save') }}</button>
         </div>
-        <div class="publish-form card flat-top">
+
+        <div class="publish-form card">
 
             <div class="publish-fields">
 
@@ -23,7 +19,6 @@
                     <small class="help-block">{{ t('collection_title_instructions') }}</small>
                     <input type="text" name="title" class="form-control" value="{{ old('title') }}" autofocus="autofocus">
                 </div>
-
 
                 <div class="form-group">
                     <label class="block">{{ t('handle') }}</label>

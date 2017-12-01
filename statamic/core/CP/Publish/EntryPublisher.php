@@ -78,11 +78,19 @@ class EntryPublisher extends Publisher
     private function prepForNewEntry()
     {
         $this->id = Helper::makeUuid();
+        $locale = $this->request->input('locale');
 
         $this->content = Entry::create($this->slug)
             ->collection($this->collection)
-            ->published($this->getSubmittedStatus())
             ->get();
+
+        if ($locale !== default_locale()) {
+            $this->content->set('title', $this->slug);
+            $this->content->published(false);
+            $this->content = $this->content->in($locale)->get();
+        }
+
+        $this->content->published($this->getSubmittedStatus());
 
         $this->content->order(
             $this->getSubmittedOrderKey() ?: $this->getNewEntryOrderKey()
@@ -100,10 +108,10 @@ class EntryPublisher extends Publisher
 
         $this->content = Entry::find($this->id)->in($this->locale)->get();
 
-        if (! $this->isLocalized()) {
-            // Only the default locale can have its status and order modified
-            $this->content->published($this->getSubmittedStatus());
+        $this->content->published($this->getSubmittedStatus());
 
+        // Only the default locale can have its order modified
+        if (! $this->isLocalized()) {
             // If no order was submitted (in the case of numeric
             // entries), we want to get the existing order key.
             if (! $order = $this->getSubmittedOrderKey()) {

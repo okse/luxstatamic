@@ -83,6 +83,7 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
         }
 
         $this->set('password', $password);
+        $this->remove('password_hash');
 
         $this->securePassword(false);
     }

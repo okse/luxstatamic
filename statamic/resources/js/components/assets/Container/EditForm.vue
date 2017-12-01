@@ -6,62 +6,54 @@
         </ul>
     </div>
 
-    <div class="publish-form card">
-        <div class="head">
-            <h1 v-if="isNew">{{ translate('cp.creating_asset_container') }}</h1>
-            <h1 v-else>{{ translate('cp.editing_asset_container') }}</h1>
+    <div class="flexy mb-24">
+        <h1 class="fill" v-if="isNew">{{ translate('cp.creating_asset_container') }}</h1>
+        <h1 class="fill" v-else>{{ translate('cp.editing_asset_container') }}</h1>
+        <button type="submit" class="btn btn-primary" @click="save">{{ translate('cp.save') }}</button>
+    </div>
 
-            <div class="btn-group">
-                <button type="submit" class="btn btn-primary" @click="save">{{ translate('cp.save') }}</button>
-            </div>
+    <div class="publish-fields card">
+
+        <div class="form-group">
+            <label class="block">{{ translate('cp.title') }}</label>
+            <small class="help-block">{{ translate('cp.asset_name_instructions') }}</small>
+            <input type="text" class="form-control" v-model="config.title" autofocus="autofocus" />
         </div>
 
-        <hr>
-
-        <div class="publish-fields">
-
-            <div class="form-group">
-                <label class="block">{{ translate('cp.title') }}</label>
-                <small class="help-block">{{ translate('cp.asset_name_instructions') }}</small>
-                <input type="text" class="form-control" v-model="config.title" autofocus="autofocus" />
-            </div>
-
-            <div class="form-group" v-if="isNew">
-                <label class="block">{{ translate('cp.handle') }}</label>
-                <div class="help-block">{{ translate('cp.asset_handle_instructions') }}</div>
-                <input type="text" class="form-control" v-model="config.handle" @keydown="isHandleModified = true" />
-            </div>
-
-            <div class="form-group">
-                <label class="block">{{ translate('cp.fieldset') }}</label>
-                <small class="help-block">{{ translate('cp.asset_fieldset_instructions') }}</small>
-                <fieldset-fieldtype :data.sync="config.fieldset"></fieldset-fieldtype>
-            </div>
-
-            <div class="form-group">
-                <label class="block">{{ translate('cp.driver') }}</label>
-                <small class="help-block">{{ translate('cp.asset_driver_instructions') }}</small>
-                <select-fieldtype :data.sync="config.driver" :options="drivers"></select-fieldtype>
-            </div>
-
-            <driver-local
-                v-if="driver === 'local'"
-                :editing="true"
-                :path.sync="config.local.path"
-                :url.sync="config.local.url">
-            </driver-local>
-
-            <driver-s3
-                v-if="driver === 's3'"
-                :editing="true"
-                :key.sync="config.s3.key"
-                :secret.sync="config.s3.secret"
-                :bucket.sync="config.s3.bucket"
-                :region.sync="config.s3.region"
-                :path.sync="config.s3.path">
-            </driver-s3>
-
+        <div class="form-group" v-if="isNew">
+            <label class="block">{{ translate('cp.handle') }}</label>
+            <div class="help-block">{{ translate('cp.asset_handle_instructions') }}</div>
+            <input type="text" class="form-control" v-model="config.handle" @keydown="isHandleModified = true" />
         </div>
+
+        <div class="form-group">
+            <label class="block">{{ translate('cp.fieldset') }}</label>
+            <small class="help-block">{{ translate('cp.asset_fieldset_instructions') }}</small>
+            <fieldset-fieldtype :data.sync="config.fieldset"></fieldset-fieldtype>
+        </div>
+
+        <div class="form-group">
+            <label class="block">{{ translate('cp.driver') }}</label>
+            <small class="help-block">{{ translate('cp.asset_driver_instructions') }}</small>
+            <select-fieldtype :data.sync="config.driver" :options="drivers"></select-fieldtype>
+        </div>
+
+        <driver-local
+            v-if="driver === 'local'"
+            :editing="true"
+            :path.sync="config.local.path"
+            :url.sync="config.local.url">
+        </driver-local>
+
+        <driver-s3
+            v-if="driver === 's3'"
+            :editing="true"
+            :key.sync="config.s3.key"
+            :secret.sync="config.s3.secret"
+            :bucket.sync="config.s3.bucket"
+            :region.sync="config.s3.region"
+            :path.sync="config.s3.path">
+        </driver-s3>
     </div>
 
 </template>

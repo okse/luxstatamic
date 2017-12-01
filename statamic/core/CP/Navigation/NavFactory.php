@@ -6,15 +6,26 @@ use Statamic\API\AssetContainer;
 use Statamic\API\Collection;
 use Statamic\API\Taxonomy;
 use Statamic\API\User;
+use Statamic\API\Folder;
 use Statamic\API\GlobalSet;
+use Statamic\Outpost as StatamicOutpost;
 
 class NavFactory
 {
+    /**
+     * @var Nav
+     */
     private $nav;
 
-    public function __construct(Nav $nav)
+    /**
+     * @var StatamicOutpost
+     */
+    private $outpost;
+
+    public function __construct(Nav $nav, StatamicOutpost $outpost)
     {
         $this->nav = $nav;
+        $this->outpost = $outpost;
     }
 
     public function build()
@@ -141,11 +152,28 @@ class NavFactory
         }
 
         if ($this->access('updater')) {
-            $nav->add($this->item('updater')->route('updater')->title(t('nav_updater')));
+            $updates = $this->outpost->getUpdateCount();
+
+            $nav->add(
+                $this->item('updater')
+                     ->route('updater')
+                     ->title(t('nav_updater'))
+                     ->badge($updates)
+            );
         }
 
         if ($this->access('importer')) {
             $nav->add($this->item('import')->route('import')->title(t('nav_import')));
+        }
+
+        $duplicates = app('stache')->duplicates();
+        if (! $duplicates->isEmpty()) {
+            $nav->add(
+                $this->item('resolve_duplicates')
+                     ->route('resolve-duplicate-ids')
+                     ->title(t('nav_resolve_duplicate_ids'))
+                     ->badge($duplicates->count())
+            );
         }
 
         return $nav;
@@ -159,7 +187,7 @@ class NavFactory
             $nav->add($this->item('addons')->route('addons')->title(t('nav_addons')));
             $nav->add($this->buildConfigureContentNav());
             $nav->add($this->item('fieldsets')->route('fieldsets')->title(t('nav_fieldsets')));
-            $nav->add($this->item('settings')->route('settings')->title(t('nav_settings')));
+            $nav->add($this->buildConfigureSettingsNav());
         }
 
         if ($this->access('users:edit')) {
@@ -177,6 +205,30 @@ class NavFactory
         $nav->add($this->item('collections')->route('collections.manage')->title(t('nav_collections')));
         $nav->add($this->item('taxonomies')->route('taxonomies.manage')->title(t('nav_taxonomies')));
         $nav->add($this->item('globals')->route('globals.manage')->title(t('nav_globals')));
+
+        return $nav;
+    }
+
+    private function buildConfigureSettingsNav()
+    {
+        $nav = $this->item('settings')->route('settings')->title(t('nav_settings'));
+
+        $sections = collect(Folder::getFilesByType(statamic_path('settings/defaults'), 'yaml'))
+            ->map(function ($file) {
+                return pathinfo($file)['filename'];
+            })
+            ->reject(function ($setting) {
+                return $setting == 'services';
+            });
+
+        foreach ($sections as $section) {
+            $nav->add(
+                $this
+                    ->item($section)
+                    ->route('settings.edit', $section)
+                    ->title(t("settings_$section"))
+            );
+        }
 
         return $nav;
     }

@@ -9,7 +9,7 @@ class ImportController extends CpController
 {
     public function index()
     {
-        return view('import.upload');
+        return view('import.upload', ['title' => 'Importer',]);
     }
 
     public function upload()

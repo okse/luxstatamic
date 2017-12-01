@@ -2,11 +2,9 @@
 
 @section('content')
 
-    <div class="card flush">
-        <div class="head">
-            <h1>Licensing</h1>
-            <a href="{{ route('licensing.refresh') }}" class="btn btn-primary">Refresh</a>
-        </div>
+    <div class="flexy mb-24">
+        <h1 class="fill">Licensing</h1>
+        <a href="{{ route('licensing.refresh') }}" class="btn btn-primary">Refresh</a>
     </div>
 
     @if (count($messages))

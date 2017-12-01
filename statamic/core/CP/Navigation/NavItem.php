@@ -11,6 +11,7 @@ class NavItem
     private $url;
     private $icon;
     private $children;
+    private $badge;
 
     public function __construct()
     {
@@ -72,6 +73,17 @@ class NavItem
         return $this;
     }
 
+    public function badge($badge = null)
+    {
+        if (is_null($badge)) {
+            return $this->badge;
+        }
+
+        $this->badge = $badge;
+
+        return $this;
+    }
+
     public function add($key, $item = null)
     {
         return $this->children->add($key, $item);
@@ -80,6 +92,11 @@ class NavItem
     public function has($key)
     {
         return $this->children->has($key);
+    }
+
+    public function get($key)
+    {
+        return $this->children->get($key);
     }
 
     public function remove($key)

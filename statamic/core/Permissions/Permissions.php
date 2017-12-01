@@ -40,6 +40,7 @@ class Permissions
             'users:edit',                      // can edit users
             'users:create',                    // can create users
             'users:delete',                    // can delete users
+            'resolve_duplicates',              // can resolve duplicate ids
         ];
 
         $permissions = array_merge($permissions, self::buildCollectionsPermissions());
@@ -103,7 +104,7 @@ class Permissions
     public function structured()
     {
         $structure = [
-            'general' => ['cp:access', 'content:view_drafts_on_frontend'],
+            'general' => ['cp:access', 'content:view_drafts_on_frontend', 'resolve_duplicates'],
             'pages' => [
                 'pages:edit' => ['pages:create', 'pages:delete', 'pages:reorder']
             ]

@@ -11,8 +11,8 @@
         background: $brand-primary;
         border-radius: 2px;
         color: #fff;
-        margin: 0 5px 3px 0;
-        padding: 4px 8px;
+        margin: 4px 8px 4px 0;
+        padding: 2px 8px;
 
         &.focus, &.active {
             background: darken($brand-primary, 13%);
@@ -23,5 +23,5 @@
 
 .selectize-control.plugin-remove_button [data-value] .remove {
     border-color: rgba(255,255,255,.8);
-    padding-top: 4px;
+    padding-top: 2px;
 }

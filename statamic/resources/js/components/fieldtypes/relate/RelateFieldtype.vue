@@ -7,6 +7,7 @@
 
         <relate-tags
             v-if="!loading && (tags || single)"
+            v-ref:tags
             :data.sync="data"
             :suggestions="suggestions"
             :max-items="maxItems"
@@ -16,6 +17,7 @@
 
         <relate-panes
             v-if="!loading && panes && !single"
+            v-ref:panes
             :data.sync="data"
             :suggestions="suggestions"
             :max-items="maxItems"
@@ -28,20 +30,25 @@
 <script>
 import RelatePanes from './RelatePanesFieldtype.vue'
 import RelateTags from './RelateTagsFieldtype.vue'
+import GetsSuggestKey from '../GetsSuggestKey';
 
 module.exports = {
+
+    mixins: [Fieldtype, GetsSuggestKey],
 
     components: {
         'relate-panes': RelatePanes,
         'relate-tags': RelateTags
     },
 
-    props: ['data', 'config', 'name', 'suggestionsProp'],
+    props: ['suggestionsProp'],
 
     data: function() {
         return {
             loading: true,
-            suggestions: []
+            suggestions: [],
+            autoBindChangeWatcher: false,
+            shouldFocusWhenLoaded: false
         }
     },
 
@@ -76,15 +83,26 @@ module.exports = {
 
         getSuggestions: function() {
             if (this.suggestionsProp) {
-                this.suggestions = this.suggestionsProp;
-                this.removeInvalidData();
-                this.loading = false;
+                this.populateSuggestions(this.suggestionsProp);
             } else {
-                this.$http.post(cp_url('addons/suggest/suggestions'), this.config, function(data) {
-                    this.suggestions = data;
-                    this.removeInvalidData();
-                    this.loading = false;
-                });
+                const prefetched = data_get(Statamic, 'Publish.suggestions.' + this.suggestKey);
+                if (prefetched) {
+                    this.populateSuggestions(prefetched);
+                } else {
+                    this.$http.post(cp_url('addons/suggest/suggestions'), this.config, function(data) {
+                        this.populateSuggestions(data);
+                    });
+                }
+            }
+        },
+
+        populateSuggestions(suggestions) {
+            this.suggestions = suggestions;
+            this.removeInvalidData();
+            this.loading = false;
+            this.bindChangeWatcher();
+            if (this.shouldFocusWhenLoaded) {
+                this.$nextTick(() => this.focus());
             }
         },
 
@@ -105,6 +123,31 @@ module.exports = {
                     return _.findWhere(self.suggestions, { value: item });
                 });
             }
+        },
+
+        getReplicatorPreviewText() {
+            if (! this.data) return;
+
+            let values = JSON.parse(JSON.stringify(this.data));
+
+            if (this.suggestions) {
+                values = values.map(value => {
+                    const suggestion = _.findWhere(this.suggestions, { value });
+                    return suggestion ? suggestion.text : value;
+                });
+            }
+
+            return values.join(', ');
+        },
+
+        focus() {
+            if (this.loading) {
+                this.shouldFocusWhenLoaded = true;
+                return;
+            }
+
+            this.$refs[this.mode].focus();
+            this.shouldFocusWhenLoaded = false;
         }
 
     },

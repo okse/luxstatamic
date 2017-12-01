@@ -1,6 +1,17 @@
 $toggle_green: #64BD63;
 $toggle_radius: 20px;
 
+.toggle-fieldtype-wrapper {
+    height: 32px;
+    display: flex;
+    align-items: center;
+}
+
+.locale-status-field .toggle-fieldtype-wrapper {
+    height: auto;
+    display: inline-block;
+}
+
 .toggle-container {
     height: 22px;
     width: 46px;

@@ -83,10 +83,12 @@ class Fieldtype implements FieldtypeInterface
 
     public function getHandle()
     {
-        $name = $this->snake_name ?: Str::snake($this->getFieldtypeName());
+        $actual = ($this->isPrimaryFieldtype()) ? $this->getAddonClassName() : $this->getClassNameWithoutSuffix();
+
+        $name = $this->snake_name ?: Str::snake($actual);
 
         if (! $this->isPrimaryFieldtype()) {
-            $name = Str::snake($this->getAddonName()) . '.' . $name;
+            $name = Str::snake($this->getAddonClassName()) . '.' . $name;
         }
 
         return $name;
@@ -101,7 +103,13 @@ class Fieldtype implements FieldtypeInterface
      */
     public function getFieldtypeName()
     {
-        return ($this->isPrimaryFieldtype()) ? $this->getAddonName() : $this->getClassNameWithoutSuffix();
+        $name = $this->getAddonName();
+
+        if (! $this->isPrimaryFieldtype()) {
+            $name .= ' - ' . $this->getClassNameWithoutSuffix();
+        }
+
+        return $name;
     }
 
     public function isPrimaryFieldtype()

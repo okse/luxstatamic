@@ -57,6 +57,8 @@ class TreeFactory
             $tree_content = $this->prependHome($tree_content);
         }
 
+        $tree_content = $this->limitAndOffset($tree_content);
+
         $tree = new Tree($tree_content);
 
         $tree->filter($this->params['conditions']);
@@ -82,5 +84,21 @@ class TreeFactory
         $tree_content[] = $home;
 
         return array_reverse($tree_content);
+    }
+
+    private function limitAndOffset($items)
+    {
+        $offset = array_get($this->params, 'offset');
+        $limit = array_get($this->params, 'limit');
+
+        if (!$offset && !$limit) {
+            return $items;
+        }
+
+        return array_slice(
+            $items,
+            $offset,
+            $limit ?: count($items)
+        );
     }
 }

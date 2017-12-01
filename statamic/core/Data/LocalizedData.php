@@ -66,11 +66,13 @@ class LocalizedData implements LocalizedDataContract
      */
     private function call($method, $args = [])
     {
+        $originalLocale = $this->data->locale();
+
         $this->data->locale($this->locale);
 
         $return = call_user_func_array([$this->data, $method], $args);
 
-        $this->data->resetLocale();
+        $this->data->locale($originalLocale);
 
         // If the returned value if the data, we will re-wrap it in a
         // localized version to allow for localized chaining.

@@ -1,20 +1,18 @@
 <div>
-	<div class="card sticky flat-bottom">
-		<div class="head">
-			<h1 class="pull-left" v-if="create">
+
+		<div class="flexy mb-24 sticky">
+			<h1 class="fill" v-if="create">
 				{{ translate('cp.create_fieldset') }}
 			</h1>
 
-			<h1 class="pull-left" v-if="!create">
+			<h1 class="fill" v-else>
 				{{ translate('cp.editing_fieldset') }}:
 				<strong>{{ fieldsetTitle }}</strong>
 			</h1>
-
-			<button type="button" class="btn btn-primary pull-right" v-on:click="save()" :disabled="!canSave">{{ translate('cp.save') }}</button>
+			<button type="button" class="btn btn-primary" v-on:click="save()" :disabled="!canSave">{{ translate('cp.save') }}</button>
 		</div>
-	</div>
 
-	<div class="card flat-top">
+	<div class="card">
 		<div v-if="loading && !errorMessage" class="loading">
 			<span class="icon icon-circular-graph animation-spin"></span> {{ translate('cp.loading') }}
 		</div>

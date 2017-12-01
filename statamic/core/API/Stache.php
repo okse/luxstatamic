@@ -22,7 +22,7 @@ class Stache
     public static function clear()
     {
         collect(Cache::get('stache::keys', []))
-            ->merge(['meta', 'timestamps', 'config', 'keys'])
+            ->merge(['meta', 'timestamps', 'config', 'keys', 'duplicates'])
             ->each(function ($key) {
                 Cache::forget("stache::$key");
             });

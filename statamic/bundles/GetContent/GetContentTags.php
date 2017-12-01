@@ -2,6 +2,7 @@
 
 namespace Statamic\Addons\GetContent;
 
+use Statamic\API\URL;
 use Statamic\API\Helper;
 use Statamic\API\Content;
 use Statamic\Addons\Collection\CollectionTags;
@@ -40,7 +41,7 @@ class GetContentTags extends CollectionTags
         $this->collection = collect_content(
             Helper::explodeOptions($locations)
         )->map(function ($from) use ($locale) {
-            return $this->getContent($from)->in($locale);
+            return ($content = $this->getContent($from, $locale)) ? $content->in($locale) : null;
         })->filter();
 
         $this->filter();
@@ -52,10 +53,17 @@ class GetContentTags extends CollectionTags
      * Get content from somewhere
      *
      * @param string $from  Either an ID or URI
+     * @param string $locale  Locale to get the content from
      * @return \Statamic\Contracts\Data\Content\Content
      */
-    protected function getContent($from)
+    protected function getContent($from, $locale)
     {
+        // If a secondary locale is specified, get the default URI
+        // since that's how they are referenced internally.
+        if ($locale !== default_locale()) {
+            $from = URL::unlocalize($from, $locale);
+        }
+
         if (Content::uriExists($from)) {
             return Content::whereUri($from);
         }

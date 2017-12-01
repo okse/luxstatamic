@@ -41,7 +41,7 @@
 
                     <!-- actions -->
                     <td class="column-actions" v-if="hasActions">
-                        <div class="btn-group">
+                        <div class="btn-group action-more">
                             <button type="button" class="btn-more dropdown-toggle"
                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <i class="icon icon-dots-three-vertical"></i>

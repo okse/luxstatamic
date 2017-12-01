@@ -373,4 +373,21 @@ class Stache
 
         return compact('meta', 'config');
     }
+
+    /**
+     * Get all the file paths with duplicate IDs.
+     *
+     * @return Collection
+     */
+    public function duplicates()
+    {
+        $cached = \Cache::get('stache::duplicates', []);
+
+        return collect($cached)->map(function ($paths, $id) {
+            $item = $this->ids()->get($id);
+            $path = explode('::', $item)[1];
+            array_unshift($paths, $path);
+            return $paths;
+        });
+    }
 }

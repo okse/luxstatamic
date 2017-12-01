@@ -10,9 +10,9 @@ table {
 		position: relative;
 	}
 
-        tr.warning td {
-            background-color: #fcf8e2;
-        }
+    tr.warning td {
+        background-color: #fcf8e2;
+    }
 
 	tbody tr.active td { background: $color_gray_input; }
 
@@ -22,10 +22,11 @@ table {
 	}
 
 	th {
-		color: black;
-		font: 11px $font_montserrat;
-		padding: 12px 5px 12px 5px;
-		text-transform: uppercase;
+		color: $color_gray_light;
+		font-size: 11px;
+        font-weight: bold;
+        padding: 12px 5px 12px 5px;
+        text-transform: uppercase;
 	}
 	td {
         font-size: 14px;
@@ -81,7 +82,7 @@ table {
 		> tr {
 			> th {
 				border-top: solid 1px $color_border;
-				font-family: $font_sans;
+				font-family: $font;
 				font-size: 14px;
 				text-transform: none;
 			}
@@ -95,10 +96,10 @@ table {
 			}
 		}
 
-		tr:first-child th:first-child { border-top-left-radius: 2px; }
-		tr:first-child th:last-child { border-top-right-radius: 2px; }
-		tr:last-child td:first-child { border-bottom-left-radius: 2px; }
-		tr:last-child td:last-child { border-bottom-right-radius: 2px; }
+		tr:first-child th:first-child { border-top-left-radius: 3px; }
+		tr:first-child th:last-child { border-top-right-radius: 3px; }
+		tr:last-child td:first-child { border-bottom-left-radius: 3px; }
+		tr:last-child td:last-child { border-bottom-right-radius: 3px; }
 	}
 }
 
@@ -138,7 +139,7 @@ table {
 .column-sortable {
 	cursor: pointer;
 	&:hover {
-        padding-bottom: 14px !important;
+        padding-bottom: 10px !important;
         border-bottom: 2px solid $brand-secondary;
 	}
 	.icon {

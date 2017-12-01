@@ -1,5 +1,5 @@
 <template>
-    <div class="markdown-fieldtype-wrapper">
+    <div class="markdown-fieldtype-wrapper" :class="{'markdown-fullscreen': fullScreenMode}">
 
         <div class="markdown-toolbar clearfix">
             <ul class="markdown-modes">
@@ -12,13 +12,19 @@
             </ul>
 
             <ul class="markdown-buttons">
-                <li><a href="" @click.prevent="bold" tabindex="-1"><b>B</b></a></li>
-                <li><a href="" @click.prevent="italic" tabindex="-1"><i>i</i></a></li>
-                <li><a href="" @click.prevent="insertLink('')" tabindex="-1">
+                <li><a @click="bold" tabindex="-1"><b>B</b></a></li>
+                <li><a @click="italic" tabindex="-1"><i>i</i></a></li>
+                <li><a @click="insertLink('')" tabindex="-1">
                     <span class="icon icon-link"></span>
                 </a></li>
-                <li><a href="" @click.prevent="insertImage('')" tabindex="-1">
+                <li><a @click="insertImage('')" tabindex="-1">
                     <span class="icon icon-image"></span>
+                </a></li>
+                <li><a @click="toggleFullScreen" tabindex="-1">
+                    <span class="icon" :class="{
+                        'icon-resize-full-screen' : ! fullScreenMode,
+                        'icon-resize-100' : fullScreenMode
+                        }"></span>
                 </a></li>
             </ul>
         </div>
@@ -34,7 +40,7 @@
 
                 <div class="editor" v-el:codemirror></div>
 
-                <div class="helpers">
+                <div class="helpers" v-if="cheatsheet || assetsEnabled">
                     <div class="markdown-cheatsheet-helper" v-if="cheatsheet">
                         <a href="" @click.prevent="showCheatsheet = true">
                             <svg xmlns="http://www.w3.org/2000/svg" width="208" height="128" viewBox="0 0 208 128"><mask id="a"><rect width="100%" height="100%" fill="#fff"/><path d="M30 98v-68h20l20 25 20-25h20v68h-20v-39l-20 25-20-25v39zM155 98l-30-33h20v-35h20v35h20z"/></mask><rect width="100%" height="100%" ry="15" mask="url(#a)"/></svg>
@@ -85,9 +91,12 @@
 
 <script>
 var CodeMirror = require('codemirror');
+var marked = require('marked');
+var PlainTextRenderer = require('marked-plaintext');
 
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/addon/edit/matchbrackets');
+require('codemirror/addon/display/autorefresh');
 require('codemirror/mode/htmlmixed/htmlmixed');
 require('codemirror/mode/xml/xml');
 require('codemirror/mode/markdown/markdown');
@@ -100,12 +109,12 @@ require('codemirror/mode/yaml/yaml');
 
 module.exports = {
 
+    mixins: [Fieldtype],
+
     components: {
         selector: require('../assets/Selector.vue'),
         Uploader: require('../assets/Uploader.vue')
     },
-
-    props: ['data', 'name', 'config'],
 
     data: function() {
         return {
@@ -116,11 +125,17 @@ module.exports = {
             selectorViewMode: null,
             draggingFile: false,
             showCheatsheet: false,
+            fullScreenMode: false,
             codemirror: null       // The CodeMirror instance
         };
     },
 
     methods: {
+
+        toggleFullScreen: function() {
+            this.fullScreenMode = ! this.fullScreenMode;
+        },
+
         /**
          * Get the text for a selection
          *
@@ -400,6 +415,14 @@ module.exports = {
             if (uploads.length > 1) {
                 this.codemirror.setCursor(this.codemirror.lineCount(), 0);
             }
+        },
+
+        getReplicatorPreviewText() {
+            return marked(this.data || '', { renderer: new PlainTextRenderer });
+        },
+
+        focus() {
+            this.codemirror.focus();
         }
 
     },
@@ -440,6 +463,7 @@ module.exports = {
             lineWrapping: true,
             viewportMargin: Infinity,
             tabindex: 0,
+            autoRefresh: true
         });
 
         self.codemirror.on('change', function (cm) {

@@ -31,7 +31,7 @@
 
 module.exports = {
 
-    props: ['data', 'config', 'name'],
+    mixins: [Fieldtype],
 
     computed: {
         hour: {
@@ -120,6 +120,10 @@ module.exports = {
 
         focusMinute: function() {
             $(this.$els.minute).focus().select();
+        },
+
+        focus() {
+            this.$els.hour.focus();
         }
     }
 };

@@ -12,7 +12,7 @@ module.exports = {
 
     computed: {
         canLocalize: function() {
-            return this.root && Statamic.locales.length > 1;
+            return this.root && Object.keys(Statamic.locales).length > 1;
         }
     },
 

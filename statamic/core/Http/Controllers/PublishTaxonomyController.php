@@ -5,6 +5,7 @@ namespace Statamic\Http\Controllers;
 use Illuminate\Http\Request;
 use Statamic\API\Taxonomy;
 use Statamic\API\Term;
+use Statamic\API\Fieldset;
 use Stringy\StaticStringy as Stringy;
 
 class PublishTaxonomyController extends PublishController
@@ -51,7 +52,8 @@ class PublishTaxonomyController extends PublishController
             'status'            => true,
             'locale'            => default_locale(),
             'is_default_locale' => true,
-            'locales'           => $this->getLocales()
+            'locales'           => $this->getLocales(),
+            'suggestions'       => $this->getSuggestions(Fieldset::get($fieldset)),
         ]);
     }
 
@@ -103,7 +105,8 @@ class PublishTaxonomyController extends PublishController
             'status'            => $status,
             'locale'            => $locale,
             'is_default_locale' => $term->isDefaultLocale(),
-            'locales'           => $this->getLocales($id)
+            'locales'           => $this->getLocales($id),
+            'suggestions'       => $this->getSuggestions($term->fieldset()),
         ]);
     }
 

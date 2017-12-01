@@ -10,8 +10,8 @@
                     <div class="focal-point-reticle" :style="{ top: y+'%', left: x+'%' }"></div>
                 </div>
             </div>
-            <div class="flexy">
-                <div class="btn-group fill">
+            <div class="flexy apart">
+                <div class="btn-group">
                     <button type="button" class="btn btn-default" @click.prevent="close">{{ translate('cp.cancel') }}</button>
                     <button type="button" class="btn btn-default" @click.prevent="reset">{{ translate('cp.reset') }}</button>
                     <button type="button" class="btn btn-primary" @click="select">{{ translate('cp.select') }}</button>

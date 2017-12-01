@@ -39,6 +39,7 @@ Route::group(['prefix' => CP_ROUTE, 'middleware' => ['auth']], function () {
         get('edit/{url?}', ['uses' => 'PublishPageController@edit', 'as' => 'page.edit'])->where('url', '.*');
 
         post('mount', ['uses' => 'PagesController@mountCollection', 'as' => 'page.mount']);
+        post('duplicate', 'DuplicatePageController@store');
     });
 
     // Collections
@@ -56,6 +57,7 @@ Route::group(['prefix' => CP_ROUTE, 'middleware' => ['auth']], function () {
         post('reorder', 'EntriesController@reorder')->name('entries.reorder');
 
         get('/{collection}/create', 'PublishEntryController@create')->name('entry.create');
+        post('/{collection}/duplicate', 'DuplicateEntryController@store')->name('entry.duplicate');
         get('/{collection}/{slug}', ['uses' => 'PublishEntryController@edit', 'as' => 'entry.edit']);
         post('publish', 'PublishEntryController@save')->name('entry.save');
 
@@ -114,8 +116,7 @@ Route::group(['prefix' => CP_ROUTE, 'middleware' => ['auth']], function () {
                 '.*')->name('assets.folder.update');
         });
 
-        post('replace-edited-image', 'AssetsController@replaceEditedImage');
-        get('image-editor-auth', 'AssetsController@editorAuth');
+        get('thumbnails/{asset}/{size?}', 'AssetThumbnailController@show')->name('asset.thumbnail');
 
         post('get', 'AssetsController@get')->name('assets.get');
         delete('delete', 'AssetsController@delete')->name('asset.delete');
@@ -302,6 +303,9 @@ Route::group(['prefix' => CP_ROUTE, 'middleware' => ['auth']], function () {
         get('perform', 'SearchController@search');
         get('update', 'SearchController@update');
     });
+
+    get('resolve-duplicate-ids', 'DuplicateIdController@index')->name('resolve-duplicate-ids');
+    post('resolve-duplicate-ids', 'DuplicateIdController@update')->name('resolve-duplicate-ids.update');
 
     // 404 - Any unrecognized /cp pages come here.
     get('{segments}', 'CpController@pageNotFound')->where('segments', '.*')->name('404');

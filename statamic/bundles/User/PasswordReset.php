@@ -106,9 +106,7 @@ class PasswordReset
      */
     public function updatePassword($password)
     {
-        $this->user->remove('password_hash', null);
-
-        $this->user->set('password', $password);
+        $this->user->password($password);
 
         $this->user->setPasswordResetToken(null);
 

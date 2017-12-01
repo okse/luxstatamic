@@ -7,31 +7,29 @@
 
         <div class="form-submission-listing">
 
-            <div class="card flat-bottom">
-                <div class="head">
-                    <h1>{{ $form->title() }}</h1>
+            <div class="flexy mb-24">
+                <h1 class="fill">{{ $form->title() }}</h1>
 
-                    @can('super')
-                    <a href="{{ route('form.edit', ['form' => $form->name()]) }}" class="btn">{{ t('configure') }}</a>
-                    @endcan
+                @can('super')
+                <a href="{{ route('form.edit', ['form' => $form->name()]) }}" class="btn mr-8">{{ t('configure') }}</a>
+                @endcan
 
-                    <div class="btn-group">
-                        <a href="{{ route('form.export', ['type' => 'csv', 'form' => $form->name()]) }}?download=true"
-                           type="button" class="btn btn-default">{{ t('export') }}</a>
-                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            <span class="caret"></span>
-                            <span class="sr-only">{{ translate('cp.toggle_dropdown') }}</span>
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a href="{{ route('form.export', ['type' => 'csv', 'form' => $form->name()]) }}?download=true">{{ t('export_csv') }}</a></li>
-                            <li><a href="{{ route('form.export', ['type' => 'json', 'form' => $form->name()]) }}?download=true">{{ t('export_json') }}</a></li>
-                        </ul>
-                    </div>
+                <div class="btn-group">
+                    <a href="{{ route('form.export', ['type' => 'csv', 'form' => $form->name()]) }}?download=true"
+                       type="button" class="btn btn-default">{{ t('export') }}</a>
+                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <span class="caret"></span>
+                        <span class="sr-only">{{ translate('cp.toggle_dropdown') }}</span>
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{ route('form.export', ['type' => 'csv', 'form' => $form->name()]) }}?download=true">{{ t('export_csv') }}</a></li>
+                        <li><a href="{{ route('form.export', ['type' => 'json', 'form' => $form->name()]) }}?download=true">{{ t('export_json') }}</a></li>
+                    </ul>
                 </div>
             </div>
 
-            <div class="card flat-top">
-                @if (! empty($form->metrics()))
+            @if (! empty($form->metrics()))
+            <div class="card">
                     <div class="metrics">
                         @foreach($form->metrics() as $metric)
                             <div class="metric simple">
@@ -42,8 +40,8 @@
                             </div>
                         @endforeach
                     </div>
-                @endif
             </div>
+            @endif
 
             <div class="card" v-if="noItems">
                 <div class="no-results">

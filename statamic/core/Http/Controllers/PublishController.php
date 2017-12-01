@@ -4,11 +4,14 @@ namespace Statamic\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Statamic\API\Fieldset;
+use Statamic\API\Arr;
 use Statamic\API\Config;
+use Statamic\API\Helper;
 use Statamic\API\Content;
 use Statamic\API\Taxonomy;
 use Statamic\CP\Publish\Publisher;
 use Statamic\Contracts\CP\Fieldset as FieldsetContract;
+use Statamic\Addons\Suggest\TypeMode;
 use Statamic\Exceptions\PublishException;
 
 abstract class PublishController extends CpController
@@ -179,9 +182,14 @@ abstract class PublishController extends CpController
                 $url .= '?locale=' . $locale;
             }
 
+            // Locales should appear to be published by default, if you're targeting the default locale.
+            $is_published = request()->input('locale', Config::getDefaultLocale()) === Config::getDefaultLocale();
+
             $has_content = false;
             if ($uuid) {
-                $has_content = Content::find($uuid)->hasLocale($locale);
+                $content = Content::find($uuid);
+                $has_content = $content->hasLocale($locale);
+                $is_published = $content->in($locale)->published();
             }
 
             $locales[] = [
@@ -189,7 +197,8 @@ abstract class PublishController extends CpController
                 'label'       => Config::getLocaleName($locale),
                 'url'         => $url,
                 'is_active'   => $locale === app('request')->query('locale', Config::getDefaultLocale()),
-                'has_content' => $has_content
+                'has_content' => $has_content,
+                'is_published' => $is_published,
             ];
         }
 
@@ -254,5 +263,61 @@ abstract class PublishController extends CpController
         }
 
         return array_merge($blanks, $data);
+    }
+
+    protected function getSuggestions($fieldset)
+    {
+        return collect(
+            $this->getSuggestFields($fieldset->fields())
+        )->map(function ($config) {
+            $config = Arr::except($config, ['display', 'instructions', 'max_items']);
+
+            $mode = (new TypeMode)->resolve(
+                $config['type'],
+                array_get($config, 'mode', 'options')
+            );
+
+            return [
+                'suggestions' => (new $mode($config))->suggestions(),
+                'key' => json_encode($config)
+            ];
+        })->pluck('suggestions', 'key');
+    }
+
+    protected function getSuggestFields($fields, $prefix = '')
+    {
+        $suggestFields = [];
+
+        foreach ($fields as $handle => $config) {
+            $type = array_get($config, 'type', 'text');
+
+            if (isset($config['options'])) {
+                $config['options'] = format_input_options($config['options']);
+            }
+
+            foreach (['collection', 'taxonomy'] as $forceArrayKey) {
+                if (isset($config[$forceArrayKey])) {
+                    $config[$forceArrayKey] = Helper::ensureArray($config[$forceArrayKey]);
+                }
+            }
+
+            if ($type === 'grid') {
+                $suggestFields = array_merge($suggestFields, $this->getSuggestFields($config['fields'], $prefix . $handle));
+            }
+
+            if ($type === 'replicator') {
+                foreach ($config['sets'] as $set) {
+                    if (isset($set['fields'])) {
+                        $suggestFields = array_merge($suggestFields, $this->getSuggestFields($set['fields'], $prefix . $handle));
+                    }
+                }
+            }
+
+            if (in_array($type, ['suggest', 'collection', 'taxonomy', 'pages', 'users', 'collections', 'form'])) {
+                $suggestFields[$prefix . $handle] = $config;
+            }
+        }
+
+        return $suggestFields;
     }
 }

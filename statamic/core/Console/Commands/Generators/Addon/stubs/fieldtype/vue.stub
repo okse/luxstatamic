@@ -1,8 +1,8 @@
 Vue.component('dummy_addon-fieldtype', {
 
-    template: '<div>DummyAddon</div>',
+    mixins: [Fieldtype],
 
-    props: ['data', 'config', 'name'],
+    template: '<div>DummyAddon</div>',
 
     data: function() {
         return {

@@ -1,6 +1,6 @@
 .fields-table {
     th {
-        @include toolbar;
+        background: $bg;
         display: table-cell;
         box-shadow: none;
         padding-left: 10px;

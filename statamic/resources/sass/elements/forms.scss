@@ -1,3 +1,7 @@
+/* ==========================================================================
+   BASIC FORM FIELDS
+   ========================================================================== */
+
 form {
 	ul,li {
 		list-style: none;
@@ -6,16 +10,17 @@ form {
 }
 
 fieldset {
-	margin-bottom: 14px;
+	margin-bottom: 16px;
 }
 
 label {
 	font-weight: normal;
-    color: #000;
+    color: #333;
+    font-size: 14px;
 }
 
 .form-group.tight {
-	margin-bottom: 10px;
+	margin-bottom: 8px;
 }
 
 .form-control,
@@ -29,9 +34,13 @@ input {
 	&[type="radio"] + label:before {
 		background: $color_gray_input;
 		border: none;
-		border-radius: 2px;
+		border-radius: 3px;
 
 		@include box-shadow(inset 0px 1px 1px 0px rgba(0,0,0,.1));
+
+        .replicator-fieldtype & {
+            background: #fff;
+        }
 	}
 
     &.code {
@@ -39,6 +48,13 @@ input {
         font-size: 12px;
         color: $color_red;
     }
+
+    &[type="text"],
+    &[type="search"],
+    &[type="email"],
+    &[type="number"] {
+		height: 32px;
+	}
 
 	&[type="checkbox"] {
         opacity: 0;
@@ -77,7 +93,9 @@ input {
 	}
 
 	&[type="radio"] {
-		display: none;
+        opacity: 0;
+        position: absolute;
+        left: -9999px;
 
 		& + label {
 			cursor: pointer;
@@ -94,7 +112,12 @@ input {
 		}
 		&:checked + label:before {
 			@include background('../img/checked-radio-default.png', 10px 10px, $color_gray_input, center);
+
+			.replicator-fieldtype & { background-color: #fff; }
 		}
+        &:focus + label:before {
+            border: 1px solid $brand-primary;
+        }
 
 		&.radio-small {
 			& + label {
@@ -136,54 +159,6 @@ label .required {
 	font-style: normal;
 }
 
-.form-group {
-	margin-bottom: 30px;
-
-	.form-inline & { min-width: 200px; }
-
-    .col-md-8 & { margin-bottom: 50px; }
-
-    .help-block {
-		color: $color_gray_light;
-		font-size: 13px;
-		margin-top: -5px;
-        a {
-            color: $color_red;
-            &:hover { color: #000; }
-        }
-	}
-    .input-with-loader + .help-block {
-        margin-top: 0px;
-    }
-
-	.list-group .list-group-item { padding: 10px 15px 5px 15px; }
-
-    .list-group .form-group { margin-bottom: 25px; }
-
-	&.form-grid,
-	.form-grid {
-		input,
-		textarea {
-			background: none;
-			box-shadow: none;
-		}
-	}
-}
-
-.form-group.inline {
-    display: flex;
-    align-items: stretch;
-
-    padding: 0 !important;
-    margin: 0 !important;
-
-    // .major { flex: 3; }
-    .minor { flex: 1; }
-    > div {
-        // min-width: 100px;
-    }
-}
-
 select {
 	appearance: none;
 	-khtml-appearance: none;
@@ -192,7 +167,6 @@ select {
 	cursor: pointer;
 	left: 0;
 	opacity: 0;
-	padding: 8px 32px 8px 12px;
 	position: absolute;
 	top: 0;
 	width: 100%;
@@ -227,21 +201,11 @@ select {
 		display: inline-block;
 		text-overflow: ellipsis;
         width: 80%;
-
-        // This is making the shape shift on select
-		// overflow: hidden;
 	}
 
 	&.select-full {
 		max-width: 100%;
 		width: 100%;
-	}
-
-	&.select--active {
-		top: 1px;
-		// box-shadow: 0 2px #ccc, 0 1px 8px rgba(102, 175, 233, 0.6);
-		box-shadow: 0 2px #ccc;
-		background: #eaeaea;
 	}
 
 	span.status {
@@ -266,6 +230,12 @@ select {
 	}
 }
 
+input[type="file"] {
+    padding: 16px;
+    height: auto;
+    line-height: 1;
+}
+
 input.slug {
     background: none;
     box-shadow: none;
@@ -285,16 +255,6 @@ input.slug {
     }
 }
 
-.help-block {
-    width: 100%;
-}
-
-.help-link {
-    display: block;
-    margin-top: 12px;
-    font-size: 13px;
-}
-
 .faux-checkbox {
 	cursor: pointer;
 	display: inline-block;
@@ -311,14 +271,62 @@ input.slug {
 	}
 }
 
-
 .filter-control {
     background: #fff;
     border: 1px solid rgba(0,0,0,.15);
     font-size: 14px;
     line-height: 1.5;
-    padding: 7px 10px 8px;
-    top: 2px;
     position: relative;
-    padding: 5px 10px 7px;
+
+	&.search { height: 34px !important; }
+}
+
+
+
+/* Form groups
+  ========================================================================== */
+
+.form-group {
+	margin-bottom: 32px;
+
+	// .form-inline & { min-width: 200px; }
+
+    .col-md-8 & { margin-bottom: 48px; }
+
+    .help-block {
+		color: $color_gray_light;
+		font-size: 13px;
+		margin-top: -5px;
+        a {
+            color: $color_red;
+            &:hover { color: #000; }
+        }
+	}
+    .input-with-loader + .help-block {
+        margin-top: 0;
+    }
+
+	.list-group .list-group-item { padding: 8px 16px; }
+
+    .list-group .form-group { margin-bottom: 24px; }
+
+	&.form-grid,
+	.form-grid {
+		input,
+		textarea {
+			background: none;
+			box-shadow: none;
+		}
+	}
+}
+
+.form-group.inline {
+    display: flex;
+    align-items: stretch;
+    padding: 0 !important;
+    margin: 0 !important;
+
+	.form-group { flex-basis: auto; }
+
+    .major { flex: 1; }
 }

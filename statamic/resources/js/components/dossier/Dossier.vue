@@ -41,7 +41,16 @@ module.exports = {
 
         isSearching() {
             return this.searchTerm.length >= 3;
+        },
+
+        getParameters() {
+            return {
+                sort: this.sort,
+                order: this.sortOrder,
+                page: this.selectedPage
+            };
         }
+
     },
 
     ready: function () {
@@ -66,11 +75,7 @@ module.exports = {
 
     methods: {
         getItems: function () {
-            this.$http.get(this.ajax.get, {
-                sort: this.sort,
-                order: this.sortOrder,
-                page: this.selectedPage
-            }, function(data, status, request) {
+            this.$http.get(this.ajax.get, this.getParameters, function(data, status, request) {
                 this.items = data.items;
                 this.columns = data.columns;
                 this.loading = false;

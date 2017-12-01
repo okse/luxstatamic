@@ -1,13 +1,14 @@
-.publishing .page-wrapper {
-    padding: 30px 45px;
-}
-
 .publish-form {
     position: relative;
 
     .loading-blocker {
         padding-top: 50px;
         border-radius: 3px;
+    }
+
+    &.stuck {
+        // account for the shift when the header becomes sticky and removed from flow.
+        padding-top: 57px;
     }
 }
 
@@ -19,6 +20,7 @@
         position: relative;
         top: 3px;
     }
+
     .locale {
         float: left;
         font-size: 12px;
@@ -58,29 +60,7 @@ code.parent-url {
     color: $color_gray_light;
 }
 
-#publish-controls {
-    display: flex;
-    justify-content: flex-end;
-    width: 100%;
-
-    h1 {
-        font-size: 28px;
-        flex: 1;
-        margin-bottom: 0;
-        padding-right: 15px;
-        margin-bottom: 30px;
-    }
-
-    .controls {
-        display: flex;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-
-}
-
 #publish-meta {
-    padding-bottom: 20px;
 
     input { width: 100%; }
 
@@ -89,7 +69,9 @@ code.parent-url {
         justify-content: flex-start;
     }
 
-    .form-group { margin-bottom: 0px; }
+    .form-group {
+        padding: 8px;
+    }
 }
 
 .publish-fields {
@@ -97,11 +79,11 @@ code.parent-url {
     flex-direction: row;
     flex-wrap: wrap;
     align-items: stretch;
+    padding-bottom: 32px;
 
     .form-group {
         flex-basis: 100%;
-        padding: 15px;
-        margin-bottom: 15px;
+        padding: 8px;
 
         &.width-100 { flex-basis: 100%; }
         &.width-75 { flex-basis: 75%; }
@@ -110,12 +92,10 @@ code.parent-url {
         &.width-33 { flex-basis: 33.3%; }
         &.width-25 { flex-basis: 25%; }
 
+        > label,
         .field-inner > label {
-            margin-bottom: 10px;
-
-            + .help-block {
-                margin-top: -10px;
-            }
+            font-weight: 500;
+            margin-bottom: 8px;
         }
     }
 
@@ -126,19 +106,6 @@ code.parent-url {
     .has-error > .field-inner > label {
         color: $color_red;
     }
-
-    //.actions {
-    //    display: none;
-    //    position: absolute;
-    //    z-index: 2;
-    //    top: 10px;
-    //    right: 15px;
-    //
-    //    span {
-    //        color: #ccc;
-    //        cursor: pointer;
-    //    }
-    //}
 
     // Being dragged
     .ui-sortable-helper {
@@ -193,6 +160,15 @@ code.parent-url {
     background: rgba(white, 0);
     box-shadow: 0 0 0 1px rgba(63, 63, 68, 0.1), 0 1px 2px rgba(63, 63, 68, 0.1);
     cursor: move;
+    background: rgba(white, .75);
+    border-color: $border;
+    border-radius: 3px;
+
+    &:hover {
+        background: rgba($brand-primary, .75);
+        border-color: $brand-primary;
+        .select { display: block; }
+    }
 
     .field-actions {
         position: absolute;
@@ -205,57 +181,25 @@ code.parent-url {
         margin-left: 3px;
     }
 
-    .gear {
-        cursor: pointer;
-    }
+    .gear { cursor: pointer; }
 
     .select {
         position: absolute;
         top: 0;
         right: 24px;
         width: 60px;
-        height: auto;
+        height: 32px;
         font-size: 11px;
         padding: 3px 5px 0 7px;
 
         &:after {
-            top: 7px;
-            height: 9px;
             width: 11px;
             background-position: 0 center;
         }
     }
-
-    &:hover {
-        background: rgba(white, .8);
-        border-color: darken($border, 5);
-
-        .select {
-            display: block;
-        }
-    }
 }
 
-@media (max-width: 768px) {
-
-    #publish-controls h1 {
-        flex: none;
-        font-size: 24px;
-        text-align: center;
-        padding: 0;
-        white-space: normal;
-        overflow: auto;
-        text-overflow: inherit;
-        width: 500px;
-    }
-
-    #publish-controls {
-        align-items: center;
-        justify-content: center;
-        flex-direction: column;
-        flex-wrap: wrap;
-        .controls { padding: 25px 0 15px; }
-    }
+@media (max-width: $screen-xs-max) {
 
     #publish-meta {
         .form-group, .form-group.inline {
@@ -265,48 +209,6 @@ code.parent-url {
             .form-group { flex-basis: 100%; }
             &:last-child { margin-bottom: 0; }
         }
-    }
-}
-
-@media (max-width: 940px) {
-    #publish-form #publish-controls {
-        background: #fff;
-    }
-
-    #publish-controls {
-        padding: 15px;
-
-        h1 {
-            margin-bottom: 0;
-            max-width: 500px;
-        }
-
-        .controls { margin-bottom: 0; }
-    }
-
-    #publish-meta {
-        padding: 0;
-    }
-    .publish-fields .form-group {
-        flex-basis: 100%;
-
-        &.width-100,
-        &.width-75,
-        &.width-66,
-        &.width-50,
-        &.width-33,
-        &.width-25 { flex-basis: 100%; }
-    }
-
-    .publish-form .card {
-        border-bottom: 1px solid $border;
-        margin-bottom:0;
-    }
-}
-
-@media (max-width: 1024px) {
-    .publishing .page-wrapper {
-        padding: 30px;
     }
 }
 
@@ -339,15 +241,15 @@ code.parent-url {
         flex-basis: 30%;
         padding-left: 30px;
 
-        .card { padding: 5px; }
-
         .form-group, .form-group.inline {
             flex-basis: 100%;
             flex-wrap: wrap;
 
             .form-group { flex-basis: 100%; }
+        }
 
-            &:last-child { margin-bottom: 0; }
+        .form-group:last-child {
+            margin-bottom: 0;
         }
     }
 
@@ -367,3 +269,52 @@ code.parent-url {
 }
 
 
+
+
+/* Sticky Header
+  ========================================================================== */
+
+  .stacked.stuck {
+      border-radius: 2px;
+      border: none;
+  }
+
+  .stuck .sticky {
+      @extend .card;
+      margin-left: 224px;
+      margin-right: 24px;
+      border-bottom: 0;
+
+      #publish-title,
+      .controls { margin-bottom: 0 !important; }
+  }
+
+
+
+
+  /* Responsive
+    ========================================================================== */
+
+@media (max-width: 980px) {
+
+  #publish-controls {
+      h1 { display: none; }
+  }
+
+  .stuck .sticky {
+      margin-left: 164px;
+      border-radius: 0;
+      text-align: center;
+  }
+
+  .publish-fields .form-group {
+      flex-basis: 100%;
+
+      &.width-100,
+      &.width-75,
+      &.width-66,
+      &.width-50,
+      &.width-33,
+      &.width-25 { flex-basis: 100%; }
+  }
+}

@@ -1,51 +1,83 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		@include('partials.head')
-	</head>
+<head>
+      @include('partials.head')
+</head>
 
-	<body id="statamic" :class="{ 'nav-visible': navVisible }">
+<body id="statamic" :class="{ 'nav-visible': navVisible }">
 
-		{!! inline_svg('sprite') !!}
+      @if ($is_trial || $is_unlicensed)
+            <div class="site-status-stripe flexy">
+                  <div class="fill">
+                        @if ($is_trial) {{ t('trial_mode_badge') }} @elseif ($is_unlicensed){{ t('unlicensed') }} @endif
+                  </div>
+                  <a href="{{ route('licensing') }}" class="btn btn-small mr-16">Add License Key</a>
+                  <a href="https://statamic.com/buy" class="btn btn-primary btn-small" target="_blank">Buy Now</a>
+            </div>
+      @endif
 
-		@include('partials.nav-main')
-		@include('partials.shortcuts')
+      {!! inline_svg('sprite') !!}
 
-		<div class="sneak-peek-viewport">
-			<i class="icon icon-circular-graph animation-spin"></i>
-			<div class="sneak-peek-iframe-wrap" id="sneak-peek"></div>
-		</div>
+      <nav class="nav-mobile">
+          <a href="{{ route('cp') }}" class="logo">
+              {!! svg('statamic-logo') !!}
+          </a>
+          <a @click.prevent="toggleNav" class="toggle">
+              <span class="icon icon-menu"></span>
+          </a>
+      </nav>
 
-		<div class="content @yield('content-class')">
+      <div class="sneak-peek-wrapper">
+            <div class="sneak-peek-viewport">
+                  <i class="icon icon-circular-graph animation-spin"></i>
+                  <div class="sneak-peek-resizer" @mousedown="sneakPeekResizeStart"></div>
+                  <div class="sneak-peek-iframe-wrap" id="sneak-peek"></div>
+            </div>
+      </div>
 
-			<div class="cp-head">
-			    <typeahead v-ref:search :src="cp_url('search/perform')" :limit="10"></typeahead>
+      @include('partials.shortcuts')
 
-		        <a href="{{ route('site') }}" target="_blank" class="view" v-cloak>
-		    	    <span class="icon icon-eye"></span> {{ translate('cp.view_site') }}
-		        </a>
-			</div>
+      <div class="application-grid">
 
-			@include('partials.alerts')
+            <nav class="nav-main">
+                  <a href="{{ route('cp') }}" class="logo">
+                        {!! inline_svg('statamic-logo') !!}
+                        <span class="version" v-cloak>@{{ version }}</span>
+                  </a>
+                  @include('partials.nav-main')
+            </nav>
 
-			<div class="page-wrapper" v-show="showPage">
+            <div class="content @yield('content-class')">
 
-				<div class="sneak-peek-header">
-					<h2 class="pull-left">{{ trans('cp.sneak_peeking') }}</h2>
-					<button class="pull-right btn btn-primary" @click="stopPreviewing">{{ trans('cp.done') }}</button>
-				</div>
+                  @include('partials.global-header')
 
-				@yield('content')
+                  @include('partials.alerts')
 
-			</div>
-		</div>
+                  <div class="page-wrapper">
+                        <div class="sneak-peek-header flexy">
+                              <h1 class="fill">{{ trans('cp.sneak_peeking') }}</h1>
+                              <button class="btn btn-primary" @click="stopPreviewing">{{ trans('cp.done') }}</button>
+                        </div>
+                        @yield('content')
+                  </div>
+            </div>
 
-		<script>
-			Statamic.translations = {!! $translations !!};
-			Statamic.permissions = '{!! $permissions !!}';
-			Statamic.version = '{!! STATAMIC_VERSION !!}';
-		</script>
-		@include('partials.scripts')
-		@yield('scripts')
-	</body>
+            <vue-toast v-ref:toast></vue-toast>
+      </div>
+
+      <script>
+            Statamic.translations = {!! $translations !!};
+            Statamic.permissions = '{!! $permissions !!}';
+            Statamic.version = '{!! STATAMIC_VERSION !!}';
+
+            @if(session()->has('success'))
+                Statamic.flash = [{
+                    type:    'success',
+                    message: '{{ session()->get('success') }}',
+                }];
+            @endif
+      </script>
+      @include('partials.scripts')
+      @yield('scripts')
+</body>
 </html>

@@ -105,6 +105,8 @@ class Page extends Content implements PageContract
             $uri = URL::replaceSlug($this->uri(), $slug);
             $this->uri($uri);
 
+            // The path relies on the slug. We'll update it now.
+            $this->attributes['path'] = $this->buildPath();
         } else {
             // If this is *not* the default locale, we want to store the slug
             // in the front-matter and leave the property as-is. Also, we
@@ -157,6 +159,9 @@ class Page extends Content implements PageContract
     {
         $attr = $this->original['attributes'];
 
+        $attr['default_published'] = $defaultPublished = $this->original['attributes']['published'];
+        $attr['published'] = array_get($this->original, 'data.published', $defaultPublished);
+
         return $this->buildPath($attr);
     }
 
@@ -170,6 +175,7 @@ class Page extends Content implements PageContract
     {
         $attr = $this->original['attributes'];
 
+        $attr['default_published'] = $this->original['attributes']['published'];
         $attr['locale'] = $locale;
 
         return $this->buildPath($attr);
@@ -188,6 +194,7 @@ class Page extends Content implements PageContract
             ->uri(array_get($data, 'uri', $this->uri()))
             ->extension(array_get($data, 'data_type', $this->dataType() ?: Config::get('system.default_extension')))
             ->published(array_get($data, 'published', $this->published()))
+            ->defaultPublished(array_get($data, 'default_published', $this->in(default_locale())->published()))
             ->order(array_get($data, 'order', $this->order()))
             ->locale(array_get($data, 'locale', $this->locale()));
 
@@ -211,10 +218,12 @@ class Page extends Content implements PageContract
      */
     protected function completeSave()
     {
-        // If any pages were renamed, their files will have been moved, but
-        // the empty folder will remain in tact. We'll just clean that up.
-        if (Folder::disk('content')->isEmpty($dir = Path::directory($this->originalPath()))) {
-            Folder::disk('content')->delete($dir);
+        // If a page has been renamed, its child pages will need to be moved too.
+        if ($this->originalPath() !== $this->path()) {
+            Folder::disk('content')->rename(
+                Path::directory($this->originalPath()),
+                Path::directory($this->path())
+            );
         }
     }
 
@@ -392,7 +401,7 @@ class Page extends Content implements PageContract
         $parent_uri = $this->defaultUri();
 
         // Get all the children
-        $children = \Statamic\API\Page::all()->filter(function($page) use ($parent_uri) {
+        $children = \Statamic\API\Page::all()->filter(function ($page) use ($parent_uri) {
             return Str::startsWith($page->uri(), Str::ensureRight($parent_uri, '/'));
         });
 
@@ -404,7 +413,7 @@ class Page extends Content implements PageContract
                 $parent_slashes = 0;
             }
 
-            $children = $children->filter(function($page) use ($parent_uri, $parent_slashes, $depth) {
+            $children = $children->filter(function ($page) use ($parent_uri, $parent_slashes, $depth) {
                 return $depth >= substr_count($page->uri(), '/') - $parent_slashes;
             });
         }
@@ -476,5 +485,23 @@ class Page extends Content implements PageContract
     public function structure()
     {
         return new PageStructure($this->id());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function published($published = null)
+    {
+        if (is_null($published)) {
+            return parent::published();
+        }
+
+        parent::published($published);
+
+        // The path relies on the published state. We'll update it now.
+        // But, only if it's initialized and using the default locale.
+        if ($this->original && $this->isDefaultLocale()) {
+            $this->attributes['path'] = $this->buildPath();
+        }
     }
 }

@@ -52,7 +52,7 @@ class FieldtypesController extends CpController
         }
 
         $hidden = ['replicator_sets', 'fields', 'asset_container', 'asset_folder', 'user_password',
-            'locale_settings', 'theme', 'redactor_settings', 'relate'];
+            'locale_settings', 'redactor_settings', 'relate'];
         foreach ($fieldtypes as $key => $fieldtype) {
             if (in_array($fieldtype['name'], $hidden)) {
                 unset($fieldtypes[$key]);

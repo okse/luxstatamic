@@ -344,6 +344,7 @@ class CollectionTags extends Tags
     protected function filter($limit = true)
     {
         $this->filterUnpublished();
+        $this->filterPublished();
         $this->filterFuture();
         $this->filterPast();
         $this->filterSince();
@@ -365,6 +366,13 @@ class CollectionTags extends Tags
     {
         if (! $this->getBool('show_unpublished', false)) {
             $this->collection = $this->collection->removeUnpublished();
+        }
+    }
+
+    private function filterPublished()
+    {
+        if (! $this->getBool('show_published', true)) {
+            $this->collection = $this->collection->removePublished();
         }
     }
 

@@ -4,13 +4,14 @@
 		<thead>
 			<tr>
 				<th v-for="field in config.fields" :style="{ width: gridColWidth(field.width) }">
-					<label class="block">
-						<template v-if="field.display">{{ field.display }}</template>
-						<template v-if="!field.display">{{ field.name | capitalize }}</template>
-						<i class="required" v-if="field.required">*</i>
-					</label>
-
-					<small class="help-block" v-if="field.instructions" v-html="field.instructions | markdown"></small>
+					<div class="flexy">
+						<label class="block fill">
+							<template v-if="field.display">{{ field.display }}</template>
+							<template v-if="!field.display">{{ field.name | capitalize }}</template>
+							<i class="required" v-if="field.required">*</i>
+						</label>
+						<i class="icon icon-help-with-circle o5 fs-12" v-if="field.instructions" v-tip :tip-text="field.instructions | markdown"></i>
+					</div>
 				</th>
                 <th class="row-controls"></th>
 			</tr>
@@ -36,12 +37,11 @@
 
 	<div v-if="hasData && stacked" class="grid-stacked">
 		<div class="list-group" v-for="(rowIndex, row) in data">
-			<div class="list-group-item group-header">
-				<div class="btn-group icon-group pull-right">
-                    <i class="icon icon-cross" v-on:click="deleteRow(rowIndex)"></i>
-                    <i class="icon icon-menu drag-handle"></i>
+			<div class="list-group-item group-header drag-handle">
+				<div class="flexy">
+					<label class="fill">{{ rowIndex + 1 }}</label>
+					<i class="icon icon-cross" v-on:click="deleteRow(rowIndex)"></i>
 				</div>
-				<label>{{ rowIndex + 1 }}</label>
 			</div>
 			<div class="list-group-item">
 				<div class="row">
@@ -68,8 +68,8 @@
 	</div>
 
 	<template v-if="canAddRows">
-		<button type="button" class="btn btn-default add-row" @click="addRow">
-			{{ addRowButton }}
+		<button type="button" class="btn btn-default add-row" @click="addRow" v-el:add-row-button>
+			{{ addRowButton }} <i class="icon icon-plus icon-right"></i>
 		</button>
 	</template>
 </div>
@@ -81,14 +81,16 @@ var Vue = require('vue');
 
 module.exports = {
 
-    props: ['name', 'data', 'config'],
+    mixins: [Fieldtype],
 
     data: function() {
         return {
             blank: {},
             sortableOptions: {},
             min_rows: this.config.min_rows || 0,
-            max_rows: this.config.max_rows || false
+            max_rows: this.config.max_rows || false,
+            autoBindChangeWatcher: false,
+            changeWatcherWatchDeep: false
         };
     },
 
@@ -114,7 +116,7 @@ module.exports = {
         },
 
         addRowButton: function() {
-            return this.config.add_row || translate_choice('cp.add_row', 1);
+            return this.config.add_row || translate_choice('cp.rows', 1);
         }
     },
 
@@ -135,6 +137,7 @@ module.exports = {
 
 
         this.initSortable();
+        this.bindChangeWatcher();
 
         // Re-initialize sortable when the stacking mode changes
         // For instance, when toggling sneak peek.
@@ -163,6 +166,10 @@ module.exports = {
 
             this.$nextTick(function() {
                 this.getSortable().sortable(this.getSortableOptions());
+
+                // Focus the first field in the last row.
+                const child = this.$children.length - this.$children.length / this.data.length;
+                this.$children[child].focus();
             });
         },
 
@@ -245,6 +252,22 @@ module.exports = {
 
         gridColWidth: function(width) {
             return (width === 100) ? '' :  width + '%';
+        },
+
+        getReplicatorPreviewText() {
+            return _.map(this.$children, (fieldtype) => {
+                return (typeof fieldtype.getReplicatorPreviewText !== 'undefined')
+                    ? fieldtype.getReplicatorPreviewText()
+                    : JSON.stringify(fieldtype.data);
+            }).join(', ');
+        },
+
+        focus() {
+            if (this.hasData) {
+                this.$children[0].focus();
+            } else {
+                this.$els.addRowButton.focus();
+            }
         }
     }
 };

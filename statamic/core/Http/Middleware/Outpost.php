@@ -65,7 +65,7 @@ class Outpost
      */
     private function setLicensing()
     {
-        view()->composer(['partials.nav-main', 'partials.alerts'], function ($view) {
+        view()->composer(['layout', 'partials.alerts'], function ($view) {
             $view->with('is_trial', $this->outpost->isTrialMode());
             $view->with('is_unlicensed', !$this->outpost->isLicenseValid());
         });

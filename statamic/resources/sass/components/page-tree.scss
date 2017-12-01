@@ -8,7 +8,6 @@ $branchHoverBg: rgba(black,.025);
     position: relative;
     background: white;
     border-radius: 3px;
-    margin-top: 50px;
     padding-left: $treeIndent;
 
     ul.branches {
@@ -330,6 +329,7 @@ $branchHoverBg: rgba(black,.025);
         .page-indent {
             width: $treeIndent;
             left: -$treeIndent;
+            border-top: 1px solid transparent;
         }
     }
 }

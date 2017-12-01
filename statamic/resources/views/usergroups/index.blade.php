@@ -5,8 +5,8 @@
     <user-group-listing inline-template v-cloak>
 
         <div class="listing user-roles-listing">
-            <div id="publish-controls" class="head sticky">
-                <h1 id="publish-title">{{ translate('cp.nav_user-groups') }}</h1>
+            <div class="flexy mb-24">
+                <h1 class="fill">{{ translate('cp.nav_user-groups') }}</h1>
                 <div class="controls">
                     @can('users:create')
                         <search v-model="keyword"></search>

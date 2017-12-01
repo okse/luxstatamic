@@ -3,6 +3,7 @@
 namespace Statamic\Stache\Listeners;
 
 use Statamic\API\Str;
+use Statamic\API\Path;
 use Statamic\Stache\Stache;
 use Statamic\Contracts\Data\Data;
 use Statamic\Events\Data\PageDeleted;
@@ -50,8 +51,10 @@ class UpdateItem
      */
     public function subscribe($events)
     {
+        $events->listen('content.saved', self::class.'@updateSavedContent');
+
         $events->listen(
-            ['content.saved', 'user.saved', 'usergroup.saved'],
+            ['user.saved', 'usergroup.saved'],
             self::class.'@updateSavedItem'
         );
 
@@ -65,12 +68,25 @@ class UpdateItem
     }
 
     /**
+     * Update a saved content item
+     *
+     * @param  Data $data       The data object being updated.
+     * @param  array $original  The original attributes for the object.
+     * @return voif
+     */
+    public function updateSavedContent($data, $original)
+    {
+        $this->updateSavedItem($data, $original);
+    }
+
+    /**
      * Update a saved item
      *
      * @param Data|mixed $data
+     * @param array $original
      * @return void
      */
-    public function updateSavedItem($data)
+    public function updateSavedItem($data, $original = null)
     {
         if ($data instanceof Term) {
             return;
@@ -100,7 +116,67 @@ class UpdateItem
 
         if ($repo === 'pages') {
             $this->updateSavedItem($data->structure());
+            $this->updateChildPages($data, $original);
         }
+    }
+
+    /**
+     * Update child pages after a parent has been updated.
+     *
+     * @param  Page $parent     The parent page.
+     * @param  array $original  The original attributes for the parent page.
+     * @return void
+     */
+    private function updateChildPages($parent, $original)
+    {
+        // If there's no path, it's likely a new page so there will be no children.
+        if (! isset($original['attributes']['path'])) {
+            return;
+        }
+
+        $oldUriPrefix = $original['attributes']['uri']  . '/';
+        $newUriPrefix = $parent->uri() . '/';
+        $oldPathPrefix = Path::directory($original['attributes']['path']);
+        $newPathPrefix = Path::directory($parent->path());
+
+        // If there have been no changes to the parent's URI or path, we don't need to do anything.
+        if ($oldUriPrefix == $newUriPrefix && $oldPathPrefix == $newPathPrefix) {
+            return;
+        }
+
+        // Get the child pages by the parent's old URI.
+        // We cannot just do $parent->children() since the URI would be different at this point.
+        $children = \Statamic\API\Page::all()->filter(function ($page) use ($oldUriPrefix) {
+            return Str::startsWith($page->uri(), $oldUriPrefix);
+        });
+
+        // Determine the appropriate new URIs and paths to be used for the children.
+        $children = $children->map(function ($child) use ($oldUriPrefix, $newUriPrefix, $oldPathPrefix, $newPathPrefix) {
+            return [
+                'page' => $child,
+                'newUri' => substr_replace($child->uri(), $newUriPrefix, 0, strlen($oldUriPrefix)),
+                'newPath' => substr_replace($child->path(), $newPathPrefix, 0, strlen($oldPathPrefix)),
+            ];
+        });
+
+        // Update the URIs and paths of the child pages, then re-insert them into the Stache.
+        $children->each(function ($item) {
+            $page = $item['page'];
+            $id = $page->id();
+
+            $page->path($item['newPath']);
+            $page->uri($item['newUri']);
+            $page->syncOriginal();
+
+            $this->stache->repo('pages')
+                ->setPath($id, $item['newPath'])
+                ->setItem($id, $page)
+                ->setUri($id, $item['newUri']);
+
+            $this->stache->repo('pagestructure')
+                ->setPath($id, $item['newPath'])
+                ->setItem($id, $page->structure());
+        });
     }
 
     public function updateAssetContainer(AssetContainerSaved $event)

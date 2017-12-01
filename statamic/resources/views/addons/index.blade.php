@@ -3,14 +3,15 @@
 @section('content')
 
     <addon-listing inline-template v-cloak>
+        <div>
 
-        <div class="listing term-listing">
-            <div id="publish-controls" class="head sticky">
-                <h1 id="publish-title">{{ t('nav_addons') }}</h1>
+            <div class="flexy mb-24">
+                <h1 class="fill">{{ t('manage_addons') }}</h1>
                 <div class="controls">
                     <button @click="refresh" class="btn btn-primary">{{ trans('cp.refresh') }}</button>
                 </div>
             </div>
+
             <div class="card flush">
                 <template v-if="noItems">
                     <div class="no-results">
@@ -21,8 +22,8 @@
                 </template>
                 <dossier-table v-if="hasItems" :items="items" :keyword.sync="keyword" :options="tableOptions"></dossier-table>
             </div>
+            
         </div>
-
     </addon-listing>
 
 @endsection

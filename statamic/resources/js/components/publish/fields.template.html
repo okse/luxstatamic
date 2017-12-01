@@ -3,11 +3,11 @@
 </div>
 
 <div class="publish-fields">
-	<div v-for="field in fields"
+	<div v-for="field in fields" v-show="peekaboo(field)"
 	     class="form-group {{ field.type }}-fieldtype width-{{ field.width || 100 }} {{ hasError(field) ? 'has-error' : '' }}">
 		<div class="field-inner">
 
-			<label class="block">
+			<label class="block" :class="{'bold': field.bold}">
 				<template v-if="field.display">{{ field.display }}</template>
 				<template v-if="!field.display">{{ field.name | deslugify | titleize }}</template>
 				<i class="required" v-if="field.required">*</i>
@@ -25,6 +25,7 @@
 						:data.sync="fieldData[field.name]"
 						:config="fields[$index]"
 						:autofocus="focus && $index == 0"
+						:leave-alert="true"
 						v-focus="$index == 0">
 			</component>
 

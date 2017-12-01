@@ -62,10 +62,16 @@ class PagePublisher extends Publisher
         $this->id = Helper::makeUuid();
 
         $uri = URL::assemble($this->parent_uri, $this->slug);
+        $locale = $this->request->input('locale');
 
-        $this->content = Page::create($uri)
-            ->published($this->request->input('status'))
-            ->get();
+        $this->content = Page::create($uri)->get();
+
+        if ($locale !== default_locale()) {
+            $this->content->published(false);
+            $this->content = $this->content->in($locale)->get();
+        }
+
+        $this->content->published($this->request->input('status'));
 
         $this->content->order($this->getNextPageOrderKey());
 
@@ -85,10 +91,7 @@ class PagePublisher extends Publisher
 
         $this->content = Page::find($this->id)->in($this->locale)->get();
 
-        if (! $this->isLocalized()) {
-            // Only the default locale can have its status modified
-            $this->content->published($this->getSubmittedStatus());
-        }
+        $this->content->published($this->getSubmittedStatus());
     }
 
     /**

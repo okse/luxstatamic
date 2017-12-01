@@ -5,13 +5,15 @@ namespace Statamic\Updater;
 use Exception;
 use Statamic\API\Zip;
 use Statamic\API\Path;
+use Statamic\API\Folder;
 
 class Extractor
 {
     public function extract($version)
     {
         $zip = Path::makeRelative(temp_path('updates/statamic-'.$version.'.zip'));
-        $target = temp_path('update-unzipped');
+
+        Folder::delete($target = temp_path('update-unzipped'));
 
         try {
             Zip::extract($zip, $target);

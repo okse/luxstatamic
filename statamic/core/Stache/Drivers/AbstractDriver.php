@@ -101,11 +101,12 @@ abstract class AbstractDriver implements Driver
     public function getItems(Collection $modified)
     {
         return $modified->map(function ($contents, $path) {
-            return [
-                'item' => $this->createItem($path, $contents),
-                'path' => $path
-            ];
-        });
+            if (! $item = $this->createItem($path, $contents)) {
+                return;
+            }
+
+            return compact('item', 'path');
+        })->filter();
     }
 
     /**
@@ -199,7 +200,7 @@ abstract class AbstractDriver implements Driver
      * Make sure duplicate IDs are detected
      *
      * @param $item
-     * @return array [unique bool, path, existing path, existing repo key, item id]
+     * @return array
      */
     public function ensureUniqueId($item)
     {

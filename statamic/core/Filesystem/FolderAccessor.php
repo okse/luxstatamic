@@ -91,6 +91,29 @@ class FolderAccessor
     }
 
     /**
+     * Get files from a folder, recursively. Excluding one or more subfolders.
+     *
+     * @param  string $folder   Path to folder
+     * @param  array  $exclude  Array of subfolder names to exclude.
+     * @return array
+     */
+    public function getFilesRecursivelyExcept($folder, $exclude = [])
+    {
+        $files = collect($this->getFiles($folder));
+        $folders = $this->getFolders($folder);
+
+        foreach ($folders as $folder) {
+            if (in_array(pathinfo($folder)['filename'], $exclude)) {
+                continue;
+            }
+
+            $files = $files->merge($this->getFilesRecursively($folder));
+        }
+
+        return $files->all();
+    }
+
+    /**
      * Get files from a folder and filter them by type/extension
      *
      * @param string       $folder     Path to folder

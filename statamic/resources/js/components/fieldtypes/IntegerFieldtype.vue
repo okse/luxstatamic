@@ -6,7 +6,9 @@
 
 module.exports = {
 
-    props: ['name', 'data', 'config', 'autofocus'],
+    mixins: [Fieldtype],
+
+    props: ['autofocus'],
 
     computed: {
         classes: function() {

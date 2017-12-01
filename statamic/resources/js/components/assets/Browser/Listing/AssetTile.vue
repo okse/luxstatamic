@@ -1,14 +1,17 @@
 <template>
 
     <div class="asset-tile"
-         :class="{ 'is-image': isImage && !canShowSvg, 'is-svg': canShowSvg, 'is-file': !isImage && !canShowSvg }"
+         :class="{
+             'is-image': isImage && !canShowSvg,
+             'is-svg': canShowSvg,
+             'is-file': !isImage && !canShowSvg,
+             'is-selected': isSelected
+         }"
          :title="asset.filename"
          @click="toggle"
          @dblclick="doubleClicked"
          @dragstart="assetDragStart"
     >
-        <i class="icon icon-check selected-icon" v-if="isSelected"></i>
-
         <div class="asset-thumb-container">
             <div v-if="canShowSvg"
                  class="svg-img"
@@ -22,10 +25,7 @@
             </template>
         </div>
 
-        <div class="asset-meta">
-            <div class="asset-filename" :title="label">{{ label }}</div>
-            <div class="asset-filesize">{{ asset.size }}</div>
-        </div>
+        <div class="asset-meta" :title="label">{{ label }}</div>
 
     </div>
 

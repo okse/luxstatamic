@@ -48,6 +48,35 @@ class GlideTags extends Tags
     }
 
     /**
+     * Maps to {{ glide:batch }}
+     *
+     * A tag pair that converts all image URLs to Glide URLs.
+     *
+     * @return string
+     */
+    public function batch()
+    {
+        $content = $this->parse([]);
+
+        preg_match_all('/<img[^>]*src="([^"]*)"/i', $content, $matches, PREG_SET_ORDER);
+
+        if (empty($matches)) {
+            return $content;
+        }
+
+        $matches = collect($matches)->map(function ($match) {
+            return [
+                $match[0],
+                sprintf('<img src="%s"', $this->generateGlideUrl($match[1]))
+            ];
+        })->transpose();
+
+        $content = str_replace($matches[0], $matches[1], $content);
+
+        return $content;
+    }
+
+    /**
      * Maps to {{ glide:generate }} ... {{ /glide:generate }}
      *
      * Generates the image and makes variables available within the pair.
@@ -107,14 +136,11 @@ class GlideTags extends Tags
      */
     private function generateGlideUrl($item)
     {
-        // In a subfolder installation, the subfolder will likely be passed in
-        // with the path. We don't want it in there, so we'll strip it out.
-        $url = Str::removeLeft($item, Config::getSiteUrl());
-
         try {
-            $url = $this->getManipulator($url)->build();
+            $url = $this->getManipulator($item)->build();
         } catch (\Exception $e) {
             \Log::error($e->getMessage());
+            return;
         }
 
         $url = ($this->getBool('absolute')) ? URL::makeAbsolute($url) : URL::makeRelative($url);
@@ -141,13 +167,45 @@ class GlideTags extends Tags
      */
     private function getManipulator($item = null)
     {
-        $manipulator = Image::manipulate($item);
+        $manipulator = Image::manipulate($this->normalizeItem($item));
 
         $this->getManipulationParams()->each(function ($value, $param) use ($manipulator) {
             $manipulator->$param($value);
         });
 
         return $manipulator;
+    }
+
+    /**
+     * Normalize an item to be passed into the manipulator.
+     *
+     * @param  string $item  An asset ID, asset URL, or external URL.
+     * @return string|Statamic\Contracts\Assets\Asset
+     */
+    private function normalizeItem($item)
+    {
+        // External URLs are already fine as-is.
+        if (Str::startsWith($item, ['http://', 'https://'])) {
+            return $item;
+        }
+
+        // Double colons indicate an asset ID.
+        if (Str::contains($item, '::')) {
+            return Asset::find($item);
+        }
+
+        // In a subfolder installation, the subfolder will likely be passed in
+        // with the path. We don't want it in there, so we'll strip it out.
+        // We'll need it to have a leading slash to be treated as a URL.
+        $item = Str::ensureLeft(Str::removeLeft($item, Config::getSiteUrl()), '/');
+
+        // In order for auto focal cropping to happen, we need to provide an
+        // actual asset instance to the manipulator instead of just a URL.
+        if ($asset = Asset::find($item)) {
+            $item = $asset;
+        }
+
+        return $item;
     }
 
     /**

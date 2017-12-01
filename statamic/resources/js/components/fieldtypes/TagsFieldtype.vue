@@ -7,7 +7,7 @@
 <script>
 module.exports = {
 
-    props: ['data', 'config', 'name'],
+    mixins: [Fieldtype],
 
     ready: function () {
         var self = this;
@@ -29,6 +29,14 @@ module.exports = {
                 delete this.options[value];
             }
         });
+    },
+
+    methods: {
+
+        focus() {
+            this.$els.tags.selectize.focus();
+        }
+
     }
 };
 </script>

@@ -15,7 +15,7 @@ class Form implements FormContract
     /**
      * @var string
      */
-    private $name;
+    public $name;
 
     /**
      * @var Formset

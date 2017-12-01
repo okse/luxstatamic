@@ -70,7 +70,6 @@ class AppServiceProvider extends ServiceProvider
         view()->composer('partials.scripts', 'Statamic\Http\ViewComposers\FieldtypeJsComposer');
         view()->composer('partials.scripts', 'Statamic\Http\ViewComposers\JavascriptComposer');
         view()->composer('partials.nav-main', 'Statamic\Http\ViewComposers\NavigationComposer');
-        view()->composer('settings.edit', 'Statamic\Http\ViewComposers\SettingsComposer');
 
         // Some servers don't send the appropriate headers to flag the request as https. We can force it.
         if (Config::get('system.use_https')) {

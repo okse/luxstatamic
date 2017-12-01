@@ -26,7 +26,7 @@ class AssetTags extends AssetsTags
      */
     public function __call($method, $arguments)
     {
-        $value = array_get($this->context, explode(':', $this->tag, 2)[1]);
+        $value = array_get($this->context, $this->tag_method);
         $value = Helper::ensureArray($value);
         $value = current($value);
 

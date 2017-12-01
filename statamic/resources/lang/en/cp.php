@@ -5,8 +5,8 @@ return [
     // General CP
     'dashboard' => 'Dashboard',
     'nav_dashboard' => 'Dashboard',
-    'sneak_peek' => 'Sneak Peek',
-    'sneak_peeking' => 'Sneaking a Peek',
+    'sneak_peek' => 'Live Preview',
+    'sneak_peeking' => 'Live Preview',
     'view_site' => 'View Site',
     'visit_url' => 'Visit URL',
     'search_for_anything' => 'Search for anything',
@@ -79,7 +79,9 @@ return [
     // Globals
     'globals' => 'Global|Globals',
     'nav_globals' => 'Globals',
+    'global_sets' => 'Global Sets',
     'manage_global_sets' => 'Manage Global Sets',
+    'configuring_global_set' => 'Configuring Global Set',
     'create_global_set_button' => 'Create Global Set',
     'create_global_set' => 'Create New Global Set',
     'global_set_created' => ':type created',
@@ -168,6 +170,7 @@ return [
     // Users
     'users' => 'User|Users',
     'nav_users' => 'Users',
+    'manage_users' => 'Manage Users',
     'create_user_button' => 'Create User',
     'create_user' => 'Create User',
     'create_a_user' => 'Create a User',
@@ -183,12 +186,14 @@ return [
     'password_reset_sent' => 'Password reset email sent',
     'account' => 'Account',
     'my_account' => 'My Account',
+    'profile' => 'Profile',
     'logout' => 'Logout',
+    'sign_out' => 'Sign out',
     'user_options' => 'User Options',
     'user_bio_instructions' => 'A little bit about you, if you like.',
     'user_account_created' => 'A user account has been created.',
     'forgot_password' => 'Forgot password?',
-    'go_back' => 'Go back',
+    'go_back' => 'Go Back',
 
     // Password Reset
     'reset_code_missing' => 'No code specified.',
@@ -213,6 +218,7 @@ return [
     'folders_unwritable' => 'The following directories need to be writable:',
 
     // Error Pages
+    'error' => 'Error',
     'permission_denied' => 'Permission Denied',
     'permission_denied_instructions' => "You don't have permission to view this page.",
     'page_not_found' => 'Page not found',
@@ -250,6 +256,7 @@ return [
 
     // Addons
     'addons' => 'Addon|Addons',
+    'manage_addons' => 'Manage Addons',
     'nav_addons' => 'Addons',
     'addons_empty_heading' => 'There are no addons',
     'addons_empty' => 'Addons extend the functionality of Statamic.',
@@ -292,7 +299,6 @@ return [
     'edit_field' => 'Edit Field',
     'choose_field_to_edit' => "Choose a field to edit its settings.",
 
-
     // Forms
     'form' => 'Form',
     'forms' => 'Form|Forms',
@@ -309,6 +315,8 @@ return [
     'creating_formset' => 'Creating Formset',
     'editing_formset' => 'Editing Formset',
     'import' => 'Import',
+    'import_data' => 'Import Data',
+    'import_link_text' => 'Learn about the import JSON format',
     'export' => 'Export',
     'export_csv' => 'Export as CSV',
     'export_json' => 'Export as JSON',
@@ -326,6 +334,7 @@ return [
     // Updater
     'nav_updater' => 'Updater',
     'updates'     => 'Updates',
+    'system_updates' => 'System Updates',
     'upgrade_to_latest' => 'Upgrade to Latest',
     'upgrade_to_version' => 'Upgrade to :version',
     'downgrade_to_version' => 'Downgrade to :version',
@@ -467,6 +476,7 @@ return [
     'save_order' => 'Save Order',
     'toggle_dropdown' => 'Toggle Dropdown',
     'confirm_delete_items' => 'This item will be deleted|The selected items will be deleted',
+    'confirm_delete_page' => 'This page will be deleted along with all its children',
     'confirm_delete_folder' => 'This folder will be deleted',
     'configure' => 'Configure',
     'browse' => 'Browse',
@@ -490,6 +500,7 @@ return [
     'expand_all' => 'Expand All',
     'please_select' => 'Please select',
     'selected' => 'selected',
+    'add_another_item' => 'Add another item',
 
     // Nouns and whatnot
     'fields' => 'Field|Fields',
@@ -580,13 +591,19 @@ return [
     'nav_fieldsets' => 'Fieldsets',
     'nav_settings' => 'Settings',
     'nav_users' => 'Users',
+    'nav_resolve_duplicate_ids' => 'Duplicate IDs',
 
     'mount_collection' => 'Mount Collection',
     'unmount_collection' => 'Unmount Collection',
 
     'trial_mode' => 'Trial Mode',
-    'trial_mode_badge' => 'FREE TRIAL',
+    'trial_mode_badge' => "You are running Statamic in free trial mode.",
 
     // Validation
     'handle_exists' => 'A container with this handle already exists.',
+
+    // Duplicate ID Manager
+    'duplicate_id_title' => 'Duplicate IDs',
+    'no_duplicate_ids' => 'No duplicate IDs detected.'
+
 ];

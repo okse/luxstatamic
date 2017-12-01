@@ -149,6 +149,10 @@ class UpdateConfiguration
         $addon_config = [];
 
         foreach ([bundles_path(), addons_path()] as $addon_folder) {
+            if (! $this->filesystem->exists($addon_folder)) {
+                continue;
+            }
+
             foreach ($this->filesystem->directories($addon_folder) as $addon) {
                 $default = $config = [];
 

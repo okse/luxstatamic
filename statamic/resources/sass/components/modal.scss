@@ -1,5 +1,5 @@
 .modal {
-	background: rgba($color_tan, .7);
+	background: rgba($color_dark_blue, .25);
 	display: block; // override bootstrap
 	overflow: auto;
 
@@ -7,7 +7,6 @@
 		border: none;
 		border-radius: 0;
 		box-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
-		// max-width: 745px;
 		width: 100%;
 	}
 	.modal-header {
@@ -87,6 +86,6 @@
 .modal .markdown-fieldtype .markdown-modes {
     .active:before,
     .active:after {
-        top: 100%;    
+        top: 100%;
     }
 }

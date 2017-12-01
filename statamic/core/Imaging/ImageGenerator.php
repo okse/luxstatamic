@@ -124,6 +124,8 @@ class ImageGenerator
      */
     private function generate($image)
     {
+        app()->toEleven();
+
         $this->applyDefaultManipulations();
 
         if (! $this->skip_validation) {

@@ -9,6 +9,7 @@ use Statamic\API\Page;
 use Statamic\API\Stache;
 use Statamic\API\Str;
 use Statamic\API\Fieldset;
+use Statamic\API\Taxonomy;
 use Illuminate\Http\Request;
 use Statamic\Contracts\Data\Users\User;
 use Statamic\Exceptions\PublishException;
@@ -205,11 +206,10 @@ abstract class Publisher
             $this->fields[$field->getName()] = $field->process($this->fields[$field->getName()]);
         }
 
-        // Get rid of null fields
+        // Get rid of null fields. (Empty arrays, literal null values, and empty strings)
         $this->fields = array_filter($this->fields, function ($item) {
-            return $item !== null;
+            return is_array($item) ? !empty($item) : !in_array($item, [null, '']);
         });
-
     }
 
     /**
@@ -268,7 +268,17 @@ abstract class Publisher
     {
         $this->fields['id'] = $this->id;
 
-        $this->content->dataForLocale($this->locale, $this->getIsolatedLocalizedData());
+        $data = $this->getIsolatedLocalizedData();
+
+        // Separate the taxonomy data from the rest of the data.
+        list($data, $taxonomyData) = $this->taxonomize($data);
+
+        $this->content->dataForLocale($this->locale, $data);
+
+        // Add back the taxonomy data to the default locale only.
+        foreach ($taxonomyData as $handle => $tags) {
+            $this->content->in(default_locale())->set($handle, $tags);
+        }
 
         if ($this->slug) {
             $this->content->slug($this->slug);
@@ -303,7 +313,37 @@ abstract class Publisher
             }
         }
 
+        // The published boolean will not be in the submitted fields.
+        // It will already have been applied to the content object.
+        if ($this->content->in(default_locale())->published() !== $this->content->published()) {
+            $data['published'] = $this->content->published();
+        } else {
+            $data['published'] = null;
+        }
+
         return $data;
+    }
+
+    /**
+     * Apply any taxonomy terms to the content in the default locale, and remove them from the localized data.
+     *
+     * @param  array $data  Array of isolated localized data
+     * @return array        The same data with taxonomy fields removed, and taxonomy-only data.
+     */
+    protected function taxonomize($data)
+    {
+        $taxonomyData = [];
+
+        foreach (Taxonomy::all() as $taxonomy) {
+            $handle = $taxonomy->path();
+
+            if (array_has($data, $handle)) {
+                $taxonomyData[$handle] = $data[$handle];
+                unset($data[$handle]);
+            }
+        }
+
+        return [$data, $taxonomyData];
     }
 
     /**

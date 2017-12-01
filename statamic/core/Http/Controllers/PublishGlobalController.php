@@ -41,7 +41,7 @@ class PublishGlobalController extends PublishController
             'content_data'      => $data,
             'content_type'      => 'global',
             'fieldset'          => $global->fieldset()->name(),
-            'title'             => array_get($data, 'title', $global->slug()),
+            'title'             => array_get($data, 'title', $global->title()),
             'uuid'              => $id,
             'uri'               => null,
             'url'               => null,
@@ -49,7 +49,8 @@ class PublishGlobalController extends PublishController
             'status'            => true,
             'locale'            => $locale,
             'is_default_locale' => $global->isDefaultLocale(),
-            'locales'           => $this->getLocales($id)
+            'locales'           => $this->getLocales($id),
+            'suggestions'       => $this->getSuggestions($global->fieldset()),
         ]);
     }
 

@@ -7,6 +7,7 @@
                 <input type="text"
                        class="form-control relate-search"
                        placeholder="Filter"
+                       v-el:filter
                        v-model="search"
                        @keydown.enter="selectActive"
                        @keyup.up="goUp"
@@ -152,6 +153,10 @@ export default {
             if (this.active >= this.availableSuggestions.length) {
                 this.active = this.availableSuggestions.length-1;
             }
+        },
+
+        focus() {
+            this.$els.filter.focus();
         }
 
     },

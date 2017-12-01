@@ -12,6 +12,9 @@ jQuery.extend( jQuery.fn, {
 });
 
 Vue.directive('elastic', require('./directives/elastic.js'));
+
+Vue.directive('tip', require('./directives/tip.js'));
+
 Vue.directive('focus', function (focusable) {
     if (! focusable) {
         return;

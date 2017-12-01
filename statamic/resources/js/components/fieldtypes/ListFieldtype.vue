@@ -18,9 +18,10 @@
 	</li>
 	<li>
 		<input type="text" class="form-control new-item" v-model="newItem"
-		       @keydown.enter.prevent="addItem"
-               @blur="addItem"
-			   @keyup.up="goUp"
+            placeholder="{{ translate('cp.add_another_item')}}..."
+            @keydown.enter.prevent="addItem"
+            @blur="addItem"
+            @keyup.up="goUp"
 		/>
 	</li>
 </ul>
@@ -29,12 +30,13 @@
 <script>
 module.exports = {
 
-    props: ['name', 'data', 'config'],
+    mixins: [Fieldtype],
 
     data: function () {
         return {
             newItem: '',
-            editing: null
+            editing: null,
+            autoBindChangeWatcher: false
         }
     },
 
@@ -102,6 +104,10 @@ module.exports = {
 
         deleteItem: function(item) {
             this.data.$remove(item);
+        },
+
+        getReplicatorPreviewText() {
+            return this.data.join(', ');
         }
     },
 
@@ -112,6 +118,8 @@ module.exports = {
         if ( ! this.data) {
             this.data = [];
         }
+
+        this.bindChangeWatcher();
 
         $(this.$el).sortable({
             axis: "y",

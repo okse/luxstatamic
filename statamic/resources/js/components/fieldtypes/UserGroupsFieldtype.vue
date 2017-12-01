@@ -1,5 +1,5 @@
 <template>
-    <div class="user_groups-fieldtype-wrapper">
+    <div>
         <div v-if="loading" class="loading loading-basic">
             <span class="icon icon-circular-graph animation-spin"></span> {{ translate('cp.loading') }}
         </div>
@@ -14,16 +14,19 @@
             <relate-fieldtype :data.sync="data"
                               :name="name"
                               :config="config"
-                              :suggestions-prop="groups">
+                              :suggestions-prop="groups"
+                              v-ref:relate>
             </relate-fieldtype>
         </div>
     </div>
 </template>
 
 <script>
-module.exports = {
+import AdaptsRelateFieldtype from './AdaptsRelateFieldtype.vue';
 
-    props: ['data', 'config', 'name'],
+export default {
+
+    mixins: [AdaptsRelateFieldtype],
 
     data: function() {
         return {

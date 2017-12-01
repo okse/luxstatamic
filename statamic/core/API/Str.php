@@ -2,6 +2,7 @@
 
 namespace Statamic\API;
 
+use Collator;
 use Stringy\StaticStringy;
 
 /**
@@ -53,5 +54,32 @@ class Str extends \Illuminate\Support\Str
         }
 
         return $bytes;
+    }
+
+    /**
+     * Locale based string comparison.
+     *
+     * @param  string  $str1  First string to compare.
+     * @param  string  $str2  Second string to compare.
+     * @param  string|null  $locale  A locale key.
+     * @param  bool $caseSensitive  Whether the comparison should be case sensitive.
+     * @return int|false  Return comparison result, or FALSE on error.
+     */
+    public static function compare($str1, $str2, $locale = null, $caseSensitive = true)
+    {
+        if (! $caseSensitive) {
+            $str1 = self::lower($str1);
+            $str2 = self::lower($str2);
+        }
+
+        if (! class_exists('Collator')) {
+            return strcmp($str1, $str2);
+        }
+
+        // A locale key should be provided. We'll look up the corresponding full locale code to be
+        // used within the collator. If none is provided it will fall back to the default locale.
+        $locale = Config::getFullLocale($locale);
+
+        return (new Collator($locale))->compare($str1, $str2);
     }
 }

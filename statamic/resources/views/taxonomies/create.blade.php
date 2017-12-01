@@ -5,18 +5,13 @@
     <form method="post" action="{{ route('taxonomy.store') }}">
         {!! csrf_field() !!}
 
-        <div class="publish-form card">
-            <div class="head">
-                <h1>{{ translate('cp.create_taxonomy') }}</h1>
-
-                <div class="btn-group">
-                    <button type="submit" class="btn btn-primary">{{ translate('cp.save') }}</button>
-                </div>
+        <div class="publish-form">
+            <div class="flexy mb-24">
+                <h1 class="fill">{{ translate('cp.create_taxonomy') }}</h1>
+                <button type="submit" class="btn btn-primary">{{ translate('cp.save') }}</button>
             </div>
 
-            <hr>
-
-            <div class="publish-fields">
+            <div class="publish-fields card">
 
                 <div class="form-group">
                     <label class="block">{{ t('title') }}</label>

@@ -2,7 +2,7 @@
 
 @section('content')
 
-    <h3 class="m-t-0">{{ t('reset_password')}}</h3>
+    <h3 class="mt-0">{{ t('reset_password')}}</h3>
     <hr>
     <form method="POST" class="email-login">
         {!! csrf_field() !!}
@@ -13,7 +13,7 @@
         </div>
 
         <div>
-            <button type="submit" class="btn btn-outside btn-block">{{ trans('cp.send_email') }}</button>
+            <button type="submit" class="btn btn-primary btn-block">{{ trans('cp.send_email') }}</button>
             <a href="{{ route('login')}}" class="help-link">&larr; {{ t('go_back')}}</a>
         </div>
     </form>

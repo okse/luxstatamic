@@ -214,13 +214,6 @@ class Config
      */
     public static function getImageManipulationPresets()
     {
-        $user_presets = self::get('assets.image_manipulation_presets', []);
-
-        // If the CP is disabled, we don't need to bother merging in our presets.
-        if (! CP_ROUTE) {
-            return $user_presets;
-        }
-
-        return array_merge($user_presets, Image::getCpImageManipulationPresets());
+        return self::get('assets.image_manipulation_presets', []);
     }
 }

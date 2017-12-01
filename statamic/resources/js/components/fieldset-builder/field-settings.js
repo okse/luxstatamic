@@ -1,5 +1,9 @@
 module.exports = {
 
+    components: {
+        fieldConditionsBuilder: require('../field-conditions-builder/FieldConditionsBuilder.vue')
+    },
+
     template: require('./field-settings.template.html'),
 
     props: ['field', 'fieldtypeConfig', 'fieldtypes', 'root', 'isTaxonomy'],

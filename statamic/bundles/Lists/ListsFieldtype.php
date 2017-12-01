@@ -7,6 +7,8 @@ use Statamic\Extend\Fieldtype;
 
 class ListsFieldtype extends Fieldtype
 {
+    protected $snake_name = 'list';
+
     public function preProcess($data)
     {
         if (is_null($data)) {

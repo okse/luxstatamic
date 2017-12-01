@@ -107,7 +107,9 @@ class NavTags extends Tags
             'include_home' => $this->getBool('include_home'),
             'exclude'      => $this->getList('exclude'),
             'conditions'   => $this->getConditionParameters(),
-            'locale'       => $this->get('locale', site_locale())
+            'locale'       => $this->get('locale', site_locale()),
+            'limit'        => $this->getInt('limit'),
+            'offset'       => $this->getInt('offset'),
         ];
     }
 

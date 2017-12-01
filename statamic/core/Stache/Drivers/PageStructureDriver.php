@@ -22,6 +22,10 @@ class PageStructureDriver extends AbstractDriver
 
         $page = $repo->getItem($repo->getIdByPath($path));
 
+        if (! $page) {
+            return;
+        }
+
         return $page->structure();
     }
 

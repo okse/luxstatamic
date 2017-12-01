@@ -38,6 +38,15 @@ export default {
             create: this.create
         });
 
+    },
+
+
+    methods: {
+
+        focus() {
+            this.$els.tags.selectize.focus();
+        }
+
     }
 
 }

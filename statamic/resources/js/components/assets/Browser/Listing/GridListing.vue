@@ -2,6 +2,17 @@
 
     <div class="asset-grid-listing">
 
+        <div class="asset-tile is-folder"
+             @click.prevent="selectFolder(folder.parent_path)"
+             v-if="hasParent && !restrictNavigation">
+            <div class="asset-thumb-container">
+                <file-icon type="div" extension="folder"></file-icon>
+            </div>
+            <div class="asset-meta">
+                <div class="asset-filename">..</div>
+            </div>
+        </div>
+
         <folder-tile
             v-for="folder in subfolders"
             :folder="folder"
@@ -19,13 +30,6 @@
             @editing="editAsset"
             @doubleclicked="assetDoubleclicked">
         </asset-tile>
-
-        <!-- hack for flexbox spacing the last row properly. -->
-        <div class="asset-tile ghost"></div>
-        <div class="asset-tile ghost"></div>
-        <div class="asset-tile ghost"></div>
-        <div class="asset-tile ghost"></div>
-        <div class="asset-tile ghost"></div>
 
     </div>
 

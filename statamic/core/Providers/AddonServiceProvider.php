@@ -70,7 +70,9 @@ class AddonServiceProvider extends ServiceProvider
         $files = [];
 
         foreach ([addons_path(), bundles_path()] as $path) {
-            $files = array_merge($files, Folder::getFilesRecursively($path));
+            foreach (Folder::getFolders($path) as $addonFolder) {
+                $files = array_merge($files, Folder::getFilesRecursivelyExcept($addonFolder, ['node_modules', 'vendor']));
+            }
         }
 
         return collect_files($files)->removeHidden();

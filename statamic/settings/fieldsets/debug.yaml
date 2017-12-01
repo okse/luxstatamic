@@ -5,6 +5,8 @@ fields:
 
   debug_bar:
     type: toggle
+    show_when:
+      debug: true
 
   loggers:
     type: yaml

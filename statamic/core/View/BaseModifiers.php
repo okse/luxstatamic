@@ -93,6 +93,21 @@ class BaseModifiers extends Modifier
     }
 
     /**
+     * Returns a focal point as a background-position CSS value.
+     *
+     * @param $value
+     * @return string
+     */
+    public function backgroundPosition($value)
+    {
+        if (! Str::contains($value, '-')) {
+            return $value;
+        }
+
+        return vsprintf('%d%% %d%%', explode('-', $value));
+    }
+
+    /**
      * Removes a given number ($param[0]) of characters from the end of a variable
      *
      * @param $value

@@ -38,6 +38,7 @@
                                 <a href="" @click.prevent="mountCollection" v-if="!hasEntries">{{ translate('cp.mount_collection') }}</a>
                                 <a href="" @click.prevent="unmountCollection" v-if="hasEntries">{{ translate('cp.unmount_collection') }}</a>
                             </li>
+                            <li v-if="can('pages:create')"><a href="" @click.prevent="duplicatePage">{{ translate('cp.duplicate') }}</a></li>
                             <li v-if="can('pages:create') && can('pages:delete')" class="divider"></li>
                             <li v-if="can('pages:delete')" class="warning"><a href="" @click.prevent="deletePage">{{ translate('cp.delete') }}</a></li>
                         </ul>
@@ -109,7 +110,7 @@ export default {
             swal({
                 type: 'warning',
                 title: translate('cp.are_you_sure'),
-                text: translate_choice('cp.confirm_delete_items', 1),
+                text: translate_choice('cp.confirm_delete_page', 1),
                 confirmButtonText: translate('cp.yes_im_sure'),
                 cancelButtonText: translate('cp.cancel'),
                 showCancelButton: true
@@ -119,6 +120,12 @@ export default {
 
                     this.$dispatch('page.deleted');
                 });
+            });
+        },
+
+        duplicatePage: function() {
+            this.$http.post(cp_url('pages/duplicate'), { id: this.uuid }).success((data) => {
+                window.location = data.redirect;
             });
         },
 

@@ -6,8 +6,12 @@ fields:
       algolia: Algolia
   algolia_api_key:
     width: 50
+    show_when:
+      driver: algolia
   algolia_app_id:
     width: 50
+    show_when:
+      driver: algolia
   auto_index:
      type: toggle
   default_index:

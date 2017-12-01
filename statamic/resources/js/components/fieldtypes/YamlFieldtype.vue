@@ -11,21 +11,33 @@ require('codemirror/mode/yaml/yaml');
 
 module.exports = {
 
-    props: ['name', 'data', 'config'],
+    mixins: [Fieldtype],
+
+    data() {
+        return {
+            codemirror: null       // The CodeMirror instance
+        }
+    },
 
     ready: function() {
-        var self = this;
-
-        var cm = CodeMirror(this.$els.codemirror, {
+        this.codemirror = CodeMirror(this.$els.codemirror, {
             value: this.data || '',
             mode: 'yaml',
             lineNumbers: true,
             viewportMargin: Infinity
         });
 
-        cm.on('change', function (cm) {
-            self.data = cm.doc.getValue();
+        this.codemirror.on('change', (cm) => {
+            this.data = cm.doc.getValue();
         });
+    },
+
+    methods: {
+
+        focus() {
+            this.codemirror.focus();
+        }
+
     }
 
 };

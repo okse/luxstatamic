@@ -15,7 +15,13 @@
 <script>
 module.exports = {
 
-    props: ['name', 'data', 'config'],
+    mixins: [Fieldtype],
+
+    data() {
+        return {
+            autoBindChangeWatcher: false
+        };
+    },
 
     ready: function() {
         if (typeof this.config === 'string') {
@@ -25,6 +31,16 @@ module.exports = {
         if ( ! this.data) {
             this.data = [];
         }
+
+        this.bindChangeWatcher();
+    },
+
+    methods: {
+
+        focus() {
+            document.getElementById(`${this.name}-0`).focus();
+        }
+
     }
 };
 </script>

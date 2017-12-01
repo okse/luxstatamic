@@ -7,3 +7,8 @@ fieldtype_fields:
     type: toggle
   max_files:
     type: integer
+  mode:
+    type: select
+    options:
+      grid: Grid
+      list: List

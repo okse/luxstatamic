@@ -50,7 +50,21 @@ abstract class Content extends Data implements ContentContract
     public function published($published = null)
     {
         if (is_null($published)) {
-            return array_get($this->attributes, 'published', true);
+            // The publish state may be stored within the front-matter.
+            // Otherwise, we'll get it from the attributes.
+            $setStatus = $this->get('published');
+            return is_null($setStatus) ? array_get($this->attributes, 'published', true) : $setStatus;
+        }
+
+        // If we are *not* targeting the default locale, but the default locale is published,
+        // we will set the published state within the localized version's front-matter.
+        if (! $this->isDefaultLocale()) {
+            if ($this->attributes['published'] === $published) {
+                $this->remove('published');
+            } else {
+                $this->set('published', $published);
+            }
+            return;
         }
 
         $this->attributes['published'] = $published;
@@ -63,6 +77,13 @@ abstract class Content extends Data implements ContentContract
      */
     public function publish()
     {
+        // If we are *not* targeting the default locale, but the default locale is published,
+        // we will set the published state within the localized version's front-matter.
+        if (!$this->isDefaultLocale() && $this->attributes['published']) {
+            $this->set('published', true);
+            return;
+        }
+
         $this->attributes['published'] = true;
     }
 
@@ -73,6 +94,13 @@ abstract class Content extends Data implements ContentContract
      */
     public function unpublish()
     {
+        // If we are *not* targeting the default locale, but the default locale is published,
+        // we will set the published state within the localized version's front-matter.
+        if (!$this->isDefaultLocale() && $this->attributes['published']) {
+            $this->set('published', false);
+            return;
+        }
+
         $this->attributes['published'] = false;
     }
 
@@ -175,6 +203,8 @@ abstract class Content extends Data implements ContentContract
 
         $this->ensureId();
 
+        $original = $this->original;
+
         // Write files to disk. One for each locale stored in this data.
         $this->writeFiles();
 
@@ -186,7 +216,7 @@ abstract class Content extends Data implements ContentContract
         $this->syncOriginal();
 
         // Whoever wants to know about it can do so now.
-        event('content.saved', $this);
+        event('content.saved', [$this, $original]);
 
         return $this;
     }

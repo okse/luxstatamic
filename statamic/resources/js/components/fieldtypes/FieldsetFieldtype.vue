@@ -43,10 +43,9 @@
 
 module.exports = {
 
+    mixins: [Fieldtype],
+
     props: {
-        data: {},
-        config: {},
-        name: {},
         required: Boolean,
         url: String,
     },
@@ -57,7 +56,8 @@ module.exports = {
             creating: false,
             storePending: false,
             newFieldsetName: '',
-            options: {}
+            options: {},
+            autoBindChangeWatcher: false
         }
     },
 
@@ -141,6 +141,8 @@ module.exports = {
                 if (this.required && !this.data) {
                     this.data = this.options[0].value;
                 }
+
+                this.bindChangeWatcher();
             });
         }
 

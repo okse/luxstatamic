@@ -40,10 +40,24 @@ class DashboardController extends CpController
             $widget = $loader->load(array_get($config, 'type'), $config);
 
             return [
-                'width' => $widget->getConfig('width', 100),
-                'html' => (string) $widget->html(),
-                'importance' => $widget->getConfig('importance', 2)
+                'widget' => $widget,
+                'width' => $widget->get('width', 'half'),
+                'html' => (string) $widget->html()
             ];
+        })->filter(function ($item) {
+            if (! $permissions = $item['widget']->get('permissions')) {
+                return true;
+            }
+
+            $user = User::getCurrent();
+
+            foreach ($permissions as $permission) {
+                if ($user->can($permission)) {
+                    return true;
+                }
+            }
+
+            return false;
         });
     }
 }

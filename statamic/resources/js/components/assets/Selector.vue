@@ -13,7 +13,7 @@
                 @asset-doubleclicked="select">
 
                 <template slot="contextual-actions" v-if="browserSelections.length">
-                    <button class="btn action" @click="browserSelections = []">{{ translate('cp.uncheck_all') }}</button>
+                    <button class="btn action mb-24" @click="browserSelections = []">{{ translate('cp.uncheck_all') }}</button>
                 </template>
 
             </asset-browser>

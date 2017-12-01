@@ -9,6 +9,7 @@ use Statamic\API\URL;
 use Statamic\API\Page;
 use Statamic\API\YAML;
 use Statamic\Stache\Repository;
+use Statamic\Contracts\Data\Content\StatusParser;
 
 class PagesDriver extends AbstractDriver
 {
@@ -22,10 +23,15 @@ class PagesDriver extends AbstractDriver
 
     public function createItem($path, $contents)
     {
+        $data = YAML::parse($contents);
+
+        // The publish state can be located in the yaml. Otherwise, infer it from the path.
+        $published = array_get($data, 'published', app(StatusParser::class)->pagePublished($path));
+
         return Page::create(URL::buildFromPath($path))
             ->path($path)
-            ->with(YAML::parse($contents))
-            ->published(app('Statamic\Contracts\Data\Content\StatusParser')->pagePublished($path))
+            ->with($data)
+            ->published($published)
             ->order(app('Statamic\Contracts\Data\Content\OrderParser')->getPageOrder($path))
             ->get();
     }

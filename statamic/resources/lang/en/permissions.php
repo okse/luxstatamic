@@ -7,6 +7,7 @@ return [
     'group_general' => 'General',
     'cp:access' => 'Access the Control Panel',
     'content:view_drafts_on_frontend' => 'View drafts on the front-end',
+    'resolve_duplicates' => 'Resolve Duplicate IDs',
 
     'group_pages' => 'Pages',
     'pages:edit' => 'Edit pages',

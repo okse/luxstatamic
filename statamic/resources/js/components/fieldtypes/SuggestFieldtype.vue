@@ -13,9 +13,13 @@
 </template>
 
 <script>
+import GetsSuggestKey from './GetsSuggestKey';
+
 module.exports = {
 
-    props: ['data', 'name', 'config', 'suggestionsProp'],
+    mixins: [Fieldtype, GetsSuggestKey],
+
+    props: ['suggestionsProp'],
 
     data: function() {
         return {
@@ -28,21 +32,25 @@ module.exports = {
 
         getSuggestions: function() {
             if (this.suggestionsProp) {
-                this.suggestions = this.suggestionsProp;
-                this.loading = false;
-                this.$nextTick(function() {
-                    this.initSelectize();
-                });
+                this.populateSuggestions(this.suggestionsProp);
             } else {
-                this.$http.post(cp_url('addons/suggest/suggestions'), this.config, function(data) {
-                    this.suggestions = data;
-                    this.loading = false;
-
-                    this.$nextTick(function() {
-                        this.initSelectize();
+                const prefetched = data_get(Statamic, 'Publish.suggestions.' + this.suggestKey);
+                if (prefetched) {
+                    this.populateSuggestions(prefetched);
+                } else {
+                    this.$http.post(cp_url('addons/suggest/suggestions'), this.config, function(data) {
+                        this.populateSuggestions(data);
                     });
-                });
+                }
             }
+        },
+
+        populateSuggestions(suggestions) {
+            this.suggestions = suggestions;
+            this.loading = false;
+            this.$nextTick(function() {
+                this.initSelectize();
+            });
         },
 
         initSelectize: function() {
@@ -59,6 +67,21 @@ module.exports = {
                     self.data = value;
                 }
             });
+        },
+
+        getReplicatorPreviewText() {
+            if (! this.data) return;
+
+            let values = JSON.parse(JSON.stringify(this.data));
+
+            if (this.suggestions) {
+                values = values.map(value => {
+                    const suggestion = _.findWhere(this.suggestions, { value });
+                    return suggestion ? suggestion.text : value;
+                });
+            }
+
+            return values.join(', ');
         }
 
     },

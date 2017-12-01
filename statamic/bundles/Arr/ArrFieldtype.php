@@ -6,6 +6,8 @@ use Statamic\Extend\Fieldtype;
 
 class ArrFieldtype extends Fieldtype
 {
+    protected $snake_name = 'array';
+
     public function blank()
     {
         return [];
@@ -15,11 +17,11 @@ class ArrFieldtype extends Fieldtype
     {
         if ($this->keyed()) {
             $processed = [];
-            foreach ($this->getFieldConfig('keys') as $key => $label) {
-                $processed[$key] = array_get($data, $key);
+            foreach (format_input_options($this->getFieldConfig('keys')) as $formatted) {
+                $value = $formatted['value'];
+                $processed[$value] = array_get($data, $value);
             }
             $data = $processed;
-
         } else {
             $data = format_input_options($data);
         }

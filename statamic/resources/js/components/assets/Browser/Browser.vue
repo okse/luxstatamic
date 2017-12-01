@@ -26,7 +26,7 @@
         <div class="asset-browser-main" v-if="initialized">
 
             <div class="asset-browser-header">
-                <h1>
+                <h1 class="mb-24">
                     <template v-if="isSearching">
                         {{ translate('cp.search_results') }}
                     </template>
@@ -44,52 +44,44 @@
                     </div>
                 </h1>
 
-                <div class="asset-browser-actions">
+                <input type="text"
+                    class="search filter-control mb-24"
+                    placeholder="{{ translate('cp.search') }}..."
+                    v-model="searchTerm"
+                    debounce="500" />
 
-                    <input type="text"
-                           class="asset-search-field"
-                           placeholder="{{ translate('cp.search') }}..."
-                           v-model="searchTerm"
-                           debounce="500" />
+                <div class="asset-browser-actions flexy wrap">
 
-                    <slot name="contextual-actions"></slot>
+                    <slot name="contextual-actions" v-if="selectedAssets.length"></slot>
 
-                    <div class="btn-group action">
-
+                    <div class="btn-group action mb-24">
                         <button type="button"
                                 class="btn btn-icon"
                                 :class="{'depressed': displayMode == 'grid'}"
                                 @click="setDisplayMode('grid')">
                             <span class="icon icon-grid"></span>
                         </button>
-
                         <button type="button"
                                 class="btn btn-icon"
                                 :class="{'depressed': displayMode == 'table'}"
                                 @click="setDisplayMode('table')">
                             <span class="icon icon-list"></span>
                         </button>
-
                     </div>
 
-                    <button type="button"
-                            class="btn action"
-                            v-if="!restrictNavigation && !isSearching"
-                            @click.prevent="createFolder">
-                        {{ translate('cp.new_folder') }}
-                    </button>
-
-                    <button type="button" class="btn btn-primary action" @click.prevent="uploadFile" v-if="!isSearching">
-                        {{ translate('cp.upload') }}
-                    </button>
+                    <div class="btn-group action mb-24">
+                        <button type="button"
+                                class="btn"
+                                v-if="!restrictNavigation && !isSearching"
+                                @click.prevent="createFolder">
+                            {{ translate('cp.new_folder') }}
+                        </button>
+                        <button type="button" class="btn" @click.prevent="uploadFile" v-if="!isSearching">
+                            {{ translate('cp.upload') }}
+                        </button>
+                    </div>
                 </div>
             </div>
-
-            <breadcrumbs
-                v-if="!restrictNavigation && !isSearching"
-                :path="path"
-                @navigated="folderSelected">
-            </breadcrumbs>
 
             <div class="asset-browser-content">
 
@@ -115,6 +107,7 @@
                     :subfolders="subfolders"
                     :loading="loading"
                     :selected-assets="selectedAssets"
+                    :restrict-navigation="restrictNavigation"
                     @folder-selected="folderSelected"
                     @folder-editing="editFolder"
                     @folder-deleted="folderDeleted"
@@ -145,6 +138,12 @@
                     :segments="pagination.segments"
                     @selected="paginationPageSelected">
                 </pagination>
+
+                <breadcrumbs
+                    v-if="!restrictNavigation && !isSearching"
+                    :path="path"
+                    @navigated="folderSelected">
+                </breadcrumbs>
 
             </div>
 

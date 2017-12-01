@@ -163,7 +163,17 @@ class Outpost
      */
     public function isUpdateAvailable()
     {
-        return array_get($this->response, 'update_available');
+        return version_compare(STATAMIC_VERSION, $this->getLatestVersion(), '<');
+    }
+
+    /**
+     * How many updates are between the installed version and the latest.
+     *
+     * @return int
+     */
+    public function getUpdateCount()
+    {
+        return $this->isUpdateAvailable() ? array_get($this->response, 'update_count') : 0;
     }
 
     /**
@@ -188,7 +198,7 @@ class Outpost
 
         try {
             $client = new Client;
-            $response = $client->request('POST', self::ENDPOINT, ['json' => $this->getPayload()]);
+            $response = $client->request('POST', self::ENDPOINT, ['json' => $this->getPayload(), 'timeout' => 5]);
             $response = json_decode($response->getBody()->getContents(), true);
         } catch (RequestException $e) {
             Log::notice("Couldn't reach the Statamic Outpost.");
@@ -256,6 +266,7 @@ class Outpost
             'license_key'      => $this->getLicenseKey(),
             'latest_version'   => STATAMIC_VERSION,
             'update_available' => false,
+            'update_count'     => 0,
             'license_valid'    => false
         ];
     }

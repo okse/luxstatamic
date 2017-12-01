@@ -59,10 +59,11 @@ class PublishEntryController extends PublishController
             'url'               => null,
             'slug'              => null,
             'status'            => true,
-            'locale'            => default_locale(),
+            'locale'            => $this->locale(request()),
             'is_default_locale' => true,
             'locales'           => $this->getLocales(),
-            'taxonomies'        => $this->getTaxonomies($fieldset)
+            'taxonomies'        => $this->getTaxonomies($fieldset),
+            'suggestions'        => $this->getSuggestions($fieldset),
         ]);
     }
 
@@ -77,7 +78,7 @@ class PublishEntryController extends PublishController
     {
         $this->authorize("collections:$collection:edit");
 
-        $locale = $this->request->query('locale', site_locale());
+        $locale = $this->locale($this->request);
 
         if (! $entry = Entry::whereSlug($slug, $collection)) {
             return redirect()->route('entries.show', $collection)->withErrors('No entry found.');
@@ -123,7 +124,8 @@ class PublishEntryController extends PublishController
             'locale'             => $locale,
             'is_default_locale'  => $entry->isDefaultLocale(),
             'locales'            => $this->getLocales($id),
-            'taxonomies'         => $this->getTaxonomies($entry->fieldset())
+            'taxonomies'         => $this->getTaxonomies($entry->fieldset()),
+            'suggestions'        => $this->getSuggestions($entry->fieldset()),
         ]);
     }
 
@@ -176,5 +178,16 @@ class PublishEntryController extends PublishController
         return $request->user()->can(
             $request->new ? "collections:$collection:create" : "collections:$collection:edit"
         );
+    }
+
+    /**
+     * Return the locale from the request.
+     *
+     * @param  Request  $request
+     * @return string
+     */
+    private function locale(Request $request)
+    {
+        return $request->query('locale', site_locale());
     }
 }

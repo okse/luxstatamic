@@ -10,6 +10,7 @@ use Statamic\API\URL;
 use Statamic\API\YAML;
 use Statamic\Events\DataIdCreated;
 use Statamic\Events\StacheItemInserted;
+use Illuminate\Support\Facades\Log;
 use Statamic\Stache\Drivers\AbstractDriver;
 use Statamic\Stache\Drivers\AggregateDriver;
 use Statamic\Exceptions\DuplicateIdException;
@@ -246,7 +247,11 @@ class Updater
             $item = $data['item'];
             $path = $data['path'];
 
-            $item = $this->ensureId($item);
+            try {
+                $item = $this->ensureId($item);
+            } catch (DuplicateIdException $e) {
+                return;
+            }
 
             $id = $this->driver->getItemId($item, $path);
             if ($repo_prefix) {
@@ -364,8 +369,30 @@ class Updater
                 $e->getItemId()
             );
             $e->setMessage($message);
+
+            Log::error($message);
+
+            $this->cacheDuplicateId($e->getItemId(), $e->getPath());
+
             throw $e;
         }
+    }
+
+    /**
+     * Save the duplicate ID to the Stache
+     *
+     * @param  string $id
+     * @param  string $path
+     * @return void
+     */
+    private function cacheDuplicateId($id, $path)
+    {
+        $key = 'stache::duplicates';
+        $cache = collect(\Cache::get($key, []));
+        $dupes = $cache->get($id, []);
+        $dupes[] = $path;
+        $cache->put($id, $dupes);
+        \Cache::forever($key, $cache->all());
     }
 
     /**

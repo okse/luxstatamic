@@ -2,8 +2,11 @@
 
 namespace Statamic\Updater;
 
+use Statamic\API\Cache;
+use Statamic\API\Folder;
 use Illuminate\Console\Command;
 use Statamic\Events\StatamicUpdated;
+use Illuminate\Support\Facades\Artisan;
 
 class Housekeeper
 {
@@ -55,6 +58,10 @@ class Housekeeper
 
             $update->update();
         }
+
+        Folder::delete(temp_path('update-unzipped'));
+        Cache::clear();
+        Artisan::call('view:clear');
 
         // Fire an event for devs etc.
         event(new StatamicUpdated($version, $previousVersion));

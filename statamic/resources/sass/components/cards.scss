@@ -1,9 +1,13 @@
+/* ==========================================================================
+   CARDS
+   ========================================================================== */
+
 .card {
-    @extend .z-depth-1;
+    @extend .z-depth-2;
     background: white;
-    border-radius: 3px;
-    margin-bottom: 30px;
-    padding: 15px 15px;
+    border-radius: 4px;
+    margin-bottom: 24px;
+    padding: 16px;
 }
 
 .card.flat-bottom {
@@ -16,19 +20,6 @@
 .card.flat-top {
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-}
-
-.stacked.stuck {
-    border-radius: 2px;
-    border: none;
-}
-
-.stuck .sticky {
-    @extend .card;
-    margin-left: 180px;
-    border-bottom: 0;
-    #publish-title,
-    .controls { margin-bottom: 0 !important; }
 }
 
 .card.tight {
@@ -44,17 +35,24 @@
 
 .card.flush {
     padding: 0;
+
     .head {
-        padding: 15px 30px;
+        background: #fafafa;
+        border-bottom: 1px solid #eee;
+        border-radius: 4px 4px 0 0;
+        padding: 16px;
     }
+
     table {
         margin-top: 0;
     }
+
     tr td:first-child {
-        padding-left: 30px;
+        padding-left: 24px;
     }
+
     tr td:last-child {
-        padding-right: 30px;
+        padding-right: 24px;
     }
 }
 
@@ -66,17 +64,17 @@
 }
 
 .card .head .actions {
-    padding: 15px 25px;
+    padding: 16px 24px;
 }
 
 .card.tight .card-body {
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 24px;
+    padding-right: 24px;
 }
 
 .card .card-heading {
-    margin-bottom: 15px;
-    padding: 5px 30px;
+    margin-bottom: 16px;
+    padding: 8px 24px;
     border-bottom: 1px solid rgba(63, 63, 68, .1);
 
     h1, h2, h3, h4, h5 {
@@ -85,7 +83,7 @@
 }
 
 .stacks {
-    margin: 30px -15px;
+    margin: 24px -17px;
     display: flex;
     flex-wrap: wrap;
     align-items: flex-start;
@@ -93,9 +91,9 @@
 }
 
 .stack {
-    @extend .z-depth-1;
+    @extend .z-depth-2;
     background: white;
-    border-radius: 2px;
+    border-radius: 4px;
     position: relative;
     flex-basis: 200px;
     height: 240px;
@@ -131,8 +129,8 @@
 
     .callout {
         background: #eee;
-        border-radius: 3px;
-        padding: 10px 20px;
+        border-radius: 4px;
+        padding: 8px 24px;
         color: #777;
         max-width: 90%;
         span {
@@ -145,8 +143,8 @@
 
     .head {
         border-bottom: 1px solid rgba(0,0,0,.1);
-        padding: 15px;
-        margin-bottom: 15px;
+        padding: 16px;
+        margin-bottom: 16px;
         display: flex;
         align-items: flex-end;
         h2 {
@@ -166,7 +164,7 @@
     .btn-circle {
         display: block;
         margin: 0 auto;
-        padding: 15px 0;
+        padding: 16px 0;
         height: 125px;
         opacity: .5;
         &:hover { opacity: 1; }
@@ -179,7 +177,7 @@
 
     .foot {
         border-top: 1px solid rgba(0,0,0,.1);
-        padding: 15px;
+        padding: 16px;
     }
 
     .actions {

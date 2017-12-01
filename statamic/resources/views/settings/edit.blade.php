@@ -2,14 +2,6 @@
 
 @section('content')
 
-    <div class="tabs">
-        @foreach ($settings as $setting)
-            <a href="{{ route('settings.edit', $setting) }}" class="{{ $setting !== $slug ?: 'active' }}">
-                {{ translate('cp.settings_'.$setting) }}
-            </a>
-        @endforeach
-    </div>
-
     <script>
         Statamic.Publish = {
             contentData: {!! json_encode($content_data) !!}
@@ -24,4 +16,4 @@
              fieldset-name="{{ $fieldset }}"
     ></publish>
 
-@endsection
+@stop

@@ -11,13 +11,14 @@
 <script>
 module.exports = {
 
-    props: ['data', 'config', 'name'],
+    mixins: [Fieldtype],
 
     data: function() {
         return {
             loading: true,
             options: {},
-            container: null
+            container: null,
+            autoBindChangeWatcher: false
         }
     },
 
@@ -87,6 +88,8 @@ module.exports = {
                 if (!this.data) {
                     this.data = options[0].value;
                 }
+
+                this.bindChangeWatcher();
             });
         }
     },

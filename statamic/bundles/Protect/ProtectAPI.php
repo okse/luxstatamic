@@ -27,7 +27,7 @@ class ProtectAPI extends API
         }
 
         // Get the protection scheme from the page data, and call it a day if there isn't one.
-        if (! $protect = $data->get('protect')) {
+        if (! $protect = array_get($data->toArray(), 'protect')) {
             return;
         }
 

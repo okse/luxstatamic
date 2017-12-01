@@ -69,7 +69,8 @@ class StaticUrlBuilder extends ImageUrlBuilder
     protected function generatePath()
     {
         if (is_string($this->item) && Str::isUrl($this->item)) {
-            return $this->generator->generateByPath($this->item, $this->params);
+            $method = sprintf('generateBy%s', Str::startsWith($this->item, 'http') ? 'Url' : 'Path');
+            return $this->generator->$method($this->item, $this->params);
         }
 
         $asset = ($this->itemType() === 'asset') ? $this->item : Asset::find($this->item);

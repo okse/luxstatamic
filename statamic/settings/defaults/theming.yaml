@@ -1,6 +1,7 @@
 theme: redwood
 smartypants: false
 allow_php: false
+markdown_hard_wrap: false
 
 default_layout: default
 default_page_template: default

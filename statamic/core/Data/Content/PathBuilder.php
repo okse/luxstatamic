@@ -17,6 +17,7 @@ class PathBuilder implements PathBuilderContract
     protected $parent_path;
     protected $collection;
     protected $published = true;
+    protected $defaultPublished;
     protected $order;
     protected $extension = 'md';
     protected $locale;
@@ -76,6 +77,13 @@ class PathBuilder implements PathBuilderContract
     public function published($published)
     {
         $this->published = $published;
+
+        return $this;
+    }
+
+    public function defaultPublished($published)
+    {
+        $this->defaultPublished = $published;
 
         return $this;
     }
@@ -153,6 +161,10 @@ class PathBuilder implements PathBuilderContract
 
     private function getStatusPrefix()
     {
+        if ($this->defaultPublished === false && $this->published) {
+            return '_';
+        }
+
         return ($this->published) ? '' : '_';
     }
 

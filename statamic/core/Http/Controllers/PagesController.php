@@ -58,7 +58,7 @@ class PagesController extends CpController
     {
         $this->access('pages:edit');
 
-        $tree = Content::tree('/', INF, false, true);
+        $tree = Content::tree('/', INF, false, request('drafts', true), null, request('locale'));
 
         if ($tree) {
             $data = $this->transformTree($tree);
@@ -89,14 +89,20 @@ class PagesController extends CpController
             $uri = $page->uri();
             $url = $page->url();
 
+            $editUrl = $page->in(default_locale())->editUrl();
+            $locale = request('locale');
+            if ($locale !== default_locale()) {
+                $editUrl .= '?locale=' . $locale;
+            }
+
             $data[] = [
                 'id'          => $page->id(),
                 'order'       => $page->order(),
-                'title'       => (string) $page->get('title'),
+                'title'       => (string) $page->getWithDefaultLocale('title'),
                 'url'         => $url,
                 'uri'         => $uri,
                 'extension'   => $page->dataType(),
-                'edit_url'    => route('page.edit', ['url' => ltrim($uri, '/')]),
+                'edit_url'    => $editUrl,
                 'create_child_url' => route('page.create', ['url' => ltrim($uri, '/')]),
                 'slug'        => $page->slug(),
                 'published'   => $page->published(),
@@ -157,7 +163,7 @@ class PagesController extends CpController
 
         $reorderer->reorder($tree);
 
-        Stache::update();
+        Stache::clear();
 
         return [
             'success' => true,

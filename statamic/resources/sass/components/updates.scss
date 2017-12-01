@@ -46,24 +46,41 @@
 .update-release {
 	.date {
 		color: $color_gray_light;
+        font-weight: normal;
 	}
+
+	p { margin: 32px 0; }
 
 	ul {
 		margin: 0;
 		padding: 0;
 
 		li {
+            border-bottom: 1px solid #eee;
 			list-style: none;
 			font-size: 14px;
-			margin-bottom:10px;
+			margin-bottom: 8px;
+            padding-bottom: 8px;
+            position: relative;
+            padding-left: 80px;
+
+			&:last-child {
+				border-bottom: 0;
+				margin-bottom: 0;
+			}
 		}
+
+        li a { color: $brand-primary; }
 
 		.label {
 			display: inline-block;
-			font: 11px $font_montserrat;
+			font: 11px $font;
 			margin-right: 10px;
 			text-transform: uppercase;
 			width: 60px;
+            position: absolute;
+            top: 0;
+            left: 0;
 		}
 	}
 }

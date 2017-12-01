@@ -1,14 +1,15 @@
 <template>
-    <div class="taxonomy-fieldtype">
-        <relate-fieldtype :data.sync="data" :name="name" :config="adjustedConfig"></relate-fieldtype>
+    <div>
+        <relate-fieldtype :data.sync="data" :name="name" :config="adjustedConfig" v-ref:relate></relate-fieldtype>
     </div>
 </template>
 
 <script>
-module.exports = {
+import AdaptsRelateFieldtype from './AdaptsRelateFieldtype.vue';
 
-    props: ['data', 'config', 'name'],
+export default {
 
+    mixins: [AdaptsRelateFieldtype],
 
     computed: {
 

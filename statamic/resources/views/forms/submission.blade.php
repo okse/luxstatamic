@@ -2,17 +2,15 @@
 
 @section('content')
 
-    <div class="card flat-bottom">
-        <div class="head">
-            <h1>{{ translate_choice('cp.submissions', 1) }}</h1>
-        </div>
+    <div class="flexy mb-24">
+        <a href="{{ route('form.show', $submission->form->name) }}" class="btn icon round mr-16">&larr;</a>
+        <h1>{{ translate_choice('cp.submissions', 1) }}</h1>
     </div>
 
-    <div class="card flat-top">
-
-        <table>
+    <div class="card">
+        <table class="dossier mt-0">
             <tr>
-                <th>{{ t('date') }}</th>
+                <th width="25%">{{ t('date') }}</th>
                 <td>{{ $submission->formattedDate() }}</td>
             </tr>
             @foreach($submission->fields() as $name => $field)

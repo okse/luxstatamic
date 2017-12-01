@@ -5,20 +5,23 @@
     <form action="{{ route('import.upload') }}" method="POST" enctype="multipart/form-data">
         {{ csrf_field() }}
 
-        <div class="card flat-bottom">
-            <div class="head">
-                <h1>{{ t('import') }}</h1>
-            </div>
+        <div class="flexy mb-24">
+            <h1>{{ t('import_data') }}</h1>
         </div>
 
-        <div class="card flat-top flat-bottom">
-            <div class="form-group">
-                <label>{{ t('json_file') }}</label>
-                <small class="help-block"></small>
-                <input type="file" class="form-control" name="file" />
+        <div class="card">
+            <div class="flexy">
+                <div class="form-group fill">
+                    <label>{{ t('json_file') }}</label>
+                    <small class="help-block"></small>
+                    <input type="file" class="form-control" name="file" />
+                </div>
+                <button type="submit" class="btn btn-primary btn-lg ml-16">{{ t('import') }}</button>
             </div>
+            <p class="help-block">
+                <a href="https://docs.statamic.com/importer" target="_blank">{{ t('import_link_text')}} &raquo;</a>
+            </p>
 
-            <button type="submit" class="btn btn-primary">{{ t('import') }}</button>
         </div>
     </form>
 

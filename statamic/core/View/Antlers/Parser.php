@@ -564,7 +564,9 @@ class Parser
 
                     if ( ! empty($values)) {
                         // parse the tag found with the value(s) related to it
-                        $replacement = $this->parseVariables("{{ $name }}$content{{ /$name }}", [$name => $values], $callback);
+                        $tmpname = md5($name);
+                        $vars = [$tmpname => $values];
+                        $replacement = $this->parseVariables("{{ $tmpname }}$content{{ /$tmpname }}", [$tmpname => $values], $callback);
                     }
                 } else {
                     // nope, this must be a (plugin) callback

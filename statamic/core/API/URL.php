@@ -264,7 +264,10 @@ class URL
      */
     public static function isExternalUrl($url)
     {
-        return ! Pattern::startsWith(URL::getSiteUrl());
+        return ! Pattern::startsWith(
+            Str::ensureRight($url, '/'),
+            self::prependSiteUrl('/')
+        );
     }
 
     /**

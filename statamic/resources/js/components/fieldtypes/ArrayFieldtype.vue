@@ -53,7 +53,7 @@
 <script>
 module.exports = {
 
-    props: ['name', 'data', 'config'],
+    mixins: [Fieldtype],
 
     ready: function() {
         this.data = this.data || [];

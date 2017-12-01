@@ -31,7 +31,7 @@ class FieldsetController extends CpController
 
     public function get()
     {
-        $fieldsets = collect(Fieldset::all())->sort(function ($fieldset) {
+        $fieldsets = collect(Fieldset::all())->sortBy(function ($fieldset) {
             return $fieldset->title();
         })->map(function ($fieldset) {
             // If we've decided to omit hidden fieldsets, and this one should be
@@ -109,7 +109,48 @@ class FieldsetController extends CpController
             );
         }
 
+        if ($this->request->editing) {
+            $array['fields'] = collect($array['fields'])->map(function ($field) {
+                return $this->addConditions($field);
+            });
+        }
+
         return $array;
+    }
+
+    private function addConditions($field)
+    {
+        if (!isset($field['show_when']) && !isset($field['hide_when'])) {
+            return $field;
+        }
+
+        $type = isset($field['show_when']) ? 'show' : 'hide';
+        $conditions = $type === 'show' ? $field['show_when'] : $field['hide_when'];
+        $style = is_string($conditions) ? 'custom' : 'standard';
+
+        $field['conditions'] = [
+            'type' => $type,
+            'style' => $style,
+            'custom' => $style === 'custom' ? $conditions : null,
+            'conditions' => [],
+        ];
+
+        if (is_array($conditions)) {
+            $field['conditions']['conditions'] = collect($conditions)->map(function ($values, $handle) {
+                if (Str::startsWith($handle, 'or_')) {
+                    $operator = 'or';
+                    $handle = Str::removeLeft($handle, 'or_');
+                }
+
+                return [
+                    'handle' => $handle,
+                    'operator' => isset($operator) ? $operator : 'and',
+                    'values' => Helper::ensureArray($values)
+                ];
+            })->values()->all();
+        }
+
+        return $field;
     }
 
     /**
@@ -255,6 +296,78 @@ class FieldsetController extends CpController
         return $fields;
     }
 
+    /**
+     * Process conditions submitted through the Vue component.
+     *
+     * @param  array $contents  Fieldset contents.
+     * @return array            The fieldset contents with condition syntax appropriately updated.
+     */
+    private function processConditions($contents)
+    {
+        $contents['fields'] = collect($contents['fields'])->map(function ($field) {
+            return $this->processFieldConditions($field);
+        })->all();
+
+        return $contents;
+    }
+
+    /**
+     * Process a single field's conditions.
+     *
+     * @param  array $config  The field's config.
+     * @return array          The field's config, with condition syntax appropriately updated.
+     */
+    private function processFieldConditions($config)
+    {
+        unset($config['show_when'], $config['hide_when']);
+
+        if (! $conditions = array_pull($config, 'conditions')) {
+            return $config;
+        }
+
+        if (! $type = array_get($conditions, 'type')) {
+            return $config;
+        }
+
+        $values = ($conditions['style'] === 'custom')
+            ? $conditions['custom']
+            : $this->processStandardFieldConditions($conditions['conditions']);
+
+        $config[$type . '_when'] = $values;
+
+        return $config;
+    }
+
+    private function processStandardFieldConditions($conditions)
+    {
+        return collect($conditions)->map(function ($condition) {
+            $handle = $condition['handle'];
+
+            if ($condition['operator'] === 'or') {
+                $handle = 'or_' . $handle;
+            }
+
+            $values = $this->normalizeConditionValues($condition['values']);
+            $values = (count($values) === 1) ? $values[0] : $values;
+
+            return compact('handle', 'values');
+        })->pluck('values', 'handle')->all();
+    }
+
+    private function normalizeConditionValues($values)
+    {
+        return collect($values)->map(function ($value) {
+            switch ($value) {
+                case 'true':
+                    return true;
+                case 'false':
+                    return false;
+                default:
+                    return $value;
+            }
+        })->all();
+    }
+
     public function updateLayout($fieldset)
     {
         $layout = collect($this->request->input('fields'))->keyBy('name')->toArray();
@@ -339,6 +452,8 @@ class FieldsetController extends CpController
 
     private function prepareFieldset($slug, $contents)
     {
+        $contents = $this->processConditions($contents);
+
         // We need to key the array by name
         $fields = [];
         foreach ($contents['fields'] as $field) {

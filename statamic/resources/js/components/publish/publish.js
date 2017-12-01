@@ -9,9 +9,9 @@ module.exports = {
 
     components: {
         'publish-fields': require('./fields'),
-        'locale-selector': require('./locale-selector'),
         'user-options': require('./user-options'),
-        'taxonomy-fields': require('./TaxonomyFields.vue')
+        'taxonomy-fields': require('./TaxonomyFields.vue'),
+        'status-field': require('./StatusField.vue')
     },
 
     deep: true,
@@ -59,6 +59,7 @@ module.exports = {
             contentData: null,
             taxonomies: null,
             formData: { extra: {}, fields: {} },
+            formDataInitialized: false,
             isSlugModified: false,
             iframeLoading: false,
             previewRequestQueued: false,
@@ -102,11 +103,17 @@ module.exports = {
         },
 
         shouldShowMeta: function() {
+            if (! this.formDataInitialized) return false;
+
             if (this.isUser && this.shouldShowTaxonomies) {
                 return true;
             }
 
-            return !this.isSettings && !this.isAddon && (this.shouldShowSlug || this.shouldShowDate || this.shouldShowLocales);
+            if ((this.isGlobal || this.isHomePage) && this.locales.length > 1) {
+                return true;
+            }
+
+            return !this.isSettings && !this.isAddon && (this.shouldShowSlug || this.shouldShowDate);
         },
 
         shouldShowTitle: function() {
@@ -118,11 +125,11 @@ module.exports = {
         },
 
         shouldShowStatus: function() {
-            return !this.isSettings && !this.isAddon && this.isDefaultLocale && !this.isGlobal && !this.isTaxonomy && !this.isUser && !this.isHomePage;
+            return !this.isSettings && !this.isAddon && !this.isTaxonomy && !this.isUser && !this.isHomePage;
         },
 
-        shouldShowLocales: function() {
-            return this.locales && this.locales.length > 1 && !this.isNew;
+        allowStatuses: function () {
+            return !this.isTaxonomy && !this.isGlobal && !this.isHomePage;
         },
 
         shouldShowDate: function() {
@@ -161,7 +168,7 @@ module.exports = {
         },
 
         shouldShowSneakPeek: function() {
-            return !this.isGlobal && !this.isSettings && !this.isUser && !this.isAddon;
+            return !this.isGlobal && !this.isSettings && !this.isUser && !this.isAddon && !this.editingLayout;
         },
 
         canEditLayout: function() {
@@ -173,7 +180,7 @@ module.exports = {
         },
 
         hasAnyMetaData: function () {
-            return this.shouldShowTitle || this.shouldShowSlug || this.shouldShowDate || this.shouldShowLocales || this.shouldShowStatus;
+            return this.shouldShowTitle || this.shouldShowSlug || this.shouldShowDate || this.shouldShowStatus;
         },
 
     },
@@ -192,6 +199,36 @@ module.exports = {
                 extra: this.extra,
                 fields: this.contentData
             };
+
+            this.formDataInitialized = true;
+        },
+
+        getFilteredFormData() {
+            // Make a copy so we don't modify the original formData
+            const formData = JSON.parse(JSON.stringify(this.formData));
+
+            const raw = formData.fields;
+            const vm = this.$refs.publishFields;
+            const fields = vm.fields;
+
+            let allowed = Object.keys(raw).filter(name => {
+                const field = _.findWhere(fields, { name });
+
+                // Fields that aren't in the fieldset (like title) should be
+                // included since we would have explicitly added them.
+                if (! field) return true;
+
+                return vm.peekaboo(field);
+            });
+
+            formData.fields = Object.keys(raw)
+                .filter(key => allowed.includes(key))
+                .reduce((obj, key) => {
+                    obj[key] = raw[key];
+                    return obj;
+                }, {});
+
+            return formData;
         },
 
         publish: function() {
@@ -208,7 +245,7 @@ module.exports = {
                 var url = this.submitUrl;
             }
 
-            var request = this.$http.post(url, this.formData)
+            var request = this.$http.post(url, this.getFilteredFormData())
 
             request.success(function(data) {
                 self.loading = false;
@@ -216,7 +253,6 @@ module.exports = {
                 if (data.success) {
                     this.$dispatch('changesMade', false);
                     if (! this.formData.continue || this.isNew) {
-                        localStorage.setItem('continuing', false)
                         window.location = data.redirect;
                         return;
                     }
@@ -224,8 +260,9 @@ module.exports = {
                     this.formData.continue = null;
                     this.saving = false;
                     this.title = this.formData.fields.title;
-                    this.$dispatch('setFlashSuccess', data.message, 1000);
+                    this.$dispatch('setFlashSuccess', data.message, { timeout: 1500 });
                 } else {
+                    this.$dispatch('setFlashError', translate('cp.error'));
                     this.saving = false;
                     this.errors = data.errors;
                     $('html, body').animate({ scrollTop: 0 });
@@ -237,9 +274,16 @@ module.exports = {
             });
         },
 
+        publishWithoutContinuing: function () {
+            localStorage.setItem('statamic.publish.continue', false);
+
+            this.publish();
+        },
+
         publishAndContinue: function() {
             this.continuing = true;
             this.formData.continue = true;
+            localStorage.setItem('statamic.publish.continue', true);
 
             this.publish();
         },
@@ -260,8 +304,9 @@ module.exports = {
         },
 
         initPreview: function() {
-            var $iframe = $('<iframe frameborder="0" id="sneak-peek-iframe">').appendTo('#sneak-peek');
-            var iframe = $iframe.get(0);
+            if (! $('#sneak-peek-iframe').length) {
+                $('<iframe frameborder="0" id="sneak-peek-iframe">').appendTo('#sneak-peek');
+            }
             this.updatePreview();
         },
 
@@ -392,6 +437,10 @@ module.exports = {
             this.isSlugModified = (this.$slugify(title) !== slug);
         },
 
+        getInitialContinue: function () {
+            return localStorage.getItem('statamic.publish.continue') === 'true';
+        }
+
     },
 
     ready: function() {
@@ -407,6 +456,8 @@ module.exports = {
         if (this.locales) {
             this.locales = JSON.parse(this.locales);
         }
+
+        this.continuing = this.getInitialContinue();
 
         this.initFormData();
 
@@ -434,14 +485,6 @@ module.exports = {
         this.$on('fieldsetLoaded', function(fieldset) {
             this.fieldset = fieldset;
         });
-
-        // Add the watcher after a small delay.
-        // Give things enough time to stop initially modifying the data.
-        setTimeout(() => {
-            this.$watch('formData', function () {
-                this.$dispatch('changesMade', true);
-            }, { deep: true });
-        }, 1000);
 
         Mousetrap.bindGlobal('mod+s', function(e) {
             e.preventDefault();

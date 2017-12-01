@@ -54,10 +54,21 @@ class UsersController extends CpController
     {
         $users = User::all()->supplement('checked', function () {
             return false;
-        })->values()->toArray();
+        });
+
+        /**
+         * Since the `name` field is a computed value, sorting doesn't seem
+         * trigger a change on it. So it's better to sort it with the first
+         * name when the name is being used.
+         */
+        if ($sort = request('sort')) {
+            $sort = ($sort == 'name') ? 'first_name' : $sort;
+
+            $users = $users->multisort($sort . ':' . request('order'));
+        }
 
         return [
-            'items' => $users,
+            'items'   => $users->values()->toArray(),
             'columns' => ['name', 'username', 'email']
         ];
     }

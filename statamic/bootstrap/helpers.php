@@ -116,7 +116,12 @@ function cp_route($route, $params = [])
 
 function cp_resource_url($url)
 {
-    return URL::assemble(SITE_ROOT, pathinfo(request()->getScriptName())['basename'], RESOURCES_ROUTE, 'cp', $url);
+    return resource_url('cp/' . $url);
+}
+
+function resource_url($url)
+{
+    return URL::assemble(SITE_ROOT, pathinfo(request()->getScriptName())['basename'], RESOURCES_ROUTE, $url);
 }
 
 function path($from, $extra = null)
@@ -397,7 +402,13 @@ function format_url($url)
  */
 function markdown($content)
 {
-    return MarkdownExtra::defaultTransform($content);
+    $parser = new MarkdownExtra;
+
+    if (Config::get('theming.markdown_hard_wrap')) {
+        $parser->hard_wrap = true;
+    }
+
+    return $parser->transform($content);
 }
 
 /**

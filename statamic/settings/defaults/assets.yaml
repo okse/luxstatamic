@@ -19,3 +19,7 @@ image_manipulation_cached_path: img
 
 # Whether assets should automatically get cropped when using image manipulations.
 auto_crop: true
+
+# Prevent thumbnails being generated for images greater than these dimensions.
+thumbnail_max_width: 6000
+thumbnail_max_height: 6000

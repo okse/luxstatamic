@@ -3,6 +3,7 @@
 namespace Statamic\Stache\Drivers;
 
 use Statamic\API\AssetContainer;
+use Statamic\API\URL;
 use Statamic\API\File;
 use Statamic\API\Folder;
 use Statamic\API\YAML;
@@ -57,7 +58,9 @@ class AssetContainersDriver extends AbstractDriver
         // Double getAdapter since we're using CachedAdapter for s3.
         $adapter = File::disk("assets:$id")->filesystem()->getAdapter()->getAdapter();
 
-        return rtrim($adapter->getClient()->getObjectUrl($adapter->getBucket(), array_get($data, 'path', '/')), '/');
+        $url = rtrim($adapter->getClient()->getObjectUrl($adapter->getBucket(), array_get($data, 'path', '/')), '/');
+
+        return URL::tidy($url);
     }
 
     public function isMatchingFile($file)

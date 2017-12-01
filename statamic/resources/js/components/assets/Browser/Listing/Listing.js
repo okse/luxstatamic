@@ -6,7 +6,8 @@ export default {
         'folder',
         'subfolders',
         'loading',
-        'selectedAssets'
+        'selectedAssets',
+        'restrictNavigation'
     ],
 
 

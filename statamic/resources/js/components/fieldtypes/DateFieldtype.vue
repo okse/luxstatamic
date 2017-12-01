@@ -8,7 +8,7 @@
     	<div v-if="hasDate" class="date-time-container">
 
     		<div class="col-date">
-    			<div class="daterange daterange--single" :data-datetime="date" @focus="openCalendar()" @blur="closeCalendar()">
+    			<div class="daterange daterange--single" :data-datetime="date" v-el:date>
     				<span class="icon icon-calendar"></span>
     				<span class="icon icon-remove" @click="removeDate" v-if="blankAllowed">&times;</span>
     			</div>
@@ -32,6 +32,8 @@
 
 module.exports = {
 
+    mixins: [Fieldtype],
+
     props: {
         name: String,
         data: {},
@@ -41,7 +43,8 @@ module.exports = {
     data: function() {
         return {
             calendar: null,
-            time: null
+            time: null,
+            autoBindChangeWatcher: false
         }
     },
 
@@ -149,13 +152,9 @@ module.exports = {
             });
         },
 
-        openCalendar: function () {
-            // this.calendar.calendarOpen();
-        },
-
-        closeCalendar: function () {
-            // this.calendar.calendarClose();
-        },
+        focus() {
+            setTimeout(() => $(this.$els.date).find('.dr-input .dr-date').click(), 200);
+        }
 
     },
 
@@ -173,6 +172,7 @@ module.exports = {
 
         this.watchTime();
         this.bindCalendar();
+        this.bindChangeWatcher();
     }
 };
 </script>

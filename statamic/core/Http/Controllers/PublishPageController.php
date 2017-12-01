@@ -42,11 +42,12 @@ class PublishPageController extends PublishController
             'content_type'      => 'page',
             'status'            => true,
             'is_default_locale' => true,
-            'locale'            => default_locale(),
+            'locale'            => $this->locale($request),
             'locales'           => $this->getLocales(),
             'fieldset'          => $fieldset,
             'content_data'      => $this->populateWithBlanks($fieldset),
             'taxonomies'        => $this->getTaxonomies(Fieldset::get($fieldset)),
+            'suggestions'       => $this->getSuggestions(Fieldset::get($fieldset)),
         ]);
     }
 
@@ -89,6 +90,7 @@ class PublishPageController extends PublishController
                 'is_home'    => $page->uri() === '/',
                 'parent_url' => URL::parent($url)
             ],
+            'suggestions' => $this->getSuggestions($page->fieldset()),
         ]);
     }
 

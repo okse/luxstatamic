@@ -35,3 +35,6 @@ fields:
     type: toggle
   allow_php:
     type: toggle
+  markdown_hard_wrap:
+    type: toggle
+

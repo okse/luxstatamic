@@ -1,10 +1,10 @@
-<div class="card">
+<div class="card flush">
     <div class="head">
         <h1><a href="{{ $form->url() }}">{{ $title }}</a></h1>
     </div>
-    <div class="card-body">
+    <div class="card-body pad-16">
         @if ( ! $submissions)
-            <p class="mt">{{ trans('cp.empty_responses') }}</p>
+            <p class="text-center light mv-16">{{ trans('cp.empty_responses') }}</p>
         @else
             <table class="dossier">
                 @foreach($submissions as $submission)

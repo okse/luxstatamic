@@ -2,9 +2,7 @@
 
     <div>
 
-        <div id="publish-controls" class="head">
-            <h1>{{ translate('cp.creating_asset_container') }}</h1>
-        </div>
+        <h1 class="mb-24">{{ translate('cp.creating_asset_container') }}</h1>
 
         <div class="publish-form flush card">
 

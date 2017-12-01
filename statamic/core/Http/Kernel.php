@@ -14,7 +14,6 @@ class Kernel extends HttpKernel
     protected $middleware = [
         'Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode',
         'Statamic\StaticCaching\Middleware\Retrieve',
-        'Statamic\Http\Middleware\Glide',
         'Illuminate\Cookie\Middleware\EncryptCookies',
         'Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse',
         'Illuminate\Session\Middleware\StartSession',

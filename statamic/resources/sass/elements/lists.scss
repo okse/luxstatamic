@@ -1,3 +1,7 @@
+/* ==========================================================================
+   LISTS
+   ========================================================================== */
+
 .form-group .list-group,
 .list-group {
 	&.no-border .list-group-item {
@@ -13,19 +17,25 @@
 	}
 }
 
+
+
+/* List Fieldtype
+  ========================================================================== */
+
 .list-fieldtype ul {
-    @extend .list-unstyled;
-    border: 1px solid $color_border;
-    padding: 10px 15px;
-    border-radius: 3px;
+    padding: 0;
     margin: 0;
+	list-style: none;
 }
 
 .list-fieldtype li {
-	padding-left: 25px;
-	background: url('../img/bullet.png') no-repeat 11px 9px;
-	margin-bottom: 3px;
+
+	padding: 0 16px;
+	background: url('../img/bullet.png') no-repeat 0px 8px;
+	margin-bottom: 8px;
     font-size: 16px;
+	position: relative;
+	font-size: 14px;
 
     &:active { cursor: ns-resize; }
 
@@ -34,7 +44,6 @@
 		background: #fff;
 	}
 
-
 	&:last-child {
 		padding-left: 0;
         margin-bottom: 0;
@@ -42,22 +51,24 @@
 	}
 
 	input {
-		background-image: url('../img/bullet.png');
-		background-repeat: no-repeat;
-		background-position: 12px 13px;
-		text-indent: 15px;
-        padding: 5px 10px;
-        height: auto;
-        margin-top: 5px;
+		background: #fff url('../img/bullet.png') no-repeat 0 8px;
+		box-shadow: none;
+        padding: 0 16px;
+        height: auto !important;
+		font-size: 14px;
+		outline: 0px !important;
+		&:active, &:focus { outline: 0px !important; -webkit-appearance: none; box-shadow: 0 0 0 0; }
 	}
 
     .delete {
-	    background: rgba(0, 0, 0, 0) url(../img/delete.png) no-repeat 2px 4px;
+	    background: #fff url(../img/delete.png) no-repeat 0 0;
 	    width: 12px;
 	    height: 12px;
-	    margin-left: 1px;
 	    display: inline-block;
 	    opacity: 0;
+		top: 6px;
+		left: -1px;
+		position: absolute;
 	    cursor: pointer;
 	}
 
@@ -66,13 +77,22 @@
 	}
 }
 
+
+
+
+/* Inside a Grid
+  ========================================================================== */
+
 .grid-fieldtype .list-fieldtype {
-    padding: 8px 0 10px;
-    ul {
+
+	padding: 8px 0 10px;
+
+	ul {
         border: none;
         padding: 0;
         border-radius: 0;
     }
+
     li {
         background-position: 10px 9px;
         font-size: 14px;
@@ -83,6 +103,7 @@
             margin-top: 0;
         }
     }
+
     .ui-sortable-helper {
         box-shadow: none;
         .delete { display: none; }

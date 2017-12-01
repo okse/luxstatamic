@@ -2,10 +2,12 @@
 
 namespace Statamic\Data\Content;
 
+use Carbon\Carbon;
 use Statamic\API\Str;
 use Statamic\API\Helper;
 use Statamic\API\Term;
 use Statamic\Data\DataCollection;
+use Statamic\Contracts\Data\Entries\Entry;
 
 /**
  * A collection of Content data types. (Pages and Entries)
@@ -110,13 +112,31 @@ class ContentCollection extends DataCollection
     }
 
     /**
+     * Remove published content
+     *
+     * @return static
+     */
+    public function removePublished()
+    {
+        return new static ($this->reject(function ($item) {
+            return (method_exists($item, 'published')) ? $item->published() : true;
+        }));
+    }
+
+    /**
      * Removes content with a date in the future
      *
      * @return static
      */
     public function removeFuture()
     {
-        return $this;
+        return $this->reject(function ($item) {
+            if ($item instanceof Entry && $item->orderType() === 'date') {
+                return Carbon::now()->lt($item->date());
+            }
+
+            return false;
+        });
     }
 
     /**
@@ -126,7 +146,13 @@ class ContentCollection extends DataCollection
      */
     public function removePast()
     {
-        return $this;
+        return $this->reject(function ($item) {
+            if ($item instanceof Entry && $item->orderType() === 'date') {
+                return Carbon::now()->gt($item->date());
+            }
+
+            return false;
+        });
     }
 
     /**
@@ -137,7 +163,15 @@ class ContentCollection extends DataCollection
      */
     public function removeBefore($before)
     {
-        return $this;
+        $before = Carbon::parse($before);
+
+        return $this->reject(function ($item) use ($before) {
+            if ($item instanceof Entry && $item->orderType() === 'date') {
+                return $item->date()->lt($before);
+            }
+
+            return false;
+        });
     }
 
     /**
@@ -148,7 +182,15 @@ class ContentCollection extends DataCollection
      */
     public function removeAfter($after)
     {
-        return $this;
+        $after = Carbon::parse($after);
+
+        return $this->reject(function ($item) use ($after) {
+            if ($item instanceof Entry && $item->orderType() === 'date') {
+                return $item->date()->gt($after);
+            }
+
+            return false;
+        });
     }
 
     /**

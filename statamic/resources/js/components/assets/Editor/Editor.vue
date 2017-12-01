@@ -35,7 +35,7 @@
                 </div>
 
                 <div class="asset-editor-meta-actions">
-                    <a :href="asset.download_url" title="{{ translate('cp.download') }}">
+                    <a @click.prevent="download" title="{{ translate('cp.download') }}">
                         <svg xmlns="http://www.w3.org/2000/svg" width="27" height="23" viewBox="0 0 27 23">
                           <g fill="none" fill-rule="evenodd" stroke="#676767" stroke-width="2" transform="translate(1 1.045)">
                             <path d="M21.1219828 6.85714286C21.1219828 6.85714286 20.0297414 6.69642857 18.9655172 6.85714286M3.01724138 6C3.01724138 4.10657143 4.5612069 2.57142857 6.46551724 2.57142857 8.36982759 2.57142857 9.9137931 4.10657143 9.9137931 6"/>
@@ -86,14 +86,6 @@
                             type="button" class="btn"
                             @click.prevent="openFocalPointEditor">{{ translate('cp.focal_point') }}
                         </button>
-
-                        <!--
-                        <button
-                            v-if="isImage"
-                            type="button" class="btn"
-                            @click.prevent="openImageEditor">Edit Image
-                        </button>
-                        -->
 
                         <button
                             type="button" class="btn"
@@ -184,7 +176,6 @@
 export default {
 
     components: {
-        ImageEditor: require('./ImageEditor.vue'),
         FocalPointEditor: require('./FocalPointEditor.vue'),
         Renamer: require('./Renamer.vue'),
         Mover: require('../Mover.vue'),
@@ -210,7 +201,6 @@ export default {
             saving: false,
             asset: null,
             fields: null,
-            showImageEditor: false,
             showFocalPointEditor: false,
             showRenamer: false,
             showMover: false
@@ -281,22 +271,6 @@ export default {
         },
 
         /**
-         * Open the image editor UI
-         */
-        openImageEditor() {
-            this.showImageEditor = true;
-            this.hasChild = true;
-        },
-
-        /**
-         * Close the image editor UI
-         */
-        closeImageEditor() {
-            this.showImageEditor = false;
-            this.hasChild = false;
-        },
-
-        /**
          * When the focal point is selected
          */
         selectFocalPoint(point) {
@@ -316,6 +290,8 @@ export default {
                 this.$emit('saved', response.asset);
                 this.saving = false;
             });
+
+            this.$dispatch('changesMade', false);
         },
 
         /**
@@ -374,6 +350,10 @@ export default {
         assetMoved(asset, folder) {
             this.asset = asset;
             this.$emit('moved', asset, folder)
+        },
+
+        download() {
+            window.open(this.asset.download_url);
         }
     }
 

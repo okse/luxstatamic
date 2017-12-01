@@ -2,7 +2,6 @@
 
 namespace Statamic\Http\Controllers;
 
-use Cache;
 use Statamic\API\Str;
 use Statamic\API\Asset;
 use League\Glide\Server;
@@ -127,28 +126,7 @@ class GlideController extends Controller
      */
     private function createResponse($path)
     {
-        $this->cachePath($path);
-
         return $this->server->getResponseFactory()->create($this->server->getCache(), $path);
-    }
-
-    /**
-     * Cache the path of the Glide generated image so the Glide middleware can serve it faster.
-     *
-     * @param string $path
-     * @return void
-     */
-    private function cachePath($path)
-    {
-        $key = md5($this->request->getUri());
-
-        // Append the path to an array so they can all be cleared.
-        $paths = Cache::get('glide::paths', []);
-        $paths[$key] = $path;
-        Cache::forever('glide::paths', $paths);
-
-        // Save the path as its own key so it can be retrieved quickly.
-        Cache::forever("glide::paths.$key", $path);
     }
 
     /**

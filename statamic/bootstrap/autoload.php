@@ -4,19 +4,6 @@ define('LARAVEL_START', microtime(true));
 
 /*
 |--------------------------------------------------------------------------
-| Register Helper Functions
-|--------------------------------------------------------------------------
-|
-| We've got some custom helper functions that are, well... helpful. Some
-| of them are intended to override Laravel's helpers, so we'll need to
-| load this file before Laravel can load theirs.
-|
-*/
-
-require __DIR__.'/helpers.php';
-
-/*
-|--------------------------------------------------------------------------
 | Register The Composer Auto Loader
 |--------------------------------------------------------------------------
 |
