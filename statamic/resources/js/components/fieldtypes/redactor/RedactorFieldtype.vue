@@ -84,6 +84,7 @@ module.exports = {
         assetsSelected(assets) {
             var self = this;
             var $r = $(self.$els.redactor);
+            $r.redactor('selection.restore');
             var selection = $r.redactor('selection.getHtml');
             var code = $r.redactor('code.get');
 
@@ -95,19 +96,20 @@ module.exports = {
                 _(response).each((asset) => {
                     var url = asset.url;
                     var alt = asset.alt || '';
+                    var title = asset.title === asset.filename ? null : asset.title;
+                    var text = title || asset.alt || asset.basename;
 
                     if (assets.length === 1) {
-                        var text = selection || alt;
                         if (asset.is_image) {
-                            self.insertImage(url, text);
+                            self.insertImage(url, alt);
                         } else {
-                            self.insertLink(url, text);
+                            self.insertLink(url, selection || text);
                         }
                     } else {
                         if (asset.is_image) {
                             code += '<img src="' + url + '" alt="' + alt + '" />';
                         } else {
-                            code += '<a href="' + url + '">' + alt + '</a>';
+                            code += '<a href="' + url + '">' + text + '</a>';
                         }
                         $r.redactor('code.set', code);
                     }

@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
+class ComposerStaticInitaf0a236854eed8aba5aa111ad68abc3b
 {
     public static $files = array (
         '95a22d2145ae40de20dc7ea7be07a610' => __DIR__ . '/../..' . '/bootstrap/helpers.php',
@@ -354,6 +354,13 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
             'Webpatser\\Uuid' => 
             array (
                 0 => __DIR__ . '/..' . '/webpatser/laravel-uuid/src',
+            ),
+        ),
+        'R' => 
+        array (
+            'Rap2hpoutre\\LaravelLogViewer\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src',
             ),
         ),
         'N' => 
@@ -2435,6 +2442,10 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Psy\\VarDumper\\Dumper' => __DIR__ . '/..' . '/psy/psysh/src/Psy/VarDumper/Dumper.php',
         'Psy\\VarDumper\\Presenter' => __DIR__ . '/..' . '/psy/psysh/src/Psy/VarDumper/Presenter.php',
         'Psy\\VarDumper\\PresenterAware' => __DIR__ . '/..' . '/psy/psysh/src/Psy/VarDumper/PresenterAware.php',
+        'Rap2hpoutre\\LaravelLogViewer\\BaseController' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/controllers/LogViewerController.php',
+        'Rap2hpoutre\\LaravelLogViewer\\LaravelLogViewer' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewer.php',
+        'Rap2hpoutre\\LaravelLogViewer\\LaravelLogViewerServiceProvider' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/Rap2hpoutre/LaravelLogViewer/LaravelLogViewerServiceProvider.php',
+        'Rap2hpoutre\\LaravelLogViewer\\LogViewerController' => __DIR__ . '/..' . '/rap2hpoutre/laravel-log-viewer/src/controllers/LogViewerController.php',
         'SessionHandlerInterface' => __DIR__ . '/..' . '/symfony/http-foundation/Resources/stubs/SessionHandlerInterface.php',
         'SocialiteProviders\\Manager\\Config' => __DIR__ . '/..' . '/socialiteproviders/manager/src/Config.php',
         'SocialiteProviders\\Manager\\ConfigTrait' => __DIR__ . '/..' . '/socialiteproviders/manager/src/ConfigTrait.php',
@@ -2512,6 +2523,7 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Addons\\Asset\\AssetTags' => __DIR__ . '/../..' . '/bundles/Asset/AssetTags.php',
         'Statamic\\Addons\\Assets\\AssetsFieldtype' => __DIR__ . '/../..' . '/bundles/Assets/AssetsFieldtype.php',
         'Statamic\\Addons\\Assets\\AssetsTags' => __DIR__ . '/../..' . '/bundles/Assets/AssetsTags.php',
+        'Statamic\\Addons\\Bard\\BardFieldtype' => __DIR__ . '/../..' . '/bundles/Bard/BardFieldtype.php',
         'Statamic\\Addons\\Cache\\CacheTags' => __DIR__ . '/../..' . '/bundles/Cache/CacheTags.php',
         'Statamic\\Addons\\Can\\CanAPI' => __DIR__ . '/../..' . '/bundles/Can/CanAPI.php',
         'Statamic\\Addons\\Can\\CanTags' => __DIR__ . '/../..' . '/bundles/Can/CanTags.php',
@@ -2545,6 +2557,8 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Addons\\Lists\\ListsFieldtype' => __DIR__ . '/../..' . '/bundles/Lists/ListsFieldtype.php',
         'Statamic\\Addons\\LocaleSettings\\LocaleSettingsFieldtype' => __DIR__ . '/../..' . '/bundles/LocaleSettings/LocaleSettingsFieldtype.php',
         'Statamic\\Addons\\Locales\\LocalesTags' => __DIR__ . '/../..' . '/bundles/Locales/LocalesTags.php',
+        'Statamic\\Addons\\Logbook\\LogbookController' => __DIR__ . '/../..' . '/../site/addons/Logbook/LogbookController.php',
+        'Statamic\\Addons\\Logbook\\LogbookListener' => __DIR__ . '/../..' . '/../site/addons/Logbook/LogbookListener.php',
         'Statamic\\Addons\\Markdown\\MarkdownFieldtype' => __DIR__ . '/../..' . '/bundles/Markdown/MarkdownFieldtype.php',
         'Statamic\\Addons\\Markdown\\MarkdownTags' => __DIR__ . '/../..' . '/bundles/Markdown/MarkdownTags.php',
         'Statamic\\Addons\\Member\\MemberTags' => __DIR__ . '/../..' . '/bundles/Member/MemberTags.php',
@@ -2586,7 +2600,10 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Addons\\Search\\SearchTags' => __DIR__ . '/../..' . '/bundles/Search/SearchTags.php',
         'Statamic\\Addons\\Section\\SectionFieldtype' => __DIR__ . '/../..' . '/bundles/Section/SectionFieldtype.php',
         'Statamic\\Addons\\Section\\SectionTags' => __DIR__ . '/../..' . '/bundles/Section/SectionTags.php',
+        'Statamic\\Addons\\Sections\\SectionsListener' => __DIR__ . '/../..' . '/../site/addons/Sections/SectionsListener.php',
         'Statamic\\Addons\\Select\\SelectFieldtype' => __DIR__ . '/../..' . '/bundles/Select/SelectFieldtype.php',
+        'Statamic\\Addons\\Sitemap\\SitemapController' => __DIR__ . '/../..' . '/../site/addons/Sitemap/SitemapController.php',
+        'Statamic\\Addons\\Sitemap\\SitemapServiceProvider' => __DIR__ . '/../..' . '/../site/addons/Sitemap/SitemapServiceProvider.php',
         'Statamic\\Addons\\Suggest\\Mode' => __DIR__ . '/../..' . '/bundles/Suggest/Mode.php',
         'Statamic\\Addons\\Suggest\\Modes\\AbstractMode' => __DIR__ . '/../..' . '/bundles/Suggest/Modes/AbstractMode.php',
         'Statamic\\Addons\\Suggest\\Modes\\CollectionMode' => __DIR__ . '/../..' . '/bundles/Suggest/Modes/CollectionMode.php',
@@ -2626,6 +2643,7 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Addons\\User\\UserTags' => __DIR__ . '/../..' . '/bundles/User/UserTags.php',
         'Statamic\\Addons\\Users\\UsersFieldtype' => __DIR__ . '/../..' . '/bundles/Users/UsersFieldtype.php',
         'Statamic\\Addons\\Users\\UsersTags' => __DIR__ . '/../..' . '/bundles/Users/UsersTags.php',
+        'Statamic\\Addons\\Video\\VideoFieldtype' => __DIR__ . '/../..' . '/bundles/Video/VideoFieldtype.php',
         'Statamic\\Addons\\Widont\\WidontTags' => __DIR__ . '/../..' . '/bundles/Widont/WidontTags.php',
         'Statamic\\Addons\\Yaml\\YamlFieldtype' => __DIR__ . '/../..' . '/bundles/Yaml/YamlFieldtype.php',
         'Statamic\\Addons\\Yields\\YieldsTags' => __DIR__ . '/../..' . '/bundles/Yields/YieldsTags.php',
@@ -2647,6 +2665,7 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\CP\\Publish\\EntryPublisher' => __DIR__ . '/../..' . '/core/CP/Publish/EntryPublisher.php',
         'Statamic\\CP\\Publish\\GlobalsPublisher' => __DIR__ . '/../..' . '/core/CP/Publish/GlobalsPublisher.php',
         'Statamic\\CP\\Publish\\PagePublisher' => __DIR__ . '/../..' . '/core/CP/Publish/PagePublisher.php',
+        'Statamic\\CP\\Publish\\ProcessesFields' => __DIR__ . '/../..' . '/core/CP/Publish/ProcessesFields.php',
         'Statamic\\CP\\Publish\\Publisher' => __DIR__ . '/../..' . '/core/CP/Publish/Publisher.php',
         'Statamic\\CP\\Publish\\SneakPeek' => __DIR__ . '/../..' . '/core/CP/Publish/SneakPeek.php',
         'Statamic\\CP\\Publish\\TaxonomyPublisher' => __DIR__ . '/../..' . '/core/CP/Publish/TaxonomyPublisher.php',
@@ -2704,6 +2723,7 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Console\\Commands\\Update\\UpdateCommand' => __DIR__ . '/../..' . '/core/Console/Commands/Update/UpdateCommand.php',
         'Statamic\\Console\\Commands\\Update\\UpdateHousekeepingCommand' => __DIR__ . '/../..' . '/core/Console/Commands/Update/UpdateHousekeepingCommand.php',
         'Statamic\\Console\\Commands\\Update\\UpdateStatamicCommand' => __DIR__ . '/../..' . '/core/Console/Commands/Update/UpdateStatamicCommand.php',
+        'Statamic\\Console\\Commands\\UserMigrationCommand' => __DIR__ . '/../..' . '/core/Console/Commands/UserMigrationCommand.php',
         'Statamic\\Console\\Commands\\VersionCommand' => __DIR__ . '/../..' . '/core/Console/Commands/VersionCommand.php',
         'Statamic\\Console\\EnhancesCommands' => __DIR__ . '/../..' . '/core/Console/EnhancesCommands.php',
         'Statamic\\Console\\Kernel' => __DIR__ . '/../..' . '/core/Console/Kernel.php',
@@ -2736,6 +2756,7 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Contracts\\Data\\Pages\\PageFactory' => __DIR__ . '/../..' . '/core/Contracts/Data/Pages/PageFactory.php',
         'Statamic\\Contracts\\Data\\Pages\\PageFolder' => __DIR__ . '/../..' . '/core/Contracts/Data/Pages/PageFolder.php',
         'Statamic\\Contracts\\Data\\Pages\\PageTreeReorderer' => __DIR__ . '/../..' . '/core/Contracts/Data/Pages/PageTreeReorderer.php',
+        'Statamic\\Contracts\\Data\\Services\\UsersService' => __DIR__ . '/../..' . '/core/Contracts/Data/Services/UsersService.php',
         'Statamic\\Contracts\\Data\\Taxonomies\\Taxonomy' => __DIR__ . '/../..' . '/core/Contracts/Data/Taxonomies/Taxonomy.php',
         'Statamic\\Contracts\\Data\\Taxonomies\\Term' => __DIR__ . '/../..' . '/core/Contracts/Data/Taxonomies/Term.php',
         'Statamic\\Contracts\\Data\\Taxonomies\\TermFactory' => __DIR__ . '/../..' . '/core/Contracts/Data/Taxonomies/TermFactory.php',
@@ -2768,7 +2789,6 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Data\\DataCollection' => __DIR__ . '/../..' . '/core/Data/DataCollection.php',
         'Statamic\\Data\\DataFolder' => __DIR__ . '/../..' . '/core/Data/DataFolder.php',
         'Statamic\\Data\\DataStore' => __DIR__ . '/../..' . '/core/Data/DataStore.php',
-        'Statamic\\Data\\Eloquent\\User' => __DIR__ . '/../..' . '/core/Data/Users/Eloquent/User.php',
         'Statamic\\Data\\Entries\\Collection' => __DIR__ . '/../..' . '/core/Data/Entries/Collection.php',
         'Statamic\\Data\\Entries\\Entry' => __DIR__ . '/../..' . '/core/Data/Entries/Entry.php',
         'Statamic\\Data\\Entries\\EntryCollection' => __DIR__ . '/../..' . '/core/Data/Entries/EntryCollection.php',
@@ -2784,11 +2804,13 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Data\\Pages\\PageFolder' => __DIR__ . '/../..' . '/core/Data/Pages/PageFolder.php',
         'Statamic\\Data\\Pages\\PageStructure' => __DIR__ . '/../..' . '/core/Data/Pages/PageStructure.php',
         'Statamic\\Data\\Pages\\PageTreeReorderer' => __DIR__ . '/../..' . '/core/Data/Pages/PageTreeReorderer.php',
+        'Statamic\\Data\\Processor' => __DIR__ . '/../..' . '/core/Data/Processor.php',
         'Statamic\\Data\\Services\\AbstractService' => __DIR__ . '/../..' . '/core/Data/Services/AbstractService.php',
         'Statamic\\Data\\Services\\AssetContainersService' => __DIR__ . '/../..' . '/core/Data/Services/AssetContainersService.php',
         'Statamic\\Data\\Services\\BaseService' => __DIR__ . '/../..' . '/core/Data/Services/BaseService.php',
         'Statamic\\Data\\Services\\CollectionsService' => __DIR__ . '/../..' . '/core/Data/Services/CollectionsService.php',
         'Statamic\\Data\\Services\\ContentService' => __DIR__ . '/../..' . '/core/Data/Services/ContentService.php',
+        'Statamic\\Data\\Services\\Eloquent\\UsersService' => __DIR__ . '/../..' . '/core/Data/Services/Eloquent/UsersService.php',
         'Statamic\\Data\\Services\\EntriesService' => __DIR__ . '/../..' . '/core/Data/Services/EntriesService.php',
         'Statamic\\Data\\Services\\GlobalsService' => __DIR__ . '/../..' . '/core/Data/Services/GlobalsService.php',
         'Statamic\\Data\\Services\\PageFoldersService' => __DIR__ . '/../..' . '/core/Data/Services/PageFoldersService.php',
@@ -2803,6 +2825,11 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Data\\Taxonomies\\TermCollection' => __DIR__ . '/../..' . '/core/Data/Taxonomies/TermCollection.php',
         'Statamic\\Data\\Taxonomies\\TermFactory' => __DIR__ . '/../..' . '/core/Data/Taxonomies/TermFactory.php',
         'Statamic\\Data\\Taxonomies\\TermTracker' => __DIR__ . '/../..' . '/core/Data/Taxonomies/TermTracker.php',
+        'Statamic\\Data\\Users\\Eloquent\\Model' => __DIR__ . '/../..' . '/core/Data/Users/Eloquent/Model.php',
+        'Statamic\\Data\\Users\\Eloquent\\OAuth' => __DIR__ . '/../..' . '/core/Data/Users/Eloquent/OAuth.php',
+        'Statamic\\Data\\Users\\Eloquent\\Roles' => __DIR__ . '/../..' . '/core/Data/Users/Eloquent/Roles.php',
+        'Statamic\\Data\\Users\\Eloquent\\User' => __DIR__ . '/../..' . '/core/Data/Users/Eloquent/User.php',
+        'Statamic\\Data\\Users\\Redis\\User' => __DIR__ . '/../..' . '/core/Data/Users/Redis/User.php',
         'Statamic\\Data\\Users\\User' => __DIR__ . '/../..' . '/core/Data/Users/User.php',
         'Statamic\\Data\\Users\\UserCollection' => __DIR__ . '/../..' . '/core/Data/Users/UserCollection.php',
         'Statamic\\Data\\Users\\UserFactory' => __DIR__ . '/../..' . '/core/Data/Users/UserFactory.php',
@@ -2993,6 +3020,7 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Listeners\\UpdateRoutes' => __DIR__ . '/../..' . '/core/Listeners/UpdateRoutes.php',
         'Statamic\\Logging\\LoggingHandler' => __DIR__ . '/../..' . '/core/Logging/LoggingHandler.php',
         'Statamic\\Outpost' => __DIR__ . '/../..' . '/core/Outpost.php',
+        'Statamic\\Permissions\\Eloquent\\UserGroup' => __DIR__ . '/../..' . '/core/Permissions/Eloquent/UserGroup.php',
         'Statamic\\Permissions\\File\\Role' => __DIR__ . '/../..' . '/core/Permissions/File/Role.php',
         'Statamic\\Permissions\\File\\RoleFactory' => __DIR__ . '/../..' . '/core/Permissions/File/RoleFactory.php',
         'Statamic\\Permissions\\File\\UserGroup' => __DIR__ . '/../..' . '/core/Permissions/File/UserGroup.php',
@@ -3000,6 +3028,8 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Permissions\\File\\UserGroupService' => __DIR__ . '/../..' . '/core/Permissions/File/UserGroupService.php',
         'Statamic\\Permissions\\Permissible' => __DIR__ . '/../..' . '/core/Permissions/Permissible.php',
         'Statamic\\Permissions\\Permissions' => __DIR__ . '/../..' . '/core/Permissions/Permissions.php',
+        'Statamic\\Permissions\\Redis\\UserGroup' => __DIR__ . '/../..' . '/core/Permissions/Redis/UserGroup.php',
+        'Statamic\\Permissions\\Redis\\UserGroupFactory' => __DIR__ . '/../..' . '/core/Permissions/Redis/UserGroupFactory.php',
         'Statamic\\Presenters\\PaginationPresenter' => __DIR__ . '/../..' . '/core/Presenters/PaginationPresenter.php',
         'Statamic\\Providers\\AddonServiceProvider' => __DIR__ . '/../..' . '/core/Providers/AddonServiceProvider.php',
         'Statamic\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/core/Providers/AppServiceProvider.php',
@@ -3087,6 +3117,7 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
         'Statamic\\Updater\\Releases' => __DIR__ . '/../..' . '/core/Updater/Releases.php',
         'Statamic\\Updater\\Swapper' => __DIR__ . '/../..' . '/core/Updater/Swapper.php',
         'Statamic\\Updater\\Updater' => __DIR__ . '/../..' . '/core/Updater/Updater.php',
+        'Statamic\\Updater\\Updates\\AddViewPermissions' => __DIR__ . '/../..' . '/core/Updater/Updates/AddViewPermissions.php',
         'Statamic\\Updater\\Updates\\MigrateAssets' => __DIR__ . '/../..' . '/core/Updater/Updates/MigrateAssets.php',
         'Statamic\\Updater\\Updates\\MigrateTaxonomies' => __DIR__ . '/../..' . '/core/Updater/Updates/MigrateTaxonomies.php',
         'Statamic\\Updater\\Updates\\MigrateTaxonomyFields' => __DIR__ . '/../..' . '/core/Updater/Updates/MigrateTaxonomyFields.php',
@@ -3645,10 +3676,10 @@ class ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit96bde071ca89e9124ba50b316ab2cbff::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitaf0a236854eed8aba5aa111ad68abc3b::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitaf0a236854eed8aba5aa111ad68abc3b::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitaf0a236854eed8aba5aa111ad68abc3b::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitaf0a236854eed8aba5aa111ad68abc3b::$classMap;
 
         }, null, ClassLoader::class);
     }
