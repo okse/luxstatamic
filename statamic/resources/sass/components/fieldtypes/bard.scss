@@ -72,7 +72,7 @@
         margin-bottom: .5em;
     }
 
-    p {
+    p, ol, ul {
         margin-bottom: 24px;
 
         &:last-child { margin-bottom: 0; }
@@ -296,4 +296,15 @@
     .text-fieldtype input { background: white; }
     .markdown-fieldtype .CodeMirror { background: white; }
     .toggle-fieldtype .toggle-container { background: white; }
+}
+
+
+/* Inside Replicator (or grid stacked mode)
+  ========================================================================== */
+
+.grid-mode-stacked, .replicator-fieldtype {
+    .bard-fieldtype-wrapper {
+        background: white;
+        border: 1px solid $border;
+    }
 }

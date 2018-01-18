@@ -178,7 +178,9 @@ module.exports = {
             this.data += ' ' + moment().format(timeFormat);
         }
 
-        this.time = this.data.substr(11);
+        if (this.data) {
+            this.time = this.data.substr(11);
+        }
 
         this.watchTime();
         this.bindCalendar();

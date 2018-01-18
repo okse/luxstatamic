@@ -2,7 +2,7 @@
 
     <div class="bard-block bard-text">
 
-        <div class="bard-set-selector" v-show="isShowingOptions" :style="optionStyles">
+        <div class="bard-set-selector" v-show="hasSets && isShowingOptions" :style="optionStyles">
             <div class="blerp">
                 <button type="button" class="btn btn-round dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <span class="icon icon-plus"></span>
@@ -37,6 +37,16 @@
             v-el:input
         ></div>
 
+        <selector v-if="showAssetSelector"
+                  :container="container"
+                  :folder="folder"
+                  :selected="selectedAssets"
+                  :restrict-navigation="restrictAssetNavigation"
+                  :max-files="1"
+                  @selected="assetsSelected"
+                  @closed="closeAssetSelector"
+        ></selector>
+
     </div>
 
 </template>
@@ -44,9 +54,18 @@
 
 <script>
 
+    import AutoList from './AutoList';
+    import InsertsAssets from '../InsertsAssets';
+
     export default {
 
         name: 'BardText',
+
+        components: {
+            selector: require('../../assets/Selector.vue')
+        },
+
+        mixins: [InsertsAssets],
 
         props: ['data', 'index', 'showSource'],
 
@@ -79,6 +98,10 @@
                 return {
                     top: this.optionsTopPosition + 'px'
                 }
+            },
+
+            hasSets() {
+                return this.$parent.hasSets;
             }
 
         },
@@ -115,6 +138,13 @@
         },
 
         methods: {
+
+            /**
+             * Used by the InsertsAssets mixin to get the config.
+             */
+            getFieldtypeConfig() {
+                return this.$parent.config;
+            },
 
             plainText() {
                 return this.editor.elements[0].textContent;
@@ -170,14 +200,20 @@
             },
 
             initMedium() {
+                let buttons = this.$parent.config.buttons || ['bold', 'italic', 'anchor', 'h2', 'h3', 'quote'];
+
                 let extensions = Object.assign({
-                    imageDragging: {}
+                    imageDragging: {},
+                    autolist: new AutoList
                 }, _.map(Statamic.MediumEditorExtensions, ext => new ext));
 
+                if (this.$parent.config.container) {
+                    extensions.assets = this.assetButtonExtension();
+                    if (! buttons.includes('assets')) buttons.push('assets');
+                }
+
                 let opts = {
-                    toolbar: {
-                        buttons: this.$parent.config.buttons || ['bold', 'italic', 'anchor', 'h2', 'h3', 'quote']
-                    },
+                    toolbar: { buttons },
                     autoLink: true,
                     placeholder: false,
                     extensions
@@ -239,6 +275,23 @@
                         this.$emit('arrow-down-at-end', this.index);
                     }
                 });
+            },
+
+            assetButtonExtension() {
+                const vm = this;
+                const extension = MediumEditor.extensions.button.extend({
+                    name: 'assets',
+                    tagNames: ['a'],
+                    contentDefault: '<span class="icon icon-images"></span>',
+                    aria: 'Assets',
+                    handleClick: function () {
+                        let toolbar = this.base.getExtensionByName('toolbar');
+                        if (toolbar) toolbar.hideToolbar();
+                        this.base.saveSelection();
+                        vm.addAsset();
+                    }
+                });
+                return new extension;
             },
 
             moveOptionsToElement(el) {
@@ -350,6 +403,15 @@
 
             updateEditorHtml() {
                 this.editor.setContent(this.text);
+            },
+
+            assetsSelected(assets) {
+                this.editor.restoreSelection();
+
+                // Loop over returned assets, even though there will only be one.
+                this.$http.post(cp_url('assets/get'), { assets }, (response) => {
+                    _(response).each(asset => this.editor.createLink({ value: asset.url }));
+                });
             }
 
         }

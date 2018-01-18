@@ -86,6 +86,10 @@ export default {
     },
 
     ready() {
+        if (! this.data) {
+            this.data = [{type: 'text', text: '<p><br></p>'}];
+        }
+
         this.combineConsecutiveTextBlocks();
 
         this.isReady = true;
@@ -93,9 +97,8 @@ export default {
         this.$nextTick(() => {
             this.draggable();
             if (this.accordionMode) this.collapseAll();
+            this.bindChangeWatcher();
         });
-
-        this.bindChangeWatcher();
     },
 
     watch: {
@@ -413,7 +416,13 @@ export default {
 
         updateText(i, text) {
             this.data[i].text = text;
-        }
+        },
+
+        getReplicatorPreviewText() {
+            return _.map(this.$refs.set, (set) => {
+                return (set.data.type === 'text') ? set.plainText() : set.getCollapsedPreview();
+            }).join(', ');
+        },
     }
 };
 </script>

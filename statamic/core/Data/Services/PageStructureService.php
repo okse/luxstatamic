@@ -7,6 +7,7 @@ use Statamic\API\Helper;
 use Statamic\API\URL;
 use Statamic\API\Page;
 use Statamic\API\Path;
+use Statamic\API\Stache;
 use Statamic\API\Pattern;
 
 class PageStructureService extends BaseService

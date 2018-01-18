@@ -13,30 +13,25 @@
 </template>
 
 <script>
+import InsertsAssets from '../InsertsAssets';
+
 module.exports = {
 
     components: {
         selector: require('../../assets/Selector.vue')
     },
 
-    mixins: [Fieldtype],
+    mixins: [InsertsAssets, Fieldtype],
 
     data: function() {
         return {
-            mode: 'write',
-            showAssetSelector: false,
-            selectedAssets: [],
-            selectorViewMode: null
+            mode: 'write'
         }
     },
 
     methods: {
         update: function(html) {
             this.data = html;
-        },
-
-        addAsset: function() {
-            this.showAssetSelector = true
         },
 
         insertLink: function(url, text) {
@@ -122,10 +117,6 @@ module.exports = {
             this.selectedAssets = [];
         },
 
-        closeAssetSelector() {
-            this.showAssetSelector = false;
-        },
-
         getReplicatorPreviewText() {
             if (! this.data) return '';
 
@@ -136,30 +127,17 @@ module.exports = {
 
         focus() {
             $(this.$els.redactor).redactor('focus.setEnd');
-        }
-    },
-
-    computed: {
-        assetsEnabled: function() {
-            return this.config && typeof this.config.container !== 'undefined';
         },
 
-        container: function() {
-            return this.config.container;
-        },
-
-        folder: function() {
-            return this.config.folder || '/';
-        },
-
-        restrictAssetNavigation() {
-            return this.config.restrict_assets || false;
+        /**
+         * Used by the InsertsAssets mixin to get the config.
+         */
+        getFieldtypeConfig() {
+            return this.config;
         }
     },
 
     ready: function() {
-        this.selectorViewMode = Cookies.get('statamic.assets.listing_view_mode') || 'grid';
-
         var womp = this;
 
         var defaults = {

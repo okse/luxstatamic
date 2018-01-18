@@ -86,7 +86,7 @@ class PublishTaxonomyController extends PublishController
             'default_slug' => $slug
         ];
 
-        $data = $this->addBlankFields($term->fieldset());
+        $data = $this->addBlankFields($term->fieldset(), $term->processedData());
         $data['title'] = $term->title();
         $data['slug'] = $term->slug();
 
