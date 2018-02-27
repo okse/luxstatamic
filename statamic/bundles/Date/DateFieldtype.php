@@ -13,11 +13,19 @@ class DateFieldtype extends Fieldtype
             return;
         }
 
-        return Carbon::createFromFormat($this->dateFormat($data), $data)->format('Y-m-d H:i');
+        if ($format = $this->getFieldConfig('format')) {
+            $data = Carbon::createFromFormat($format, $data)->format('Y-m-d H:i');
+        }
+
+        return $data;
     }
 
     public function process($data)
     {
+        if (! $data) {
+            return null;
+        }
+
         $date = Carbon::parse($data);
 
         return $date->format($this->dateFormat($data));
@@ -25,9 +33,12 @@ class DateFieldtype extends Fieldtype
 
     private function dateFormat($date)
     {
+        $shouldShowTime = strlen($date) > 10
+            && $this->getFieldConfig('allow_time') !== false;
+
         return $this->getFieldConfig(
             'format',
-            strlen($date) > 10 ? 'Y-m-d H:i' : 'Y-m-d'
+            $shouldShowTime ? 'Y-m-d H:i' : 'Y-m-d'
         );
     }
 }

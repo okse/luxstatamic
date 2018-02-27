@@ -15,6 +15,11 @@ abstract class Index
     protected $name;
 
     /**
+     * @var string
+     */
+    protected $locale;
+
+    /**
      * @var ItemResolver
      */
     protected $itemResolver;
@@ -30,6 +35,22 @@ abstract class Index
      * @return string
      */
     public function name()
+    {
+        $name = $this->name;
+
+        if ($this->locale && $this->locale !== default_locale()) {
+            $name = "{$name}_{$this->locale}";
+        }
+
+        return $name;
+    }
+
+    /**
+     * Get the index name without a locale suffix.
+     *
+     * @return string
+     */
+    public function defaultName()
     {
         return $this->name;
     }
@@ -48,13 +69,36 @@ abstract class Index
     }
 
     /**
+     * Get the locale.
+     *
+     * @return string
+     */
+    public function locale()
+    {
+        return $this->locale;
+    }
+
+    /**
+     * Set the locale.
+     *
+     * @param string $locale
+     * @return Index
+     */
+    public function setLocale($locale)
+    {
+        $this->locale = $locale;
+
+        return $this;
+    }
+
+    /**
      * Factory method for making Index instances.
      *
      * @param string $name
      * @param string|null $driver
      * @return Index
      */
-    public static function make($name, $driver = null)
+    public static function make($name, $driver = null, $locale = null)
     {
         if (! $driver) {
             $driver = Config::get('search.driver');
@@ -69,7 +113,7 @@ abstract class Index
                 $index = app(Comb::class);
         }
 
-        return $index->setName($name);
+        return $index->setName($name)->setLocale($locale);
     }
 
     /**

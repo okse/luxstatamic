@@ -107,7 +107,7 @@ class Index extends AbstractIndex
     public function getIndex()
     {
         if (! $this->index) {
-            $name = str_replace('/', '_', $this->name);
+            $name = str_replace('/', '_', $this->name());
             $this->index = $this->client->initIndex($name);
         }
 

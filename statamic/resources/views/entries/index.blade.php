@@ -18,12 +18,12 @@
 
         <div class="listing entry-listing">
 
-            <div class="flexy mb-24">
-                <h1 class="fill">{{ $collection->title() }}</h1>
-                <div class="controls flexy">
+            <div class="flex flex-wrap justify-between lg_flex-no-wrap items-center mb-24">
+                <h1 class="flex-1 mb-8 lg_mb-0">{{ $collection->title() }}</h1>
+                <div class="controls flex items-center w-full lg_w-auto">
                     @can("collections:{$collection->path()}:create")
                         <template v-if="! reordering">
-                            <search :keyword.sync="searchTerm"></search>
+                            <search :keyword.sync="searchTerm" class="w-full lg_w-auto"></search>
 
                             <div class="btn-group ml-8">
                                 <select-fieldtype :data.sync="showDrafts" :options="draftOptions"></select-fieldtype>

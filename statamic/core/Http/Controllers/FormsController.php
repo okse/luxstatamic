@@ -43,7 +43,10 @@ class FormsController extends CpController
             return $this->pageNotFound();
         }
 
-        return view('forms.show', compact('form'));
+        return view('forms.show', [
+            'title' => $form->title(),
+            'form' => $form,
+        ]);
     }
 
     public function getFormSubmissions($form)
@@ -151,6 +154,7 @@ class FormsController extends CpController
 
         $array['metrics'] = $this->preProcessMetrics($form);
         $array['email'] = $form->email();
+        $array['store'] = $form->shouldStore();
 
         foreach ($form->fields() as $name => $field) {
             $field['name'] = $name;
@@ -217,6 +221,7 @@ class FormsController extends CpController
 
         $form->title($this->request->input('formset.title'));
         $form->honeypot($this->request->input('formset.honeypot'));
+        $form->shouldStore($this->request->input('formset.store'));
         $form->columns($this->prepareColumns());
         $form->fields($this->prepareFields());
         $form->metrics($this->prepareMetrics());
@@ -249,6 +254,7 @@ class FormsController extends CpController
 
         $form->title($this->request->input('formset.title'));
         $form->honeypot($this->request->input('formset.honeypot'));
+        $form->shouldStore($this->request->input('formset.store'));
         $form->columns($this->prepareColumns());
         $form->metrics($this->prepareMetrics());
         $form->email($this->prepareEmail());
@@ -339,7 +345,7 @@ class FormsController extends CpController
     {
         $fields = [];
 
-        foreach ($this->request->input('formset.fields') as $field) {
+        foreach ($this->request->input('formset.fields', []) as $field) {
             $field_name = $field['name'];
             unset($field['name'], $field['column']);
             $fields[$field_name] = $field;

@@ -10,4 +10,9 @@ class ToggleFieldtype extends Fieldtype
     {
         return (bool) $data;
     }
+
+    public function canHaveDefault()
+    {
+        return true;
+    }
 }

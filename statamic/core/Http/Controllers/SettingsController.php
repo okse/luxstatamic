@@ -10,6 +10,7 @@ use Statamic\API\YAML;
 use Statamic\API\Helper;
 use Statamic\API\Cache;
 use Statamic\API\Stache;
+use Statamic\API\Search;
 use Statamic\Config\Settings;
 use Statamic\CP\Publish\ProcessesFields;
 
@@ -65,7 +66,14 @@ class SettingsController extends CpController
         Cache::clear();
         Stache::clear();
 
-        $this->success('Settings updated');
+        // If the search settings change, let's reindex.
+        if ($name == 'search') {
+            Search::update();
+            $this->success(t('settings_updated_and_indexed'));
+        } else {
+            $this->success(t('settings_updated'));
+        }
+
 
         return ['success' => true, 'redirect' => route('settings.edit', $name)];
     }

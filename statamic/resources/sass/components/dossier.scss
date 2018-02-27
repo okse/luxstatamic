@@ -50,6 +50,14 @@
     }
 }
 
+@media all and (max-width: 768px) {
+    .dossier {
+        .cell-slug, .column-slug {
+            display: none;
+        }
+    }
+}
+
 .dossier-table-wrapper {
     .bulk-actions {
         padding: 16px;

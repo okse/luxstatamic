@@ -18,4 +18,12 @@ class Model extends EloquentModel
     protected $casts = [
         'super' => 'boolean',
     ];
+
+    public function mergeCastsFromFieldset($fieldset)
+    {
+        $this->casts = array_merge(
+            array_get($fieldset->contents(), 'casts', []),
+            $this->casts
+        );
+    }
 }

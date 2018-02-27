@@ -168,11 +168,6 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
             if (Config::get('users.login_type') === 'email') {
                 unset($data['email']);
             }
-
-            $content = array_get($data, 'content');
-            if ($content || $content == '') {
-                unset($data['content']);
-            }
         });
     }
 

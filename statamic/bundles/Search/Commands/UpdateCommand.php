@@ -52,7 +52,9 @@ class UpdateCommand extends AbstractCommand
     {
         foreach ($this->getIndexes() as $index) {
             $this->line("Updating <comment>{$index}</comment> index...");
-            Search::in($index)->update();
+            foreach (Config::getLocales() as $locale) {
+                Search::in($index, $locale)->update();
+            }
         }
     }
 

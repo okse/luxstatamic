@@ -1628,6 +1628,21 @@ class BaseModifiers extends Modifier
     }
 
     /**
+     * Strip whitespace from HTML
+     *
+     * @param $value
+     * @param $params
+     * @return string
+     */
+    public function spaceless($value, $params)
+    {
+        $nolb = str_replace(array("\r", "\n"), '', $value);
+        $nospaces = preg_replace('/\s+/', ' ', $nolb);
+
+        return preg_replace('/>\s+</', '><', $nospaces);
+    }
+
+    /**
      * Returns true if the string starts with a given substring ($params[0]), false otherwise.
      * The comparison is case-insensitive.
      *
@@ -2070,6 +2085,10 @@ class BaseModifiers extends Modifier
             return str_replace('watch?v=', 'embed/', $url);
         }
 
+        if (str_contains($url, 'youtu.be')) {
+            return str_replace('youtu.be', 'www.youtube.com/embed', $url);
+        }
+
         if (str_contains($url, 'vimeo')) {
             return str_replace('/vimeo.com', '/player.vimeo.com/video', $url);
         }
@@ -2085,7 +2104,7 @@ class BaseModifiers extends Modifier
      */
     public function isEmbeddable($url)
     {
-        return Str::contains($url, ['youtube', 'vimeo']);
+        return Str::contains($url, ['youtube', 'vimeo', 'youtu.be']);
     }
 
     // ------------------------------------

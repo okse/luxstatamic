@@ -436,7 +436,7 @@ abstract class Content extends Data implements ContentContract
         $array = [];
 
         foreach ($fields as $field) {
-            $array[$field] = method_exists($this, $field) ? $this->$field() : $this->get($field);
+            $array[$field] = method_exists($this, $field) ? $this->$field() : $this->getWithDefaultLocale($field);
         }
 
         return $array;

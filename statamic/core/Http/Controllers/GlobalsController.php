@@ -28,7 +28,7 @@ class GlobalsController extends CpController
     public function manage()
     {
         return view('globals.configure', [
-            'title' => t('cp.globals')
+            'title' => t('global_sets'),
         ]);
     }
 
@@ -91,7 +91,10 @@ class GlobalsController extends CpController
     {
         $global = GlobalSet::whereHandle($global);
 
-        return view('globals.edit', compact('global'));
+        return view('globals.edit', [
+            'global' => $global,
+            'title'  => $global->title(),
+        ]);
     }
 
     public function update($global)

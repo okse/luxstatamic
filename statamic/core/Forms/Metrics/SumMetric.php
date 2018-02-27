@@ -10,7 +10,9 @@ class SumMetric extends AbstractMetric
             throw new \Exception('Cannot get sum metric without specifying a field.');
         }
 
-        return $this->submissions()->sum(function ($submission) use ($field) {
+        return $this->submissions()->filter(function ($submission) use($field) {
+            return is_numeric($submission->get($field));
+        })->sum(function ($submission) use ($field) {
             return $submission->get($field);
         });
     }

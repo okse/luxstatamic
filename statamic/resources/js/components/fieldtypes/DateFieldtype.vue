@@ -62,7 +62,15 @@ module.exports = {
         },
 
         timeAllowed: function() {
-            return this.timeRequired || this.config.allow_time !== false;
+            return this.timeRequired || this.allowTime;
+        },
+
+        allowTime: function() {
+            if (this.config.allow_time == undefined) {
+                return false;
+            }
+
+            return this.config.allow_time != false;
         },
 
         timeRequired: function () {

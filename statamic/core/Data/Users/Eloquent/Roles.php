@@ -3,19 +3,19 @@
 namespace Statamic\Data\Users\Eloquent;
 
 use Illuminate\Support\Facades\DB;
-use Statamic\Contracts\Data\Users\User;
+use Statamic\Contracts\Data\Users\User as UserContract;
 
 class Roles
 {
     /**
-     * @var User
+     * @var UserContract
      */
     protected $user;
 
     /**
      * @param User $user
      */
-    public function __construct(User $user)
+    public function __construct(UserContract $user)
     {
         $this->user = $user;
     }

@@ -66,7 +66,9 @@ class FormListener extends Listener
             return $this->formFailure($params, $errors, $formset);
         }
 
-        $submission->save();
+        if ($form->shouldStore()) {
+            $submission->save();
+        }
 
         // Emit an event after the submission has been created.
         $this->emitEvent('submission.created', $submission);

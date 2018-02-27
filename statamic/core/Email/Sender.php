@@ -69,6 +69,10 @@ class Sender
             }
 
             $m->subject($this->message->subject());
+
+            foreach ($this->message->attachments() as list($file, $options)) {
+                $m->attach($file, $options);
+            }
         });
     }
 

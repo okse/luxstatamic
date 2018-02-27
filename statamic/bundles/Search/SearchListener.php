@@ -50,11 +50,16 @@ class SearchListener extends Listener
 
         $content = $event->item;
 
-        if (! is_object($content) || ! method_exists($content, 'id')) {
+        if (! is_object($content) || ! method_exists($content, 'toSearchableArray')) {
             return;
         }
 
-        Search::insert($event->id, $content->toArray());
+        foreach (Config::getLocales() as $locale) {
+            Search::in(null, $locale)->insert(
+                $event->id,
+                $content->in($locale)->toSearchableArray(Config::get('search.searchable'))
+            );
+        }
     }
 
     /**

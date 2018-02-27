@@ -143,6 +143,6 @@ class Index extends AbstractIndex
      */
     private function getPath()
     {
-        return 'local/storage/search/' . $this->name . '.json';
+        return 'local/storage/search/' . $this->name() . '.json';
     }
 }

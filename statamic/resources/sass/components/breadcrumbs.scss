@@ -9,7 +9,7 @@
     border-top: 1px solid $border;
     border-bottom: 1px solid $border;
     margin-top: -1px; // do this so we dont have to check if there are or aren't breadcrumbs.
-    background: #f4f5f5;
+    background: #fafafa;
     font-size: 13px;
 
     a, .step {
@@ -35,7 +35,7 @@
 
         &:before {
             right: 1px;
-            border-left-color: #f4f5f5;
+            border-left-color: #fafafa;
             z-index: 2;
         }
 
@@ -55,13 +55,14 @@
 .breadcrumbs.wizard {
     font-size: 15px;
     padding-left: 30px;
+    border-top: 0;
 
     .step {
         padding: 10px 60px 10px 0;
 
         &:before, &:after { border: 21px solid transparent; }
         &:after { border-left-color: $border; }
-        &:before { border-left-color: white; }
+        &:before { border-left-color: #fafafa; }
         &:hover { color: $color_dark_blue; }
         &.active { color: $brand-primary; }
     }

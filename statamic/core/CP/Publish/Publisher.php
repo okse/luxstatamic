@@ -10,6 +10,7 @@ use Statamic\API\Stache;
 use Statamic\API\Str;
 use Statamic\API\Fieldset;
 use Statamic\API\Taxonomy;
+use Statamic\Http\Requests\PublishRequest;
 use Illuminate\Http\Request;
 use Statamic\Contracts\Data\Users\User;
 use Statamic\Exceptions\PublishException;
@@ -63,7 +64,7 @@ abstract class Publisher
      *
      * @param \Illuminate\Http\Request $request
      */
-    public function __construct(Request $request)
+    public function __construct(PublishRequest $request)
     {
         $this->request = $request;
 
@@ -86,7 +87,10 @@ abstract class Publisher
         $this->prepare();
 
         // Fieldtypes may modify the values submitted by the user.
-        $this->fields = $this->processFields($this->content->fieldset(), $this->fields);
+        // We will remove the null values for everything except Eloquent-managed users. They need the nulls to override
+        // what's going on the DB. @todo: Do this better. Don't judge me.
+        $removeNulls = $this->content instanceof User && Config::get('users.driver') === 'eloquent' ? false : true;
+        $this->fields = $this->processFields($this->content->fieldset(), $this->fields, $removeNulls);
 
         // Update the submission with the modified data
         $submission = array_merge($this->request->all(), ['fields' => $this->fields]);
@@ -198,7 +202,12 @@ abstract class Publisher
      */
     protected function validate($rules, $messages = [], $attributes = [])
     {
-        $validator = app('validator')->make($this->request->all(), $rules, $messages, $attributes);
+        $validator = app('validator')->make(
+            $this->request->validationData($rules),
+            $this->request->rules($rules),
+            $messages,
+            $attributes
+        );
 
         if ($validator->fails()) {
             $e = new PublishException;

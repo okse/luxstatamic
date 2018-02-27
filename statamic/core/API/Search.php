@@ -32,23 +32,25 @@ class Search
      * Get a search index
      *
      * @param  string $index Name of the index
+     * @param  string $locale Name of the locale
      * @return Index
      */
-    public static function in($index)
+    public static function in($index, $locale = null)
     {
-        return self::search()->index($index);
+        return self::search()->index($index, $locale);
     }
 
     /**
      * Update a search index
      *
      * @param  string $index Name of the index
+     * @param  string $locale Name of the locale
      * @return void
      */
-    public static function update($index = null)
+    public static function update($index = null, $locale = null)
     {
         try {
-            return self::search()->update($index);
+            return self::search()->update($index, $locale);
         } catch (\Exception $e) {
             \Log::error('Error updating the search index.');
             \Log::error($e);

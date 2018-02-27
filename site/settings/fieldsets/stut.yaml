@@ -345,3 +345,4 @@ fields:
     type: toggle
     display: Skjul fra meny?
     width: 25
+    show_when: [ ]

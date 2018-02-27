@@ -261,7 +261,7 @@ module.exports = {
         },
 
         canEdit: function() {
-            return this.can('assets'+ this.container +':edit')
+            return this.can('assets:'+ this.container.id +':edit')
         },
 
         showSidebar() {

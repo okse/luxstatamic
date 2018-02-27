@@ -39,7 +39,7 @@ class ItemResolver
             return Config::get('search.searchable');
         }
 
-        list($type, $handle) = explode('/', $this->index->name());
+        list($type, $handle) = explode('/', $this->index->defaultName());
 
         if ($type === 'collections') {
             return Collection::whereHandle($handle)->get('searchable');
@@ -54,15 +54,20 @@ class ItemResolver
     public function getItems()
     {
         if ($this->isDefaultIndex()) {
-            return Entry::all()->merge(Page::all())->merge(Term::all());
+            return $this->localize(Entry::all()->merge(Page::all())->merge(Term::all()));
         }
 
-        list($type, $handle) = explode('/', $this->index->name());
+        list($type, $handle) = explode('/', $this->index->defaultName());
 
         if ($type === 'collections') {
             $collection = Collection::whereHandle($handle);
-            return $collection->get('searchable') ? $collection->entries() : collect();
+            return $this->localize($collection->get('searchable') ? $collection->entries() : collect());
         }
+    }
+
+    protected function localize($collection)
+    {
+        return collect_content($collection)->localize($this->index->locale());
     }
 
     /**
@@ -72,6 +77,6 @@ class ItemResolver
      */
     protected function isDefaultIndex()
     {
-        return $this->index->name() === Config::get('search.default_index');
+        return $this->index->defaultName() === Config::get('search.default_index');
     }
 }

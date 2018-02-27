@@ -23,7 +23,7 @@
 
         <td class="column-actions">
 
-            <div class="btn-group action-more" :class="{ open: showActionsDropdown }" v-if="canEdit">
+            <div class="btn-group action-more" :class="{ open: showActionsDropdown }" v-if="canEdit" v-on-clickaway="away">
                 <button type="button" class="btn-more dropdown-toggle" @click.prevent.stop="toggleActions">
                     <i class="icon icon-dots-three-vertical"></i>
                 </button>

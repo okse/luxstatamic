@@ -2,6 +2,8 @@
 
 namespace Statamic\Data\Users\Eloquent;
 
+use Statamic\API\Str;
+use Statamic\API\Arr;
 use Statamic\API\Hash;
 use Statamic\API\Role;
 use Statamic\Data\Users\User as FileUser;
@@ -17,6 +19,8 @@ class User extends FileUser
             if (! $this->model) {
                 $this->model = new UserModel;
             }
+
+            $this->model->mergeCastsFromFieldset($this->fieldset());
 
             return $this->model;
         }
@@ -88,7 +92,11 @@ class User extends FileUser
 
     public function set($key, $value)
     {
-        $this->model()->$key = $value;
+        $columns = \Schema::getColumnListing($this->model()->getTable());
+
+        if (array_has(array_flip($columns), $key)) {
+            $this->model()->$key = $value;
+        }
     }
 
     public function remove($key)
@@ -103,7 +111,7 @@ class User extends FileUser
      */
     public function defaultData()
     {
-        return $this->model()->getAttributes();
+        return $this->model()->attributesToArray();
     }
 
     /**
@@ -118,7 +126,9 @@ class User extends FileUser
             return $this->defaultData();
         }
 
-        $this->model()->setRawAttributes($data);
+        foreach ($data as $key => $value) {
+            $this->set($key, $value);
+        }
 
         return $this;
     }

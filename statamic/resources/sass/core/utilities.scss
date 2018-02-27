@@ -215,6 +215,24 @@
     .fill { flex: 1; }
 }
 
+.flex { display: flex; }
+.flex-wrap { flex-wrap: wrap; }
+.flex-no-wrap { flex-wrap: nowrap; }
+.flex-col { flex-direction: column; }
+.flex-1 { flex: 1; }
+.flex-2 { flex: 2; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+
+.w-full { width: 100%; }
+
+@media (min-width: 768px) {
+    .lg_flex-no-wrap { flex-wrap: nowrap; }
+    .lg_w-auto { width: auto; }
+    .lg_mb-0 { margin-bottom: 0 !important; }
+}
+
 .loading-blocker {
 	position: absolute;
 	top: 0;

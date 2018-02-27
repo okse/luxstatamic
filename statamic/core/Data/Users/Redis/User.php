@@ -2,6 +2,7 @@
 
 namespace Statamic\Data\Users\Redis;
 
+use Carbon\Carbon;
 use Statamic\API\Config;
 use Statamic\Data\Users\User as FileUser;
 
@@ -27,7 +28,7 @@ class User extends FileUser
      */
     public function lastModified()
     {
-        return $this->get('last_modified');
+        return Carbon::createFromTimestamp($this->get('last_modified', time()));
     }
 
     /**

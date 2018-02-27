@@ -126,6 +126,17 @@ class Formset implements FormsetContract
     }
 
     /**
+     * Remove a value from the formset
+     *
+     * @param string $key
+     * @return mixed
+     */
+    public function remove($key)
+    {
+        unset($this->data[$key]);
+    }
+
+    /**
      * The URL to view submissions in the CP
      *
      * @return string
@@ -154,14 +165,21 @@ class Formset implements FormsetContract
     {
         $path = settings_path("formsets/{$this->name()}.yaml");
 
-        $data = array_filter([
+        $data = [
             'title' => $this->title(),
+            'store' => $this->get('store'),
             'honeypot' => $this->get('honeypot'),
             'fields' => $this->fields(),
             'columns' => array_keys($this->columns()),
             'metrics' => $this->get('metrics'),
             'email' => $this->get('email')
-        ]);
+        ];
+
+        $data = array_filter($data, function ($item) {
+            return is_array($item)
+                ? !empty($item)
+                : !in_array($item, [null, ''], true);
+        });
 
         File::put($path, YAML::dump($data));
     }

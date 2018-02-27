@@ -19,6 +19,13 @@ class SearchTags extends CollectionTags
     private $query;
 
     /**
+     * The locale to search within.
+     *
+     * @var string
+     */
+    private $locale;
+
+    /**
      * The {{ search }} tag. An alias of search:results
      *
      * @return string
@@ -35,6 +42,12 @@ class SearchTags extends CollectionTags
      */
     public function results()
     {
+        if (! $this->query = request()->query($this->get('param', 'q'))) {
+            return $this->parseNoResults();
+        }
+
+        $this->locale = $this->get('locale', site_locale());
+
         try {
             $this->collection = $this->buildSearchCollection();
         } catch (IndexNotFoundException $e) {
@@ -54,6 +67,8 @@ class SearchTags extends CollectionTags
             if ($this->getBool('supplement_taxonomies', true)) {
                 $this->collection = $this->collection->supplementTaxonomies();
             }
+
+            $this->collection = $this->collection->localize($this->locale);
 
             $this->filter(false);
         }
@@ -83,9 +98,14 @@ class SearchTags extends CollectionTags
             ? 'collections/' . $collection
             : Config::get('search.default_index');
 
-        $query = request()->query($this->get('param', 'q'));
+        // The index name should have the locale appended. eg. index_fr
+        // The default locale will *not* have the locale appended.
+        $localizedIndex = $this->locale === default_locale() ? $index : "{$index}_{$this->locale}";
 
-        return Search::in($index)->search($query, $this->getList('fields'));
+        // If a localized version doesn't exist, we'll just use the regular index name.
+        $index = Search::indexExists($localizedIndex) ? $localizedIndex : $index;
+
+        return Search::in($index)->search($this->query, $this->getList('fields'));
     }
 
     private function convertSearchResultsToContent()

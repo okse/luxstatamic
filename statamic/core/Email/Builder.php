@@ -114,6 +114,13 @@ class Builder
         return $this;
     }
 
+    public function attach($file, array $options = [])
+    {
+        $this->message->attach($file, $options);
+
+        return $this;
+    }
+
     public function automagic($automagic = true)
     {
         $this->message->automagic($automagic);

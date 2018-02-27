@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit89e3bf07dc37a82c9fc4d415f1159a75
+class ComposerStaticInit97b4036662f0cfd112c962b52e919d34
 {
     public static $files = array (
         '95a22d2145ae40de20dc7ea7be07a610' => __DIR__ . '/../..' . '/bootstrap/helpers.php',
@@ -2550,9 +2550,11 @@ class ComposerStaticInit89e3bf07dc37a82c9fc4d415f1159a75
         'Statamic\\Addons\\Hidden\\HiddenFieldtype' => __DIR__ . '/../..' . '/bundles/Hidden/HiddenFieldtype.php',
         'Statamic\\Addons\\In\\InAPI' => __DIR__ . '/../..' . '/bundles/In/InAPI.php',
         'Statamic\\Addons\\In\\InTags' => __DIR__ . '/../..' . '/bundles/In/InTags.php',
+        'Statamic\\Addons\\Increment\\IncrementTags' => __DIR__ . '/../..' . '/bundles/Increment/IncrementTags.php',
         'Statamic\\Addons\\Integer\\IntegerFieldtype' => __DIR__ . '/../..' . '/bundles/Integer/IntegerFieldtype.php',
         'Statamic\\Addons\\Is\\IsAPI' => __DIR__ . '/../..' . '/bundles/Is/IsAPI.php',
         'Statamic\\Addons\\Is\\IsTags' => __DIR__ . '/../..' . '/bundles/Is/IsTags.php',
+        'Statamic\\Addons\\Iterate\\IterateTags' => __DIR__ . '/../..' . '/bundles/Iterate/IterateTags.php',
         'Statamic\\Addons\\Link\\LinkTags' => __DIR__ . '/../..' . '/bundles/Link/LinkTags.php',
         'Statamic\\Addons\\Lists\\ListsFieldtype' => __DIR__ . '/../..' . '/bundles/Lists/ListsFieldtype.php',
         'Statamic\\Addons\\LocaleSettings\\LocaleSettingsFieldtype' => __DIR__ . '/../..' . '/bundles/LocaleSettings/LocaleSettingsFieldtype.php',
@@ -2990,6 +2992,7 @@ class ComposerStaticInit89e3bf07dc37a82c9fc4d415f1159a75
         'Statamic\\Http\\Middleware\\Outpost' => __DIR__ . '/../..' . '/core/Http/Middleware/Outpost.php',
         'Statamic\\Http\\Middleware\\PersistStache' => __DIR__ . '/../..' . '/core/Http/Middleware/PersistStache.php',
         'Statamic\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/core/Http/Middleware/VerifyCsrfToken.php',
+        'Statamic\\Http\\Requests\\PublishRequest' => __DIR__ . '/../..' . '/core/Http/Requests/PublishRequest.php',
         'Statamic\\Http\\Requests\\Request' => __DIR__ . '/../..' . '/core/Http/Requests/Request.php',
         'Statamic\\Http\\Requests\\StoreAssetContainerRequest' => __DIR__ . '/../..' . '/core/Http/Requests/StoreAssetContainerRequest.php',
         'Statamic\\Http\\Requests\\StoreAssetFolder' => __DIR__ . '/../..' . '/core/Http/Requests/StoreAssetFolder.php',
@@ -3676,10 +3679,10 @@ class ComposerStaticInit89e3bf07dc37a82c9fc4d415f1159a75
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit89e3bf07dc37a82c9fc4d415f1159a75::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit89e3bf07dc37a82c9fc4d415f1159a75::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit89e3bf07dc37a82c9fc4d415f1159a75::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit89e3bf07dc37a82c9fc4d415f1159a75::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit97b4036662f0cfd112c962b52e919d34::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit97b4036662f0cfd112c962b52e919d34::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit97b4036662f0cfd112c962b52e919d34::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit97b4036662f0cfd112c962b52e919d34::$classMap;
 
         }, null, ClassLoader::class);
     }

@@ -10,7 +10,9 @@ class MinMetric extends AbstractMetric
             throw new \Exception('Cannot get sum metric without specifying a field.');
         }
 
-        $min = $this->submissions()->sortBy(function ($submission) use ($field) {
+        $min = $this->submissions()->filter(function ($submission) use($field) {
+            return is_numeric($submission->get($field));
+        })->sortBy(function ($submission) use ($field) {
             return $submission->get($field);
         })->first();
 

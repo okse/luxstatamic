@@ -55,6 +55,11 @@ class Message
     protected $data = [];
 
     /**
+     * @var array
+     */
+    protected $attachments = [];
+
+    /**
      * @var bool
      */
     protected $automagic = false;
@@ -194,6 +199,18 @@ class Message
         }
 
         $this->data = $data;
+
+        return $this;
+    }
+
+    public function attachments()
+    {
+        return $this->attachments;
+    }
+
+    public function attach($file = null, array $options = [])
+    {
+        $this->attachments[] = [$file, $options];
 
         return $this;
     }

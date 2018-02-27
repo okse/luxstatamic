@@ -41,7 +41,7 @@
             </div>
 
             <div class="form-group">
-                <label>{{ trans_choice('cp.passwords', 1) }}</label>
+                <label>{{ t('password') }}</label>
                 <input type="password" class="form-control" name="password" id="password">
             </div>
 

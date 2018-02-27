@@ -133,6 +133,7 @@ return [
     'move_file_warning' => 'Moving a file will not update any references to it, which _may_ result in broken links in your site.',
     'dimensions' => 'Dimensions',
     'last_modified' => 'Last Modified',
+    'url_resolves_to' => 'URL resolves to: :path',
 
 
     // Folder
@@ -191,6 +192,7 @@ return [
     'copy_password_reset_link' => 'Copy password reset link',
     'password_reset_sent' => 'Password reset email sent',
     'account' => 'Account',
+    'password' => 'Password',
     'my_account' => 'My Account',
     'profile' => 'Profile',
     'logout' => 'Logout',
@@ -256,8 +258,10 @@ return [
     'settings_email' => 'Email',
     'settings_theming' => 'Theming',
     'settings_users' => 'Users',
-    'settings_updated' => 'Settings updated.',
+    'settings_updated' => 'Settings saved.',
+    'settings_updated_and_indexed' => 'Settings saved and search indexes updated.',
     'settings_locales_instructions' => "Create a locale for each language translation. You can skip this for now and do it later if you'd prefer.",
+    'settings_locales_index_php_warning' => "You will need to change the <code>\$locale</code> to <code>:locale</code> in your <code>index.php</code> file.",
     'settings_debug_mode_instructions' => "Enabling Debug Mode will display all errors on screen. It's a great tool while a site is development, but remember to disable it in production.",
 
     // Addons
@@ -344,6 +348,8 @@ return [
     'formset_emails_instructions' => 'Add any emails you want to be sent upon submission.',
     'formset_honeypot_field' => 'Honeypot Field',
     'formset_honeypot_instructions' => 'The field name to be used for the honeypot.',
+    'formset_store_field' => 'Store Submissions',
+    'formset_store_instructions' => 'Whether form submissions should be stored. Useful if you only wish to get email notifications.',
     'formset_honeypot_link' => "What's a honeypot?",
     'formset_fields_instructions' => 'Choose and customize the fields in this form.',
 
@@ -397,7 +403,7 @@ return [
 
     // Swap Release
     'swapping_files' => 'Swapping files...',
-    'swapping_files_instructions' => 'Statamic is being injected with software growth hormone (SGH). Results will be visible mere moments.',
+    'swapping_files_instructions' => 'Statamic is being injected with software growth hormone (SGH). Results will be visible in mere moments.',
     'files_swapped' => 'Files swapped.',
 
     // Clean Up
@@ -590,6 +596,8 @@ return [
     'driver' => 'Driver',
     'path' => 'Path',
     'url' => 'URL',
+    'valid_url' => 'Valid URL',
+    'invalid_url' => 'Invalid URL',
     'bucket' => 'Bucket',
     'region' => 'Region',
     'metrics' => 'Metric|Metrics',
@@ -605,6 +613,7 @@ return [
     'size' => 'Size',
     'attribute_field_name' => ':attribute field',
     'read_only_mode' => "Read Only Mode",
+    'next_step' => "Next Step",
 
     'nav_content' => 'Content',
     'nav_tools' => 'Tools',
@@ -629,7 +638,16 @@ return [
     'no_duplicate_ids' => 'No duplicate IDs detected.',
 
     // Path
-    'path_resolves_to'    => 'Path resolves to :path',
+    'path_resolves_to'    => 'Path resolves to: :path',
     'path_exists'         => 'Path exists.',
     'path_does_not_exist' => 'Path does not exist.',
+
+    // Bard
+    'link'               => 'Link',
+    'paste_or_type_link' => 'Paste or type a link',
+    'bold'               => 'Bold',
+    'italic'             => 'Italic',
+    'blockquote'         => 'Blockquote',
+    'h2'                 => 'Header type two',
+    'h3'                 => 'Header type three',
 ];

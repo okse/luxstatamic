@@ -37,17 +37,19 @@ class Search
      * Get a search index
      *
      * @param  string $index Name of the index
+     * @param  string $locale The locale
      * @return Index
      */
-    public function index($index = null)
+    public function index($index = null, $locale = null)
     {
         if (! $index || $index === $this->defaultIndexName) {
-            return Index::make($this->defaultIndexName, $this->defaultDriver);
+            return Index::make($this->defaultIndexName, $this->defaultDriver, $locale);
         }
 
         return Index::make(
             $index,
-            data_get($this->indexes, $index.'.driver')
+            data_get($this->indexes, $index.'.driver'),
+            $locale
         );
     }
 
@@ -55,11 +57,12 @@ class Search
      * Update a search index
      *
      * @param  string $index Name of the index
+     * @param  string $locale The locale
      * @return void
      */
-    public function update($index = null)
+    public function update($index = null, $locale = null)
     {
-        $this->index($index)->update();
+        $this->index($index, $locale)->update();
     }
 
     /**

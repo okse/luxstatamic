@@ -199,8 +199,30 @@
                 this.text = this.editor.getContent();
             },
 
+            localizeButtons(buttons) {
+                let localizations = {
+                    'bold':   'bold',
+                    'italic': 'italic',
+                    'anchor': 'link',
+                    'h2':     'h2',
+                    'h3':     'h3',
+                    'quote':  'blockquote',
+                }
+
+                return buttons.map((button) => {
+                    if (! localizations.hasOwnProperty(button)) {
+                        return button;
+                    }
+
+                    return {
+                        name: button,
+                        aria: translate('cp.' + localizations[button]),
+                    };
+                })
+            },
+
             initMedium() {
-                let buttons = this.$parent.config.buttons || ['bold', 'italic', 'anchor', 'h2', 'h3', 'quote'];
+                let buttons = this.localizeButtons(this.$parent.config.buttons || ['bold', 'italic', 'anchor', 'h2', 'h3', 'quote']);
 
                 let extensions = Object.assign({
                     imageDragging: {},
@@ -213,9 +235,17 @@
                 }
 
                 let opts = {
-                    toolbar: { buttons },
-                    autoLink: true,
-                    placeholder: false,
+                    toolbar:        { buttons },
+                    autoLink:       this.$parent.config.autolink || false,
+                    placeholder:    false,
+                    paste:          this.$parent.config.paste || { forcePlainText: false, cleanPastedHTML: true },
+                    spellcheck:     this.$parent.config.spellcheck || true,
+                    targetBlank:    this.$parent.config.target_blank || false,
+                    linkValidation: this.$parent.config.link_validation || false,
+                    anchor: {
+                        placeholderText: translate('cp.paste_or_type_link'),
+                        aria: translate('cp.link'),
+                    },
                     extensions
                 };
 
@@ -254,10 +284,17 @@
                 this.editor.subscribe('editableKeydownDelete', e => {
                     const pos = this.editor.exportSelection();
 
-                    if (e.key === 'Backspace') {
-                        if (pos.start === 0 && pos.end === 0) this.$emit('backspaced-at-start', this.index);
-                    } else if (e.key === 'Delete') {
-                        if (pos.start === this.plainText().length && pos.end === this.plainText().length) this.$emit('deleted-at-end', this.index);
+                    const isInFirstElement = !this.editor.getSelectedParentElement().previousSibling;
+                    const isInLastElement = !this.editor.getSelectedParentElement().nextSibling;
+                    const backspacedAtStart = e.key === 'Backspace' && pos.start === 0 && pos.end === 0 && isInFirstElement;
+                    const deletedAtEnd = e.key === 'Delete' && pos.start === this.plainText().length && pos.end === this.plainText().length && isInLastElement
+
+                    if (backspacedAtStart || deletedAtEnd) e.preventDefault();
+
+                    if (backspacedAtStart) {
+                        this.$emit('backspaced-at-start', this.index);
+                    } else if (deletedAtEnd) {
+                        this.$emit('deleted-at-end', this.index);
                     }
                 });
 
@@ -268,10 +305,12 @@
                     if (!isUp && !isDown) return;
 
                     const pos = this.editor.exportSelection();
+                    const isInFirstElement = !this.editor.getSelectedParentElement().previousSibling;
+                    const isInLastElement = !this.editor.getSelectedParentElement().nextSibling;
 
-                    if (isUp && pos.start === 0 && pos.end === 0) {
+                    if (isUp && pos.start === 0 && pos.end === 0 && isInFirstElement) {
                         this.$emit('arrow-up-at-start', this.index);
-                    } else if (isDown && pos.start === this.plainText().length && pos.end === this.plainText().length) {
+                    } else if (isDown && pos.start === this.plainText().length && pos.end === this.plainText().length && isInLastElement) {
                         this.$emit('arrow-down-at-end', this.index);
                     }
                 });
@@ -283,7 +322,7 @@
                     name: 'assets',
                     tagNames: ['a'],
                     contentDefault: '<span class="icon icon-images"></span>',
-                    aria: 'Assets',
+                    aria: translate('cp.nav_assets'),
                     handleClick: function () {
                         let toolbar = this.base.getExtensionByName('toolbar');
                         if (toolbar) toolbar.hideToolbar();

@@ -179,48 +179,57 @@ class Fieldset implements FieldsetContract
     {
         if (is_null($fields)) {
             $fields = array_get($this->contents, 'fields', []);
-            
+
             if ($inline_partials) {
                 $fields = $this->inlinePartials($fields);
             }
-            
+
             return $fields;
         }
 
         $this->contents['fields'] = $fields;
     }
-    
+
     /**
      * Get all fields, without inlining partials
-     * 
+     *
      * @return array
      */
     public function fieldsWithPartials()
     {
         return $this->fields(null, false);
     }
-    
+
     /**
      * Bring the fields in partial fieldsets into the parent
-     * 
+     *
      * @param  array $fields
      * @return array
      */
     private function inlinePartials($fields)
     {
-        $inlined = [];
-        
-        foreach ($fields as $name => $config) {
-            // Not a partial? Carry on.
-            if (array_get($config, 'type', 'text') !== 'partial') {
-                $inlined[$name] = $config;
-                continue;
+        $fields = collect($fields);
+        $inlined = $fields->mapWithKeys(function ($item, $key) {
+
+            if (array_get($item, 'type', 'text') === 'partial') {
+                return FieldsetAPI::get($item['fieldset'])->fields();
+
+            } elseif ($sets = array_get($item, 'sets')) {
+
+                foreach ($sets as $set => $config) {
+                    $sets[$set]['fields'] = $this->inlinePartials(array_get($config, 'fields'));
+                }
+
+                $item['sets'] = $sets;
+
+            } elseif ($other_fields = array_get($item, 'fields')) {
+                $item['fields'] = $this->inlinePartials($other_fields);
             }
-                
-            $inlined = array_merge($inlined, FieldsetAPI::get($config['fieldset'])->fields());
-        }
-        
-        return $inlined;
+
+            return [$key => $item];
+        });
+
+        return $inlined->all();
     }
 
     /**
@@ -396,7 +405,7 @@ class Fieldset implements FieldsetContract
 
         $contents = $this->contents();
         $contents['fields'] = [];
-        
+
         $fields = ($inline_partials) ? $this->fields() : $this->fieldsWithPartials();
 
         foreach ($fields as $name => $config) {

@@ -1255,6 +1255,7 @@ class Parser
         $this->conditionalData = $data;
         $this->inCondition     = true;
         // Extract all literal string in the conditional to make it easier
+        // @todo make sure you're not inside (paren)
         if (preg_match_all('/(["\']).*?(?<!\\\\)\1/', $parameters, $str_matches)) {
             foreach ($str_matches[0] as $m) {
                 $parameters = $this->createExtraction('__param_str', $m, $m, $parameters);

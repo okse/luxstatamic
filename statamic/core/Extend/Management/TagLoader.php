@@ -55,6 +55,9 @@ class TagLoader
             case 'yield':
                 return 'Yields';
 
+            case 'foreach':
+                return 'iterate';
+
             // temporary until we add aliasing for addons
             case 'var':
                 return 'Variables';

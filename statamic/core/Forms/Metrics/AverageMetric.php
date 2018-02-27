@@ -10,7 +10,9 @@ class AverageMetric extends AbstractMetric
             throw new \Exception('Cannot get average metric without specifying a field.');
         }
 
-        $value = $this->submissions()->avg(function ($submission) use ($field) {
+        $value = $this->submissions()->filter(function ($submission) use($field) {
+            return is_numeric($submission->get($field));
+        })->avg(function ($submission) use ($field) {
             return $submission->get($field);
         });
 

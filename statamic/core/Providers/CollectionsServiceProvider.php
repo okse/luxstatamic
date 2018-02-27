@@ -20,6 +20,7 @@ class CollectionsServiceProvider extends ServiceProvider
         $this->filterWithKey();
         $this->l10n();
         $this->pipe();
+        $this->mapWithKeys();
         $this->transpose();
     }
 
@@ -110,6 +111,23 @@ class CollectionsServiceProvider extends ServiceProvider
                 ->map(function ($item) {
                     return require root_path($item);
                 });
+        });
+    }
+
+    private function mapWithKeys()
+    {
+        Collection::macro('mapWithKeys', function ($callback) {
+            $result = [];
+
+            foreach ($this->items as $key => $value) {
+                $assoc = $callback($value, $key);
+
+                foreach ($assoc as $mapKey => $mapValue) {
+                    $result[$mapKey] = $mapValue;
+                }
+            }
+
+            return new static($result);
         });
     }
 
