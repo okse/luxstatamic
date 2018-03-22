@@ -392,8 +392,10 @@ class FormsController extends CpController
             return $this->pageNotFound();
         }
 
+        $title = translate_choice('cp.submissions', 1);
+
         $this->sanitizeSubmission($submission);
 
-        return view('forms.submission', compact('form', 'submission'));
+        return view('forms.submission', compact('form', 'submission', 'title'));
     }
 }

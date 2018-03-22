@@ -15,7 +15,7 @@ class CollectionWidget extends Widget
         $collection = $this->get('collection');
 
         if (! Collection::handleExists($collection)) {
-            return "Error: Collection [$collection] doesn't exist.";
+            return t('collection_does_not_exist', ['collection' => $collection]);
         }
 
         // Ensure the collection can be viewed

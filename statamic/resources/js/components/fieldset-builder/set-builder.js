@@ -51,7 +51,7 @@ module.exports = {
         enableSorting: function() {
             var self = this;
 
-            $('.sortable').sortable({
+            $(this.$els.tbody).sortable({
                 axis: 'y',
                 revert: 175,
                 placeholder: 'placeholder',

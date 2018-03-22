@@ -2584,7 +2584,6 @@ return array(
     'Statamic\\Http\\Middleware\\Outpost' => $baseDir . '/core/Http/Middleware/Outpost.php',
     'Statamic\\Http\\Middleware\\PersistStache' => $baseDir . '/core/Http/Middleware/PersistStache.php',
     'Statamic\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/core/Http/Middleware/VerifyCsrfToken.php',
-    'Statamic\\Http\\Requests\\PublishRequest' => $baseDir . '/core/Http/Requests/PublishRequest.php',
     'Statamic\\Http\\Requests\\Request' => $baseDir . '/core/Http/Requests/Request.php',
     'Statamic\\Http\\Requests\\StoreAssetContainerRequest' => $baseDir . '/core/Http/Requests/StoreAssetContainerRequest.php',
     'Statamic\\Http\\Requests\\StoreAssetFolder' => $baseDir . '/core/Http/Requests/StoreAssetFolder.php',

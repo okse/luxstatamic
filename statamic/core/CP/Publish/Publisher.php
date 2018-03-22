@@ -10,7 +10,6 @@ use Statamic\API\Stache;
 use Statamic\API\Str;
 use Statamic\API\Fieldset;
 use Statamic\API\Taxonomy;
-use Statamic\Http\Requests\PublishRequest;
 use Illuminate\Http\Request;
 use Statamic\Contracts\Data\Users\User;
 use Statamic\Exceptions\PublishException;
@@ -64,7 +63,7 @@ abstract class Publisher
      *
      * @param \Illuminate\Http\Request $request
      */
-    public function __construct(PublishRequest $request)
+    public function __construct(Request $request)
     {
         $this->request = $request;
 
@@ -203,8 +202,8 @@ abstract class Publisher
     protected function validate($rules, $messages = [], $attributes = [])
     {
         $validator = app('validator')->make(
-            $this->request->validationData($rules),
-            $this->request->rules($rules),
+            $this->request->all($rules),
+            $rules,
             $messages,
             $attributes
         );

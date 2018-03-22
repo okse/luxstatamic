@@ -25,7 +25,7 @@
                                     <form action="{{ route('resolve-duplicate-ids.update') }}" method="POST">
                                         {{ csrf_field() }}
                                         <input type="hidden" name="path" value="{{ $path }}" />
-                                        <button class="btn btn-default">Generate New ID</button>
+                                        <button class="btn btn-default">{{ t('generate_new_id') }}</button>
                                     </form>
                                 </td>
                             </tr>

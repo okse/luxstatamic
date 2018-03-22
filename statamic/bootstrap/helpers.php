@@ -15,6 +15,7 @@ use Statamic\Data\DataCollection;
 use Illuminate\Support\Debug\Dumper;
 use Stringy\StaticStringy as Stringy;
 use Statamic\View\Blade\Modifier as BladeModifier;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 if (! function_exists('array_get')) {
     /**
@@ -579,6 +580,10 @@ function sanitize($value, $antlers = true)
 {
     if (is_array($value)) {
         return sanitize_array($value, $antlers);
+    }
+
+    if ($value instanceof UploadedFile) {
+        return $value;
     }
 
     $value = htmlentities($value);

@@ -253,8 +253,8 @@ trait Extensible
         }
 
         foreach ($keys as $key) {
-            if (isset($config[$key])) {
-                return $config[$key];
+            if (array_has($config, $key)) {
+                return array_get($config, $key);
             }
         }
 

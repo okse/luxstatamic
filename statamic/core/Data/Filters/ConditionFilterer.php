@@ -58,7 +58,7 @@ class ConditionFilterer implements ConditionFiltererContract
                 }
                 break;
             default:
-                $value = $data->getWithCascade($value);
+                $value = method_exists($data, 'getWithCascade') ? $data->getWithCascade($value) : $data->get($value);
                 break;
         }
 

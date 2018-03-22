@@ -222,7 +222,7 @@
             },
 
             initMedium() {
-                let buttons = this.localizeButtons(this.$parent.config.buttons || ['bold', 'italic', 'anchor', 'h2', 'h3', 'quote']);
+                let buttons = this.localizeButtons(this.$parent.config.buttons || ['bold', 'italic', 'anchor', 'unorderedlist', 'orderedlist', 'h2', 'h3', 'quote']);
 
                 let extensions = Object.assign({
                     imageDragging: {},
@@ -238,7 +238,7 @@
                     toolbar:        { buttons },
                     autoLink:       this.$parent.config.autolink || false,
                     placeholder:    false,
-                    paste:          this.$parent.config.paste || { forcePlainText: false, cleanPastedHTML: true },
+                    paste:          { forcePlainText: this.$parent.config.force_plain_text, cleanPastedHTML: this.$parent.config.clean_pasted_html },
                     spellcheck:     this.$parent.config.spellcheck || true,
                     targetBlank:    this.$parent.config.target_blank || false,
                     linkValidation: this.$parent.config.link_validation || false,

@@ -18,7 +18,7 @@
                     <th>{{ array_get($field, 'display', $name) }}</th>
                     <td>
                         @if(! is_array($submission->get($name)))
-                            {!! $submission->get($name) !!}
+                            {!! strip_tags($submission->get($name), '<a>') !!}
                         @else
                             <table>
                                 @foreach($submission->get($name) as $key => $value)

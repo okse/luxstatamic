@@ -8,7 +8,7 @@
     <typeahead v-ref:search :src="cp_url('search/perform')" :limit="10"></typeahead>
 
     <div class="head-links flexy">
-        <a href="{{ route('site') }}" target="_blank" class="mr-8" v-cloak v-tip :tip-text="translate('view_site')">
+        <a href="{{ route('site') }}" target="_blank" class="mr-8" v-cloak v-tip :tip-text="translate('cp.view_site')">
             <span class="icon icon-popup"></span>
         </a>
 

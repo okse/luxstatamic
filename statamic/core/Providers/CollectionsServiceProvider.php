@@ -22,6 +22,7 @@ class CollectionsServiceProvider extends ServiceProvider
         $this->pipe();
         $this->mapWithKeys();
         $this->transpose();
+        $this->missing();
     }
 
     /**
@@ -140,6 +141,18 @@ class CollectionsServiceProvider extends ServiceProvider
     {
         Collection::macro('pipe', function (callable $callback) {
             return $callback($this);
+        });
+    }
+
+    /**
+     * Register the inverse of the contains method.
+     *
+     * @return void
+     */
+    private function missing()
+    {
+        Collection::macro('missing', function ($value) {
+            return ! $this->contains($value);
         });
     }
 

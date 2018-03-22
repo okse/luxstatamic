@@ -24,18 +24,20 @@ class LaravelLogViewer
         'alert' => 'danger',
         'emergency' => 'danger',
         'processed' => 'info',
+        'failed' => 'warning',
     ];
 
     private static $levels_imgs = [
-        'debug' => 'info',
-        'info' => 'info',
-        'notice' => 'info',
-        'warning' => 'warning',
-        'error' => 'warning',
-        'critical' => 'warning',
-        'alert' => 'warning',
-        'emergency' => 'warning',
-        'processed' => 'info'
+        'debug' => 'info-circle',
+        'info' => 'info-circle',
+        'notice' => 'info-circle',
+        'warning' => 'exclamation-triangle',
+        'error' => 'exclamation-triangle',
+        'critical' => 'exclamation-triangle',
+        'alert' => 'exclamation-triangle',
+        'emergency' => 'exclamation-triangle',
+        'processed' => 'info-circle',
+        'failed' => 'exclamation-triangle'
     ];
 
     /**
@@ -51,7 +53,8 @@ class LaravelLogViewer
         'notice',
         'info',
         'debug',
-        'processed'
+        'processed',
+        'failed'
     ];
 
     const MAX_FILE_SIZE = 52428800; // Why? Uh... Sorry
@@ -162,7 +165,7 @@ class LaravelLogViewer
      */
     public static function getFiles($basename = false)
     {
-        $files = glob(storage_path() . '/logs/*.log');
+        $files = glob(storage_path() . '/logs/' . (function_exists('config') ? config('logviewer.pattern', '*.log') : '*.log'));
         $files = array_reverse($files);
         $files = array_filter($files, 'is_file');
         if ($basename && is_array($files)) {

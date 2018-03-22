@@ -7,7 +7,10 @@ module.exports = {
     },
 
     props: {
-        fields: Array
+        fields: {
+            type: Array,
+            default: []
+        },
     },
 
     data: function() {

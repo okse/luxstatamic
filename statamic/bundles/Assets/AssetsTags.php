@@ -88,18 +88,12 @@ class AssetsTags extends Tags
             }
         }
 
-        $this->assets->supplement(function ($asset) {
-            return [
-                'width'  => $asset->width(),
-                'height' => $asset->height()
-            ];
-        });
-
         return $this->output();
     }
 
     private function output()
     {
+        $this->supplement();
         $this->sort();
         $this->limit();
 
@@ -125,5 +119,15 @@ class AssetsTags extends Tags
         $offset = $this->getInt('offset');
 
         $this->assets = $this->assets->splice($offset, $limit);
+    }
+
+    private function supplement()
+    {
+        $this->assets->supplement(function ($asset) {
+            return [
+                'width'  => $asset->width(),
+                'height' => $asset->height()
+            ];
+        });
     }
 }

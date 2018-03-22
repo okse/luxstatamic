@@ -3740,24 +3740,24 @@
     },
     {
         "name": "rap2hpoutre/laravel-log-viewer",
-        "version": "v0.11.1",
-        "version_normalized": "0.11.1.0",
+        "version": "v0.14.3",
+        "version_normalized": "0.14.3.0",
         "source": {
             "type": "git",
             "url": "https://github.com/rap2hpoutre/laravel-log-viewer.git",
-            "reference": "9176a9721c37dd794c7ec49a72cdb5985f0ea0e3"
+            "reference": "46b322385d7bc45b75019dc80d19bad65c0a10f7"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/rap2hpoutre/laravel-log-viewer/zipball/9176a9721c37dd794c7ec49a72cdb5985f0ea0e3",
-            "reference": "9176a9721c37dd794c7ec49a72cdb5985f0ea0e3",
+            "url": "https://api.github.com/repos/rap2hpoutre/laravel-log-viewer/zipball/46b322385d7bc45b75019dc80d19bad65c0a10f7",
+            "reference": "46b322385d7bc45b75019dc80d19bad65c0a10f7",
             "shasum": ""
         },
         "require": {
             "illuminate/support": "4.2.*|5.*",
             "php": ">=5.4.0"
         },
-        "time": "2018-02-23T12:52:11+00:00",
+        "time": "2018-03-20T21:24:28+00:00",
         "type": "laravel-package",
         "extra": {
             "laravel": {

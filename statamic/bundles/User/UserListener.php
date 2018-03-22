@@ -44,7 +44,7 @@ class UserListener extends Listener
     private function getResetForm()
     {
         if (! $user = User::find($this->request->query('user'))) {
-            dd('Invalid user'); // @todo Do this nicer.
+            dd(t('invalid_user')); // @todo Do this nicer.
         }
 
         $resetter = new PasswordReset;
@@ -54,14 +54,14 @@ class UserListener extends Listener
         return view('users.reset', [
             'code'  => $resetter->code(),
             'valid' => $resetter->valid(),
-            'title' => $user->status() === 'pending' ? 'Activate Account' : 'Reset Password'
+            'title' => $user->status() === 'pending' ? t('activate_account') : t('reset_password')
         ]);
     }
 
     private function postResetForm()
     {
         if (! $user = User::find($this->request->input('user'))) {
-            dd('Invalid user'); // @todo Do this nicer.
+            dd(t('invalid_user')); // @todo Do this nicer.
         }
 
         $resetter = new PasswordReset;
@@ -72,7 +72,7 @@ class UserListener extends Listener
             'code' => 'required|in:'.$user->getPasswordResetToken(),
             'password' => 'required|confirmed'
         ], [
-            'code.in' => 'The code is invalid.'
+            'code.in' => t('invalid_code')
         ]);
 
         if ($validator->fails()) {
@@ -80,8 +80,8 @@ class UserListener extends Listener
         }
 
         $message = ($user->status() === 'pending')
-            ? 'Your account has been activated.'
-            : 'Your password has been reset.';
+            ? t('account_activated')
+            : t('password_reset_success');
 
         $resetter->updatePassword($this->request->input('password'));
 
@@ -143,7 +143,7 @@ class UserListener extends Listener
         );
 
         if (! $logged_in) {
-            return back()->withInput()->withErrors('Invalid credentials.');
+            return back()->withInput()->withErrors(t('invalid_creds'));
         }
 
         $redirect = Request::input('redirect', '/');

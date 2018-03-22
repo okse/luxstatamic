@@ -27,12 +27,12 @@ module.exports = {
     data: function() {
         return {
             gridConfig: {
-                add_row: 'Add Locale',
+                add_row: translate('cp.add_locale'),
                 fields: [
-                    { name: 'locale', type: 'text', display: 'Shorthand', instructions: '2 character code.<br> `en`, `de`, etc.', width: '20%' },
-                    { name: 'full', type: 'text', display: 'Full Locale', instructions: 'Used for PHP date localization.<br>`en_US`, `de_DE`, etc.', width: '20%' },
-                    { name: 'name', type: 'text', display: 'Name', instructions: 'Used for display.<br> `English`, `German`, etc', width: '20%' },
-                    { name: 'url', type: 'text', display: 'URL', instructions: '`http://example.com/de/`, etc.' }
+                    { name: 'locale', type: 'text', display: translate('cp.shorthand'), instructions: translate('cp.shorthand_instructions'), width: '20%' },
+                    { name: 'full', type: 'text', display: translate('cp.full_locale'), instructions: translate('cp.full_locale_instructions'), width: '20%' },
+                    { name: 'name', type: 'text', display: translate('cp.name'), instructions: translate('cp.locale_name_instructions'), width: '20%' },
+                    { name: 'url', type: 'text', display: translate('cp.url'), instructions: translate('cp.locale_url_instructions') }
                 ]
             }
         }

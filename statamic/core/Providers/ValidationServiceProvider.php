@@ -25,6 +25,7 @@ class ValidationServiceProvider extends ServiceProvider
         $this->entrySlugExists();
         $this->pageUriExists();
         $this->uniqueAssetFilename();
+        $this->extension();
     }
 
     /**
@@ -81,6 +82,24 @@ class ValidationServiceProvider extends ServiceProvider
             list($containerId, $path) = $parameters;
             $newPath = Path::directory($path)  . '/' . $value . '.' . Path::extension($path);
             return AssetContainer::find($containerId)->asset($newPath) === null;
+        });
+    }
+
+    /**
+     * Check if the files have the specific file extension.
+     *
+     * @return void
+     */
+    private function extension()
+    {
+        Validator::extend('ext', function ($attribute, $files, $extensions, $validator) {
+            return collect($files)->map(function($file) use ($extensions) {
+                return ends_with($file, $extensions);
+            })->missing(false);
+        });
+
+        Validator::replacer('ext', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(':extensions', implode(', ', $parameters), $message);
         });
     }
 

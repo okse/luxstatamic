@@ -14,11 +14,12 @@ fieldtype_fields:
   link_validation:
     type: toggle
     default: false
-  paste:
-    type: yaml
-    default: |
-      forcePlainText: true
-      cleanPastedHTML: false
+  force_plain_text:
+    type: toggle
+    default: true
+  clean_pasted_html:
+    type: toggle
+    default: false
   sets:
     type: replicator_sets
   container:
