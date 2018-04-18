@@ -100,13 +100,7 @@ class StacheServiceProvider extends ServiceProvider
 
         $this->app->make(Stache::class)->locales(Config::getLocales());
 
-        // On large sites, the Stache may take some time to build initially. If another request
-        // hits Statamic while it's in the middle of being built, it may use a half-created
-        // cache resulting in missing data. Here, we'll exit early with a simple refresh
-        // meta tag. Once the Stache is built, the page will resume loading as usual.
-        if ($this->stache->isPerformingInitialWarmUp() && !app()->runningInConsole()) {
-            $this->outputRefreshResponse();
-        }
+        $this->handleColdCache();
 
         $this->manager = $this->app->make(Manager::class);
 
@@ -212,15 +206,52 @@ class StacheServiceProvider extends ServiceProvider
     }
 
     /**
+     * Handle the cold cache
+     *
+     * On large sites, the Stache may take some time to build initially. If another request
+     * hits Statamic while it's in the middle of being built, it may use a half-created
+     * cache resulting in missing data. Here, we'll exit early with a simple refresh
+     * meta tag. Once the Stache is built, the page will resume loading as usual.
+     *
+     * @return void
+     */
+    private function handleColdCache()
+    {
+        if (app()->runningInConsole()) {
+            return;
+        }
+
+        $start = time();
+
+        while ($this->stache->isPerformingInitialWarmUp()) {
+            if (time() - $start >= 10) {
+                $this->outputRefreshResponse();
+            }
+
+            sleep(1);
+        }
+    }
+
+    /**
      * When the Stache is being built, we'll output a refresh/redirect until it's ready.
      *
      * @return void
      */
     private function outputRefreshResponse()
     {
+        if ($this->isAjaxRequest()) {
+            http_response_code(503);
+            exit(t('stache_building'));
+        }
+
         $html = sprintf('<meta http-equiv="refresh" content="1; URL=\'%s\'" />', request()->getUri());
 
         exit($html);
+    }
+
+    private function isAjaxRequest()
+    {
+        return request()->ajax() || request()->wantsJson();
     }
 
     private function cleanUpForConsole()

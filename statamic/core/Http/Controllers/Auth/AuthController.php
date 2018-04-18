@@ -87,7 +87,7 @@ class AuthController extends CpController
         return redirect($this->loginPath())
             ->withInput($this->request->only('username', 'remember'))
             ->withErrors([
-                'username' => 'These credentials are incorrect.',
+                'username' => t('invalid_creds'),
             ]);
     }
 

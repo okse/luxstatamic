@@ -34,7 +34,7 @@
                     <div v-for="field in config.fields" class="{{ colClass(field.width) }}">
                         <div class="form-group {{ field.type }}-fieldtype">
                             <div :class="{'bard-drag-handle': goingSolo}">
-                                <label class="block" :class="{'bold': field.bold}">
+                                <label v-if="hasMultipleFields" class="block" :class="{'bold': field.bold}">
                                     <template v-if="field.display">{{ field.display }}</template>
                                     <template v-if="!field.display">{{ field.name | capitalize }}</template>
                                     <i class="required" v-if="field.required">*</i>
@@ -75,7 +75,11 @@ export default {
 
     computed: {
         goingSolo() {
-            return this.config.fields.length === 1;
+            const firstFieldtype = _.first(this.config.fields).type;
+            const supportedFieldtypes = ['assets'];
+
+            return this.config.fields.length === 1
+                && _.contains(supportedFieldtypes, firstFieldtype);
         }
     },
 

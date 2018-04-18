@@ -67,7 +67,7 @@ module.exports = {
 
         allowTime: function() {
             if (this.config.allow_time == undefined) {
-                return false;
+                return true;
             }
 
             return this.config.allow_time != false;

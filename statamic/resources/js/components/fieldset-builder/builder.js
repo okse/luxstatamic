@@ -3,7 +3,8 @@ Mousetrap = require('mousetrap');
 module.exports = {
 
     components: {
-        TaxonomyFieldsBuilder: require('./TaxonomyFieldsBuilder.vue')
+        TaxonomyFieldsBuilder: require('./TaxonomyFieldsBuilder.vue'),
+        DateTimeConfiguration: require('./DateTimeConfiguration.vue')
     },
 
     template: require('./builder.template.html'),

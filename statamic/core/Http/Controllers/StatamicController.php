@@ -17,6 +17,7 @@ use Statamic\Routing\Router;
 use Statamic\CP\Publish\SneakPeek;
 use Statamic\Routing\ExceptionRoute;
 use Statamic\Contracts\Data\LocalizedData;
+use Statamic\Exceptions\RedirectException;
 use DebugBar\DataCollector\ConfigCollector;
 
 /**
@@ -218,7 +219,11 @@ class StatamicController extends Controller
         }
 
         // Check for any page protection
-        $this->protect();
+        try {
+            $this->protect();
+        } catch (RedirectException $e) {
+            return redirect($e->getUrl(), $e->getCode());
+        }
 
         // Unpublished content can only be viewed on the front-end if the user has appropriate permission
         if ($this->data instanceof LocalizedData && ! $this->data->published()) {

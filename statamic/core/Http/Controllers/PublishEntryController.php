@@ -50,6 +50,7 @@ class PublishEntryController extends PublishController
             'content_type'      => 'entry',
             'fieldset'          => $fieldset->name(),
             'title'             => $this->title($fieldset),
+            'title_display_name' => array_get($fieldset->fields(), 'title.display', t('title')),
             'uuid'              => null,
             'uri'               => null,
             'url'               => null,
@@ -123,18 +124,6 @@ class PublishEntryController extends PublishController
             'taxonomies'         => $this->getTaxonomies($entry->fieldset()),
             'suggestions'        => $this->getSuggestions($entry->fieldset()),
         ]);
-    }
-
-    /**
-     * Override the method and display the collection name.
-     *
-     * @param  Request  $request
-     * @param  Content  $content
-     * @return string
-     */
-    protected function buildSuccessMessage($request, $content)
-    {
-        return $content->collection()->title();
     }
 
     /**

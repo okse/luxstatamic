@@ -11,32 +11,37 @@
     margin-top: -1px; // do this so we dont have to check if there are or aren't breadcrumbs.
     background: #fafafa;
     font-size: 13px;
+    display: flex;
 
     a, .step {
         color: $color_dark_blue;
-        display: inline-block;
         padding: 5px 20px 5px 33px;
         position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
 
-        &:before, &:after {
-            content: '';
-            position: absolute;
-            top: 0;
-            border: 14px solid transparent;
-            border-left-width: 10px;
-            border-right-width: 0;
-        }
+        &:not(:last-child) {
+            &:before, &:after {
+                content: '';
+                position: absolute;
+                top: 0;
+                border: 14px solid transparent;
+                border-left-width: 10px;
+                border-right-width: 0;
+            }
 
-        &:after {
-            right: 0;
-            border-left-color: $border;
-            z-index: 1;
-        }
+            &:after {
+                right: 0;
+                border-left-color: $border;
+                z-index: 1;
+            }
 
-        &:before {
-            right: 1px;
-            border-left-color: #fafafa;
-            z-index: 2;
+            &:before {
+                right: 1px;
+                border-left-color: #fafafa;
+                z-index: 2;
+            }
         }
 
         &:hover {

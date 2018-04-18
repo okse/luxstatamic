@@ -416,6 +416,12 @@ class AssetContainer implements AssetContainerContract
     {
         $assets = array_get($this->data, 'assets', []);
 
+        // Account for instances where the array contents were deleted by hand,
+        // leaving behind what's technically now just a blank string.
+        if ($assets === '') {
+            $assets = [];
+        }
+
         unset($assets[$asset->path()]);
 
         $this->data['assets'] = $assets;

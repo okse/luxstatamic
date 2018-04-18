@@ -114,9 +114,9 @@
     .breadcrumbs {
         margin-top: 0;
         border-radius: 0 0 3px 3px;
-        position: absolute;
         border-bottom: none;
         bottom: 0;
+        height: 30px;
         width: 100%;
     }
 }
@@ -178,7 +178,7 @@
 }
 
 .asset-browser-content {
-    padding-bottom: 29px; // account for the breadcrumbs
+    position: relative;
 }
 
 .asset-browser-sidebar {
@@ -507,6 +507,8 @@
         background-position: 50% 50%;
         background-repeat: no-repeat;
         padding-bottom: 100%;
+        height: 150px;
+        width: 150px;
     }
 
     .svg-icon {
@@ -650,7 +652,7 @@
 .asset-selector {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    max-height: 93vh;
     background: white;
     box-shadow: 0 0 15px rgba(black, .5);
 
@@ -662,6 +664,7 @@
     .asset-browser-content {
         overflow: auto;
         height: auto;
+        max-height: 100%;
     }
 
     .asset-browser {
@@ -670,7 +673,6 @@
         margin: 0;
         max-height: 100%;
         min-height: 50%;
-        height: 100%;
 
         // The publish form has styles that cascade into here.
         // We'll just undo those.

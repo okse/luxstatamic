@@ -99,6 +99,10 @@ class CollectionsController extends CpController
             $data['fieldset'] = $this->request->input('fieldset');
         }
 
+        if ($this->request->has('template')) {
+            $data['template'] = $this->request->input('template');
+        }
+
         $folder = Collection::create($slug);
         $folder->data($data);
 

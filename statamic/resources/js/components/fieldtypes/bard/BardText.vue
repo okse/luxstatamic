@@ -282,19 +282,8 @@
                 });
 
                 this.editor.subscribe('editableKeydownDelete', e => {
-                    const pos = this.editor.exportSelection();
-
-                    const isInFirstElement = !this.editor.getSelectedParentElement().previousSibling;
-                    const isInLastElement = !this.editor.getSelectedParentElement().nextSibling;
-                    const backspacedAtStart = e.key === 'Backspace' && pos.start === 0 && pos.end === 0 && isInFirstElement;
-                    const deletedAtEnd = e.key === 'Delete' && pos.start === this.plainText().length && pos.end === this.plainText().length && isInLastElement
-
-                    if (backspacedAtStart || deletedAtEnd) e.preventDefault();
-
-                    if (backspacedAtStart) {
-                        this.$emit('backspaced-at-start', this.index);
-                    } else if (deletedAtEnd) {
-                        this.$emit('deleted-at-end', this.index);
+                    if (this.isBlank) {
+                        this.$emit('deleted', this.index);
                     }
                 });
 

@@ -5,7 +5,6 @@
             'max-files-reached': maxFilesReached,
             'empty': ! assets.length,
             'solo': soloAsset,
-            'bard-drag-handle': isInBardField
         }"
         @dragover="dragOver"
         @dragleave="dragStop"
@@ -22,7 +21,7 @@
 
         <template v-if="!loading">
 
-            <div class="manage-assets" v-if="!maxFilesReached">
+            <div class="manage-assets" v-if="!maxFilesReached" :class="{'bard-drag-handle': isInBardField}">
 
                 <div v-if="!containerSpecified">
                     <i class="icon icon-warning"></i>

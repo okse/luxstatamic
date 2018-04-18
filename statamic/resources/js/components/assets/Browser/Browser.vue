@@ -139,13 +139,13 @@
                     @selected="paginationPageSelected">
                 </pagination>
 
-                <breadcrumbs
-                    v-if="!restrictNavigation && !isSearching"
-                    :path="path"
-                    @navigated="folderSelected">
-                </breadcrumbs>
-
             </div>
+
+            <breadcrumbs
+                v-if="!restrictNavigation && !isSearching"
+                :path="path"
+                @navigated="folderSelected">
+            </breadcrumbs>
 
             <asset-editor
                 v-if="showAssetEditor"

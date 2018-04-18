@@ -16,8 +16,6 @@
                 @set-inserted="setInserted"
                 @deleted="deleteSet"
                 @source-toggled="toggleSource"
-                @deleted-at-end="deleteNextSet"
-                @backspaced-at-start="deletePreviousSet"
                 @arrow-up-at-start="goToPreviousTextField"
                 @arrow-down-at-end="goToNextTextField"
                 @text-updated="updateText"
@@ -372,18 +370,6 @@ export default {
             if (block) {
                 this.$nextTick(() => this.getBlock(index - 1).focusAt(focus));
             }
-        },
-
-        deleteNextSet(index) {
-            if (index === this.data.length-1) return;
-
-            this.getBlock(index + 1).delete();
-        },
-
-        deletePreviousSet(index) {
-            if (index === 0) return;
-
-            this.getBlock(index - 1).delete();
         },
 
         goToPreviousTextField(index) {

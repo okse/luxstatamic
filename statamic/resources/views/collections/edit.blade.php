@@ -20,7 +20,14 @@
 
                 <div class="form-group">
                     <label class="block">{{ t('fieldset') }}</label>
+                    <small class="help-block">{{ t('collection_fieldset_instructions') }}</small>
                     <fieldset-fieldtype name="fields[fieldset]" data="{{ $collection->get('fieldset') }}"></fieldset-fieldtype>
+                </div>
+
+                <div class="form-group">
+                    <label class="block">{{ trans_choice('cp.templates', 1) }}</label>
+                    <small class="help-block">{{ t('collection_template_instructions') }}</small>
+                    <template-fieldtype name="template" data="{{ $collection->get('template') }}"></template-fieldtype>
                 </div>
 
                 <div class="form-group">

@@ -21,7 +21,9 @@
         'markdownHardWrap': {{ bool_str(Statamic\API\Config::get('theming.markdown_hard_wrap')) }},
         'conditions': {},
         'MediumEditorExtensions': {},
-        'flash': []
+        'flash': [],
+        'staticCachingEnabled': {{ \Statamic\API\Config::get('caching.static_caching_enabled') ? 'true' : 'false' }},
+        'userId': '{{ \Statamic\API\User::loggedIn() ? \Statamic\API\User::getCurrent()->id() : null }}'
     };
 </script>
 

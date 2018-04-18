@@ -284,7 +284,7 @@ class URL
             ? "https://"
             : "http://";
 
-        $domain_name = $_SERVER['HTTP_HOST'] . '/';
+        $domain_name = array_get($_SERVER, 'HTTP_HOST') . '/';
 
         return $protocol . $domain_name;
     }

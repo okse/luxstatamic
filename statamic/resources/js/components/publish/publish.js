@@ -77,7 +77,8 @@ module.exports = {
             iframeLoading: false,
             previewRequestQueued: false,
             errors: [],
-            continuing: false
+            continuing: false,
+            staticCachingEnabled: window.Statamic.staticCachingEnabled
         };
     },
 
@@ -127,7 +128,7 @@ module.exports = {
             } else if (this.contentType === 'global') {
                 return this.can('globals:'+ this.slug +':edit')
             } else if (this.contentType === 'user') {
-                return this.can('users:edit')
+                return Statamic.userId === this.uuid ? true : this.can('users:edit');
             } else if (this.isAddon || this.isSettings) {
                 return this.can('super');
             }

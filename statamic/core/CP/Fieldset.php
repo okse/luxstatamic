@@ -352,6 +352,10 @@ class Fieldset implements FieldsetContract
             }
         }
 
+        if (empty($contents['date'])) {
+            unset($contents['date']);
+        }
+
         // Remove and then re-set the fields key, so it's last. It'll be the longest array so it's
         // just a little bit nicer to have everything else before it.
         unset($contents['fields']);
@@ -376,10 +380,19 @@ class Fieldset implements FieldsetContract
                 continue;
             }
 
+            // Get rid of literal false values in these keys
+            if (in_array($key, ['localizable'])) {
+                if ($value === false) {
+                    unset($array[$key]);
+                }
+            }
+
             if (is_array($value)) {
-                $array[$key] = array_filter_recursive($value);
+                // Recursion!
+                $array[$key] = $this->discardBlankKeys($value);
             } else {
-                if (empty($value)) {
+                // Strip out nulls and empty strings. We want to keep literal false values.
+                if (in_array($value, [null, ''], true)) {
                     unset($array[$key]);
                 }
             }
