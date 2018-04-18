@@ -10,10 +10,14 @@ content_rep:
   - 
     type: markdown
     text: |
-      ## Ventilasjon og blikkenslager
-      Vi er en tradisjonsrik bedrift med 10 ansatte som driver med arbeid rettet mot ventilasjon. Våre medarbeidere er høyt kvalifiserte, og vi har stort fokus på fagopplæring og etterutdanning. Vi er tilknyttet [NHO](https://www.nho.no/) (Næringslivets Hovedorganisasjon) og [VBL](http://vbl.no/) (Ventilasjons- og Blikkenslagerbedriftenes Landsforbund).
+      ## På en plass oppe i Vågå i Gudbrandsdalen
+      De hadde mange barn, og to av sønnene, som var så ved lag halvvoksne, måtte støtt reke omkring på bygda og tigge. Derfor var de vel kjent med alle veier og stier, og de visste også benveien til Hedalen.
       
-      **Våre kunder finnes blant offentlige og private utbyggere, samt tekniske entreprenører.**
+      Engang ville de gå dit. Men de hadde hørt at noen falkefengere hadde bygd seg en hytte ved Mæla; der ville de gå innom med det samme og se fuglene, og hvordan de fanget dem, og derfor tok de benveien over Langmyrene.
+      
+      Men det led alt så langt på høsten at budeiene hadde reist hjem fra setrene; derfor kunne de ingensteds få hus, og ikke mat heller. De måtte da holde ved veien til Hedalen; men den var bare en grunn råk, og da mørket kom på dem, tapte de råken og ikke fant de fuglefengerhytta heller, og før de visste ordet av det, var de midt i tykkeste Bjølstadskogen.
+      
+      Da de skjønte at de ikke kunne komme fram, ga de seg til å kviste bar, gjorde opp varme, og bygde seg en barhytte; for de hadde med vesleøksa. Og så rev de opp lyng og mose, som de gjorde et leie av. En stund etter de hadde lagt seg, fikk de høre noen som snøftet og været sterkt. Guttene la øret til, lydde vel etter om det skulle være dyr eller skogtroll de hørte. Men så dro det været enda sterkere og sa:
     markdown_class: narrow-width
   - 
     type: cta_set
@@ -72,11 +76,15 @@ content_rep:
       bygda og tigge. Derfor var de vel kjent med alle veier og stier, og de visste også benveien til
       Hedalen.
     quote_name-and-title: Johann Olav Koss, Skøyteløper
+transparent_top: false
+header_invert: false
+hide_from_menu: false
 title: Home
 list:
   - of
   - things
   - here
 id: db0ae4e3-4f10-4802-bc40-0b880cbf02c7
+fieldset: stut
 ---
 This is the home page
