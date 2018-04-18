@@ -1,8 +1,11 @@
 site_name: Stut
 global_logo_main: /assets/stut-logo.svg
 global_logo_element: /assets/stut-logo-element.svg
-global_footer: 'Stut - Statamic theme starter'
-global_okse_logo: true
-global_footer_okse_colophon: Nettsted bygget av
+global_sticky_header: false
+global_footer_1: 'Custom footer content (Globals -> Footer (kolonner))'
+global_footer_2: "2"
+global_footer_3: "3"
+global_okse_logo: false
+global_footer_okse_colophon: Website built by
 author_name: Niles Peppertrout
 id: d9bfc09a-3a90-41d3-8acc-3f551f8432af

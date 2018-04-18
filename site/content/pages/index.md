@@ -38,6 +38,8 @@ content_rep:
         text_and_image_text: |
           ## Ventilasjon
           Vi har lang erfaring med produksjon og montering av ventilasjonsanlegg. Siden etableringen har vi vært opptatt av godt håndverk. I tillegg til montasje, selger vi også ventilasjonskanaler.
+        text_and_image_image:
+          - /assets/img/redwood-balance.jpg
       - 
         type: text_and_image_repset
         image_position: left
@@ -65,17 +67,6 @@ content_rep:
         cta_arrow: true
         cta_button_text: Knappetekst
         cta_button_url: http://url.com
-  - 
-    type: single_header
-    single_header_text: Enkel header!
-  - 
-    type: quote
-    quote_quote: >
-      På en plass oppe i Vågå i Gudbrandsdalen bodde det engang i gamle dager et par fattige folk. De
-      hadde mange barn, og to av sønnene, som var så ved lag halvvoksne, måtte støtt reke omkring på
-      bygda og tigge. Derfor var de vel kjent med alle veier og stier, og de visste også benveien til
-      Hedalen.
-    quote_name-and-title: Johann Olav Koss, Skøyteløper
 transparent_top: false
 header_invert: false
 hide_from_menu: false
@@ -84,7 +75,7 @@ list:
   - of
   - things
   - here
-id: db0ae4e3-4f10-4802-bc40-0b880cbf02c7
 fieldset: stut
+id: db0ae4e3-4f10-4802-bc40-0b880cbf02c7
 ---
 This is the home page
