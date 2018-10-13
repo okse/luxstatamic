@@ -10,6 +10,8 @@ use Statamic\API\YAML;
 use Statamic\Data\Data;
 use Statamic\API\Config;
 use Statamic\API\Fieldset;
+use Statamic\Events\Data\UserSaved;
+use Statamic\Events\Data\UserDeleted;
 use Statamic\Permissions\Permissible;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -44,6 +46,11 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
         }
 
         $this->attributes['username'] = $username;
+    }
+
+    public function userInitials()
+    {
+        return strtoupper(substr($this->username(), 0, 1));
     }
 
     /**
@@ -137,6 +144,9 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
         $this->ensureSecured();
         $this->ensureId();
 
+        $data = [];
+        $oldPath = null;
+
         if ($this->shouldWriteFile()) {
             $data = $this->toSavableArray();
             $content = array_pull($data, 'content');
@@ -146,13 +156,16 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
 
             // Has this been renamed?
             if ($this->path() !== $this->originalPath()) {
-                File::disk('users')->delete($this->originalPath());
+                $oldPath = $this->originalPath();
+                File::disk('users')->delete($oldPath);
             }
         }
 
         $this->syncOriginal();
 
-        event('user.saved', $this);
+        // Whoever wants to know about it can do so now.
+        event('user.saved', $this); // Deprecated! Please listen on UserSaved event instead!
+        event(new UserSaved($this, $data, $oldPath));
 
         return $this;
     }
@@ -214,10 +227,11 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
      * Secure the password
      *
      * @param bool $save  Whether to save the user
+     * @param bool $false  Whether to secure it again
      */
-    public function securePassword($save = true)
+    public function securePassword($save = true, $force = false)
     {
-        if ($this->isSecured()) {
+        if (!$force && $this->isSecured()) {
             return;
         }
 
@@ -268,11 +282,12 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
      */
     public function supplement()
     {
-        $this->supplements['last_modified'] = $this->lastModified()->timestamp;
-        $this->supplements['username'] = $this->username();
-        $this->supplements['email'] = $this->email();
-        $this->supplements['status'] = $this->status();
-        $this->supplements['edit_url'] = $this->editUrl();
+        $this->setSupplement('last_modified', $this->lastModified()->timestamp);
+        $this->setSupplement('username', $this->username());
+        $this->setSupplement('email', $this->email());
+        $this->setSupplement('status', $this->status());
+        $this->setSupplement('edit_url', $this->editUrl());
+        $this->setSupplement('edit_password_url', $this->editPasswordUrl());
 
         if ($first_name = $this->get('first_name')) {
             $name = $first_name;
@@ -281,15 +296,15 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
                 $name .= ' ' . $last_name;
             }
 
-            $this->supplements['name'] = $name;
+            $this->setSupplement('name', $name);
         }
 
         foreach ($this->roles() as $role) {
-            $this->supplements['is_'.Str::slug($role->title(), '_')] = true;
+            $this->setSupplement('is_'.Str::slug($role->title(), '_'), true);
         }
 
         foreach ($this->groups() as $group) {
-            $this->supplements['in_'.Str::slug($group->title(), '_')] = true;
+            $this->setSupplement('in_'.Str::slug($group->title(), '_'), true);
         }
 
         if ($this->supplement_taxonomies) {
@@ -324,7 +339,7 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
      */
     public function getAvatar($size = 64)
     {
-        return Config::get('users.enable_gravatar') ? gravatar($this->email(), $size) : 'INSERT FALLBACK';
+        return Config::get('users.enable_gravatar') ? gravatar($this->email(), $size) : null;
     }
 
     /**
@@ -492,18 +507,27 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
         File::disk('users')->delete($this->path());
 
         // Whoever wants to know about it can do so now.
-        $event_class = 'Statamic\Events\Data\UserDeleted';
-        event(new $event_class($this->id(), [$this->path()]));
+        event(new UserDeleted($this->id(), [$this->path()]));
     }
 
     /**
-     * The URL to edit it in the CP
+     * The URL to edit the user in the CP
      *
      * @return mixed
      */
     public function editUrl()
     {
         return cp_route('user.edit', $this->username());
+    }
+
+    /**
+     * The URL to edit the user's password in the CP
+     *
+     * @return mixed
+     */
+    public function editPasswordUrl()
+    {
+        return cp_route('user.password.edit', $this->username());
     }
 
     /**
@@ -515,7 +539,9 @@ class User extends Data implements UserContract, Authenticatable, PermissibleCon
     public function fieldset($fieldset = null)
     {
         if (is_null($fieldset)) {
-            return Fieldset::get('user');
+            $fieldset = Fieldset::get('user');
+            event(new \Statamic\Events\Data\FindingFieldset($fieldset, 'user', $this));
+            return $fieldset;
         }
 
         $this->set('fieldset', $fieldset);

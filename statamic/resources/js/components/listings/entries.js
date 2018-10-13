@@ -1,7 +1,7 @@
 import HasLocaleSelector from '../HasLocaleSelector';
 import HasShowDraftsSelector from '../HasShowDraftsSelector';
 
-module.exports = {
+export default {
 
     mixins: [HasLocaleSelector, HasShowDraftsSelector, Dossier],
 
@@ -19,6 +19,7 @@ module.exports = {
                 sort: this.sort,
                 sortOrder: this.sortOrder,
                 reorderable: this.reorderable,
+                checkboxes: this.canDelete,
                 partials: {}
             }
         }

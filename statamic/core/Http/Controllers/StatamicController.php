@@ -270,7 +270,7 @@ class StatamicController extends Controller
         // Remove ignored segments
         $segments = explode('/', $segments);
         $ignore = array_get(Config::getRoutes(), 'ignore', []);
-        $remove_segments = array_intersect_key($ignore, $segments);
+        $remove_segments = array_intersect($ignore, $segments);
         $segments = join('/', array_diff($segments, $remove_segments));
 
         return $segments;
@@ -413,6 +413,8 @@ class StatamicController extends Controller
 
         $this->setUpDebugBar();
 
+        $this->fireResponseEvent();
+
         return $this->response;
     }
 
@@ -467,6 +469,11 @@ class StatamicController extends Controller
             $this->response->header($header, $value);
         }
 
+        $this->fireResponseEvent();
+    }
+
+    private function fireResponseEvent()
+    {
         // Allow addons to modify the response. They can add headers, modify the content, etc.
         // The event will get the Response object as a payload, which they simply need to modify.
         event('response.created', $this->response);

@@ -2,6 +2,7 @@
 
 namespace Statamic\Data\Taxonomies;
 
+use Carbon\Carbon;
 use Statamic\API\Data;
 use Statamic\API\Config;
 use Statamic\API\Entry;
@@ -401,14 +402,14 @@ class Term extends Content implements TermContract
     {
         parent::supplement();
 
-        $this->supplements['default_slug'] = $this->defaultSlug();
-        $this->supplements['title'] = $this->title();
-        $this->supplements['taxonomy_group'] = $this->taxonomyName(); // @todo: remove
-        $this->supplements['taxonomy'] = $this->taxonomyName();
-        $this->supplements['count'] = $this->count();
-        $this->supplements['relation_count'] = $this->count();
-        $this->supplements['is_term'] = true;
-        $this->supplements['results'] = $this->count();
+        $this->setSupplement('default_slug', $this->defaultSlug());
+        $this->setSupplement('title', $this->title());
+        $this->setSupplement('taxonomy_group', $this->taxonomyName()); // @todo: remove
+        $this->setSupplement('taxonomy', $this->taxonomyName());
+        $this->setSupplement('count', $this->count());
+        $this->setSupplement('relation_count', $this->count());
+        $this->setSupplement('is_term', true);
+        $this->setSupplement('results', $this->count());
     }
 
     public function title()
@@ -558,5 +559,20 @@ class Term extends Content implements TermContract
         }
 
         $data->save();
+    }
+
+    public function lastModified()
+    {
+        if (File::disk('content')->exists($path = $this->path())) {
+            return Carbon::createFromTimestamp(File::disk('content')->lastModified($path));
+        }
+
+        if ($entry = $this->collection()->first()) {
+            return $entry->lastModified();
+        }
+
+        // A term with no file or entries have been created programatically and
+        // haven't been saved yet. We'll use the current time in that case.
+        return Carbon::now();
     }
 }

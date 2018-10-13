@@ -51,7 +51,7 @@
 </template>
 
 <script>
-module.exports = {
+export default {
 
     mixins: [Fieldtype],
 
@@ -92,6 +92,7 @@ module.exports = {
     methods: {
         addRow: function() {
             this.data.push({ value: '', text: '' });
+            this.initSortable();
         },
 
         deleteRow: function(index) {

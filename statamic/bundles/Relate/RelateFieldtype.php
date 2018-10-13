@@ -6,6 +6,8 @@ use Statamic\Addons\Suggest\SuggestFieldtype;
 
 class RelateFieldtype extends SuggestFieldtype
 {
+    public $category = ['relationship'];
+
     public function preProcess($data)
     {
         $max_items = (int) $this->getFieldConfig('max_items');
@@ -22,17 +24,6 @@ class RelateFieldtype extends SuggestFieldtype
         // fieldtype uses another pages fieldtype for its "parent" value.
         if ($this->is_config && $max_items == 1) {
             return empty($data) ? null : $data[0];
-        }
-
-        return $data;
-    }
-
-    public function process($data)
-    {
-        $max_items = (int) $this->getFieldConfig('max_items');
-
-        if ($max_items === 1 && is_array($data)) {
-            return $data[0];
         }
 
         return $data;

@@ -3,7 +3,6 @@
 namespace Statamic\Assets;
 
 use Carbon\Carbon;
-use Stringy\Stringy;
 use Statamic\API\Str;
 use Statamic\API\URL;
 use Statamic\API\File;
@@ -14,6 +13,8 @@ use Statamic\API\Image;
 use Statamic\Data\Data;
 use Statamic\API\Config;
 use Statamic\API\Fieldset;
+use Statamic\Events\Data\AssetDeleted;
+use Statamic\Events\Data\AssetMoved;
 use Statamic\Events\Data\AssetReplaced;
 use Statamic\Events\Data\AssetUploaded;
 use Statamic\API\AssetContainer as AssetContainerAPI;
@@ -164,13 +165,7 @@ class Asset extends Data implements AssetContract
      */
     public function absoluteUrl()
     {
-        $url = $this->url();
-
-        if ($this->driver() === 'local') {
-            $url = URL::prependSiteRoot($url);
-        }
-
-        return URL::makeAbsolute($url);
+        return URL::makeAbsolute($this->url());
     }
 
     /**
@@ -284,6 +279,9 @@ class Asset extends Data implements AssetContract
 
         // Also, delete the actual file
         $this->disk()->delete($this->path());
+
+        // Whoever wants to know about it can do so now.
+        event(new AssetDeleted($this));
     }
 
     /**
@@ -347,6 +345,7 @@ class Asset extends Data implements AssetContract
         $this->container()->removeAsset($this);
 
         $oldPath = $this->path();
+        $oldResolvedPath = $this->resolvedPath();
 
         $pi = pathinfo($oldPath);
 
@@ -361,6 +360,9 @@ class Asset extends Data implements AssetContract
         // Re-add the asset definition to the container.
         $this->container()->addAsset($this);
         $this->container()->save();
+
+        // Whoever wants to know about it can do so now.
+        event(new AssetMoved($this, $oldResolvedPath));
     }
 
     /**
@@ -416,7 +418,7 @@ class Asset extends Data implements AssetContract
 
         $extra = [
             'id'             => $this->id(),
-            'title'          => $this->get('title', $this->filename()),
+            'title'          => $this->get('title'),
             'url'            => $this->url(),
             'permalink'      => $this->absoluteUrl(),
             'path'           => $this->path(),
@@ -453,6 +455,7 @@ class Asset extends Data implements AssetContract
                 'last_modified'  => (string) $this->lastModified(),
                 'last_modified_timestamp' => $this->lastModified()->timestamp,
                 'last_modified_instance'  => $this->lastModified(),
+                'focus' => $this->get('focus', '50-50'),
                 'focus_css' => \Statamic\View\Modify::value($this->get('focus'))->backgroundPosition()->fetch(),
             ]);
         }
@@ -479,18 +482,15 @@ class Asset extends Data implements AssetContract
      */
     public function upload(UploadedFile $file)
     {
-        $ext       = $file->getClientOriginalExtension();
-        $filename  = $this->getSafeFilename(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME));
-        $basename  = $filename . '.' . $ext;
+        $extension = $file->getClientOriginalExtension();
+        $filename  = Path::safeFilename($file->getClientOriginalName());
 
         $directory = $this->folder();
         $directory = ($directory === '.') ? '/' : $directory;
-        $path      = Path::tidy($directory . '/' . $filename . '.' . $ext);
+        $path      = Path::tidy($directory . '/' . $filename . '.' . $extension);
 
-        // If the file exists, we'll append a timestamp to prevent overwriting.
         if ($this->disk()->exists($path)) {
-            $basename = $filename . '-' . time() . '.' . $ext;
-            $path = Str::removeLeft(Path::assemble($directory, $basename), '/');
+            $path = Path::appendTimestamp($path);
         }
 
         $this->performUpload($file, $path);
@@ -501,22 +501,6 @@ class Asset extends Data implements AssetContract
 
         // Legacy/Deprecated. @todo: Remove in 2.3
         event('asset.uploaded', $path);
-    }
-
-    private function getSafeFilename($string)
-    {
-        $replacements = [
-            ' ' => '-',
-            '#' => '-',
-        ];
-
-        $str = Stringy::create($string)->toAscii();
-
-        foreach ($replacements as $from => $to) {
-            $str = $str->replace($from, $to);
-        }
-
-        return (string) $str;
     }
 
     /**

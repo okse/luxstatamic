@@ -54,7 +54,9 @@
 
 <script>
 
+    import autosize from 'autosize';
     import AutoList from './AutoList';
+    import AutoHR from 'medium-editor-autohr';
     import InsertsAssets from '../InsertsAssets';
 
     export default {
@@ -76,7 +78,7 @@
                 optionsTopPosition: 0,
                 focusedElement: null,
                 dropped: { sibling: null, position: null },
-                text: this.data.text
+                text: this.data.text || ''
             };
         },
 
@@ -226,7 +228,8 @@
 
                 let extensions = Object.assign({
                     imageDragging: {},
-                    autolist: new AutoList
+                    autolist: new AutoList,
+                    autohr: new AutoHR
                 }, _.map(Statamic.MediumEditorExtensions, ext => new ext));
 
                 if (this.$parent.config.container) {
@@ -236,6 +239,7 @@
 
                 let opts = {
                     toolbar:        { buttons },
+                    buttonLabels:   'fontawesome',
                     autoLink:       this.$parent.config.autolink || false,
                     placeholder:    false,
                     paste:          { forcePlainText: this.$parent.config.force_plain_text, cleanPastedHTML: this.$parent.config.clean_pasted_html },
@@ -269,6 +273,9 @@
 
                     // Clean up any annoying span tags that were added by contenteditable.
                     $(this.field).find('span[style]').contents().unwrap();
+
+                    // Aaaaand style attributes...
+                    $(this.field).find('*').contents().removeAttr('style');
 
                     this.text = this.editor.getContent();
                 });

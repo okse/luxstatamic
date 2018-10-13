@@ -5,13 +5,13 @@
 
     <script>
         <?php
-            $taxonomies = isset($taxonomies) ? $taxonomies : [];
             $suggestions = isset($suggestions) ? $suggestions : [];
         ?>
         Statamic.Publish = {
+            locale: '{!! $locale !!}',
             contentData: {!! json_encode($content_data) !!},
-            taxonomies: {!! json_encode($taxonomies) !!},
-            suggestions: {!! json_encode($suggestions) !!}
+            suggestions: {!! json_encode($suggestions) !!},
+            fieldset: {!! json_encode($fieldset) !!}
         };
     </script>
 
@@ -20,7 +20,6 @@
              :is-new="{{ bool_str($is_new) }}"
              content-type="{{ $content_type }}"
              uuid="{{ $uuid }}"
-             fieldset-name="{{ $fieldset }}"
              slug="{{ $slug }}"
              uri="{{ $uri }}"
              url="{{ $url }}"
@@ -29,8 +28,8 @@
              locale="{{ $locale }}"
              locales="{{ json_encode($locales) }}"
              :is-default-locale="{{ bool_str($is_default_locale) }}"
-             title-display-name="{{ isset($title_display_name) ? $title_display_name : t('title') }}"
              :remove-title="true"
+             :allow-save-and-add-another="{{ bool_str(in_array($content_type, ['page', 'entry', 'taxonomy'])) }}"
     ></publish>
 
 @endsection

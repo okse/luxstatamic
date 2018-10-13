@@ -90,7 +90,8 @@ class Parser
 
         // The parseConditionals method executes any PHP in the text, so clean it up.
         if (! $allowPhp) {
-            $text = str_replace(['<?', '?>'], ['&lt;?', '?&gt;'], $text);
+            $text = str_replace(['<?', '?>', '<%', '%>'], ['&lt;?', '?&gt;', '&lt;%', '%&gt;'], $text);
+            $text = preg_replace('/<script(?:.*)language="php"(?:.*)>.*<\/script>/', '', $text);
         }
 
         // <statamic>
@@ -1332,9 +1333,13 @@ class Parser
             return Modify::value($data)->context($context)->$modifier($parameters)->fetch();
 
         } catch (ModifierException $e) {
-            \Log::notice(
-                sprintf('Error in [%s] modifier: %s', $e->getModifier(), $e->getMessage())
-            );
+            $dontLog = ['noparse'];
+
+            if (! in_array($e->getModifier(), $dontLog)) {
+                \Log::notice(
+                    sprintf('Error in [%s] modifier: %s', $e->getModifier(), $e->getMessage())
+                );
+            }
 
             return $data;
         }

@@ -42,6 +42,18 @@ class Fieldtype implements FieldtypeInterface
     public $is_config = false;
 
     /**
+     * Fieldtype categories
+     * @var array
+     */
+    public $category = ['text'];
+
+    /**
+     * Whether this fieldtype should appear in the selector
+     * @var bool
+     */
+    public $selectable = true;
+
+    /**
      * Create a new fieldtype instance
      */
     public function __construct()
@@ -53,6 +65,8 @@ class Fieldtype implements FieldtypeInterface
     public function setFieldConfig($config)
     {
         $this->field_config = $config;
+
+        return $this;
     }
 
     /**
@@ -115,6 +129,11 @@ class Fieldtype implements FieldtypeInterface
     public function isPrimaryFieldtype()
     {
         return $this->getAddonClassName() === $this->getClassNameWithoutSuffix();
+    }
+
+    public function getIcon()
+    {
+        return $this->isFirstParty() ? $this->getHandle() : 'generic';
     }
 
     /**
@@ -222,7 +241,13 @@ class Fieldtype implements FieldtypeInterface
 
     public function getConfigFieldset()
     {
-        $fields = array_get($this->getMeta(), 'fieldtype_fields', []);
+        $fieldsKey = 'fieldtype_fields';
+
+        if (!$this->isPrimaryFieldtype()) {
+            $fieldsKey = snake_case($this->getClassNameWithoutSuffix()) . '_' . $fieldsKey;
+        }
+
+        $fields = array_get($this->getMeta(), $fieldsKey, []);
 
         $fieldset = Fieldset::create('config', compact('fields'));
         $fieldset->type('fieldtype');

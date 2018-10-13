@@ -9,6 +9,9 @@ Route::group(['prefix' => CP_ROUTE . '/auth'], function () {
     get('logout', 'Auth\AuthController@getLogout')->name('logout');
     get('login/reset', 'Auth\AuthController@getPasswordReset')->name('login.reset');
     post('login/reset', 'Auth\AuthController@postPasswordReset');
+    get('token', function () {
+        return csrf_token();
+    });
 });
 
 /**
@@ -136,8 +139,10 @@ Route::group(['prefix' => CP_ROUTE, 'middleware' => ['auth']], function () {
     // Users
     Route::group(['prefix' => 'users'], function () {
         get('account', 'UsersController@account')->name('account');
+        get('account/password', 'UsersController@accountPassword')->name('account.password');
         get('/', 'UsersController@index')->name('users');
         get('get', 'UsersController@get')->name('users.get');
+        get('search', 'UsersController@search')->name('users.search');
         get('create', 'UsersController@create')->name('user.create');
         delete('delete', 'UsersController@delete')->name('users.delete');
         post('publish', 'PublishUserController@save')->name('user.save');
@@ -166,9 +171,11 @@ Route::group(['prefix' => CP_ROUTE, 'middleware' => ['auth']], function () {
             post('{group}', 'UserGroupsController@update')->name('user.group');
         });
 
-        get('{username}', ['uses' => 'UsersController@edit', 'as' => 'user.edit']);
+        get('{username}', 'UsersController@edit')->name('user.edit');
         get('{username}/reset-url', 'UsersController@getResetUrl');
         get('{username}/send-reset-email', 'UsersController@sendResetEmail');
+        get('{username}/password/edit', 'UsersController@editPassword')->name('user.password.edit');
+        post('{username}/password', 'UsersController@updatePassword')->name('user.password.update');
     });
 
     Route::group(['prefix' => 'forms'], function () {
@@ -249,14 +256,15 @@ Route::group(['prefix' => CP_ROUTE, 'middleware' => ['auth']], function () {
     });
 
     // Fieldsets
+    Route::group(['prefix' => 'fieldsets-json'], function () {
+        get('/', 'FieldsetJsonController@index');
+        get('{fieldset}', 'FieldsetJsonController@show');
+        get('{fieldset}/edit', 'FieldsetJsonController@edit');
+    });
     Route::group(['prefix' => 'fieldsets'], function () {
-        get('get', 'FieldsetController@get')->name('fieldsets.get');
-        get('{fieldset}/get', 'FieldsetController@getFieldset')->name('fieldset.get');
-
         Route::group(['middleware' => 'configurable'], function () {
             get('/', 'FieldsetController@index')->name('fieldsets');
             get('/create', 'FieldsetController@create')->name('fieldset.create');
-            post('/update-layout/{fieldset}', 'FieldsetController@updateLayout')->name('fieldset.update-layout');
             delete('delete', 'FieldsetController@delete')->name('fieldsets.delete');
             post('quick', 'FieldsetController@quickStore');
             get('/{fieldset}', 'FieldsetController@edit')->name('fieldset.edit');

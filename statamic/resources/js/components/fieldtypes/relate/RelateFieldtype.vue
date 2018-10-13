@@ -12,7 +12,8 @@
             :suggestions="suggestions"
             :max-items="maxItems"
             :create="canCreate"
-            :name="name">
+            :name="name"
+            :disabled="disabled">
         </relate-tags>
 
         <relate-panes
@@ -32,7 +33,7 @@ import RelatePanes from './RelatePanesFieldtype.vue'
 import RelateTags from './RelateTagsFieldtype.vue'
 import GetsSuggestKey from '../GetsSuggestKey';
 
-module.exports = {
+export default {
 
     mixins: [Fieldtype, GetsSuggestKey],
 
@@ -41,7 +42,10 @@ module.exports = {
         'relate-tags': RelateTags
     },
 
-    props: ['suggestionsProp'],
+    props: [
+        'suggestionsProp',
+        'disabled'
+    ],
 
     data: function() {
         return {
