@@ -5,6 +5,6 @@ settings:
   system:
     locales:
       en:
-        url: http://stut.okse
+        url: http://stut.local
   caching:
     static_caching_enabled: false
