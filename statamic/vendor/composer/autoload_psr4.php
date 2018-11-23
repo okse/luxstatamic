@@ -42,7 +42,7 @@ return array(
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'League\\OAuth1\\' => array($vendorDir . '/league/oauth1-client/src'),
-    'League\\Glide\\' => array($vendorDir . '/league/glide/src', $vendorDir . '/league/glide-laravel/src', $vendorDir . '/league/glide-symfony/src'),
+    'League\\Glide\\' => array($vendorDir . '/league/glide/src', $vendorDir . '/league/glide-symfony/src', $vendorDir . '/league/glide-laravel/src'),
     'League\\Flysystem\\ZipArchive\\' => array($vendorDir . '/league/flysystem-ziparchive/src'),
     'League\\Flysystem\\Cached\\' => array($vendorDir . '/league/flysystem-cached-adapter/src'),
     'League\\Flysystem\\AwsS3v3\\' => array($vendorDir . '/league/flysystem-aws-s3-v3/src'),
@@ -60,7 +60,7 @@ return array(
     'ComposerIncludeFiles\\' => array($vendorDir . '/funkjedi/composer-include-files/src'),
     'Collective\\Html\\' => array($vendorDir . '/laravelcollective/html/src'),
     'ClassPreloader\\' => array($vendorDir . '/classpreloader/classpreloader/src'),
-    'Carbon\\' => array($vendorDir . '/nesbot/carbon/src/Carbon'),
     'Barryvdh\\Debugbar\\' => array($vendorDir . '/barryvdh/laravel-debugbar/src'),
     'Aws\\' => array($vendorDir . '/aws/aws-sdk-php/src'),
+    '' => array($vendorDir . '/nesbot/carbon/src'),
 );
