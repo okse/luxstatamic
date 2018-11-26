@@ -5,6 +5,6 @@ settings:
   system:
     locales:
       en:
-        url: http://stut.okse.no
+        url: https://designsystem.okse.no
   caching:
     static_caching_enabled: true

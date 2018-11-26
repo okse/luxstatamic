@@ -1,9 +1,8 @@
-license_key: ec291c20-8957-4eb7-b1b6-a3bf88d88879
 locales:
   en:
+    url: http://designsystem.local
     full: en_US
     name: English
-    url: http://stut.dev/
 timezone: UTC
 date_format: F jS, Y
 default_extension: md
@@ -40,6 +39,6 @@ redactor:
       buttons:
         - bold
         - italic
-csrf_exclude: [ ]
 send_powered_by_header: true
 ensure_unique_ids: true
+yaml_parser: spyc

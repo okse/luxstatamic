@@ -1,0 +1,13 @@
+sections:
+  main:
+    display: Main
+    fields:
+      title:
+        display: Title
+        type: text
+      figma_url:
+        type: text
+        display: Figma URL
+taxonomies: true
+title: Component
+create_title: component

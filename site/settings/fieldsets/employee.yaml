@@ -3,7 +3,7 @@ create_title: Employee
 taxonomies: false
 fields:
   title:
-    type: title
+    type: text
     display: Full name
   employee_sort_key:
     type: text

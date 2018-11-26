@@ -7,6 +7,7 @@ content_rep:
     high: true
     min_height: 450px
     hero_dark_text: true
+    hero_full_width: false
   - 
     type: markdown
     text: |
@@ -36,22 +37,22 @@ content_rep:
         type: text_and_image_repset
         image_position: left
         text_and_image_text: |
-          ## Ventilasjon
-          Vi har lang erfaring med produksjon og montering av ventilasjonsanlegg. Siden etableringen har vi vært opptatt av godt håndverk. I tillegg til montasje, selger vi også ventilasjonskanaler.
+          ## Per
+          På en plass oppe i Vågå i Gudbrandsdalen bodde det engang i gamle dager et par fattige folk. De hadde mange barn, og to av sønnene, som var så ved lag halvvoksne, måtte støtt reke omkring på bygda og tigge. Derfor var de vel kjent med alle veier og stier, og de visste også benveien til Hedalen.
         text_and_image_image:
           - /assets/img/redwood-balance.jpg
       - 
         type: text_and_image_repset
         image_position: left
         text_and_image_text: |
-          ## Blikkenslager
-          Vi håndterer små og store blikkenslagerarbeider innen blant annet båndtekking og produksjon av pipehatter og ventilasjonshatter til bolighus og industri.
+          ## Pål
+          På en plass oppe i Vågå i Gudbrandsdalen bodde det engang i gamle dager et par fattige folk. De hadde mange barn, og to av sønnene, som var så ved lag halvvoksne, måtte støtt reke omkring på bygda og tigge. Derfor var de vel kjent med alle veier og stier, og de visste også benveien til Hedalen.
       - 
         type: text_and_image_repset
         image_position: left
         text_and_image_text: |
-          ## Beslag
-          Fra vårt verksted kan vi produsere og montere alle typer av beslag. Vi skreddersyr etter tegning, men kan også komme med ideer til beslagsarbeid om du ønsker det.
+          ## Espen
+          På en plass oppe i Vågå i Gudbrandsdalen bodde det engang i gamle dager et par fattige folk. De hadde mange barn, og to av sønnene, som var så ved lag halvvoksne, måtte støtt reke omkring på bygda og tigge. Derfor var de vel kjent med alle veier og stier, og de visste også benveien til Hedalen.
   - 
     type: single_asset
     min_height: "350"
@@ -70,6 +71,31 @@ content_rep:
 transparent_top: false
 header_invert: false
 hide_from_menu: false
+visuelt_innhold:
+  - 
+    type: image
+  - 
+    type: image
+  - 
+    type: image
+  - 
+    type: table
+    tabletest:
+      - 
+        cells:
+          - "1"
+          - "2"
+          - "3"
+  - 
+    type: text
+    text: |
+      <p>På en plass oppe i Vågå i Gudbrandsdalen bodde det engang i gamle dager et par fattige folk. De hadde mange barn, og to av sønnene, som var så ved lag halvvoksne, måtte støtt reke omkring på bygda og tigge. Derfor var de vel kjent med alle veier og stier, og de visste også benveien til Hedalen.
+      
+      Engang ville de gå dit. Men de hadde hørt at noen falkefengere hadde bygd seg en hytte ved Mæla; der ville de gå innom med det samme og se fuglene, og hvordan de fanget dem, og derfor tok de benveien over Langmyrene.
+      
+      Men det led alt så langt på høsten at budeiene hadde reist hjem fra setrene; derfor kunne de ingensteds få hus, og ikke mat heller. De måtte da holde ved veien til Hedalen; men den var bare en grunn råk, og da mørket kom på dem, tapte de råken og ikke fant de fuglefengerhytta heller, og før de visste ordet av det, var de midt i tykkeste Bjølstadskogen.
+      
+      Da de skjønte at de ikke kunne komme fram, ga de seg til å kviste bar, gjorde opp varme, og bygde seg en barhytte; for de hadde med vesleøksa. Og så rev de opp lyng og mose, som de gjorde et leie av. En stund etter de hadde lagt seg, fikk de høre noen som snøftet og været sterkt. Guttene la øret til, lydde vel etter om det skulle være dyr eller skogtroll de hørte. Men så dro det været enda sterkere og sa:</p><p><br></p><p><br></p><p><br></p>
 title: Home
 list:
   - of

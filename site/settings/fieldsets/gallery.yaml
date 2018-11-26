@@ -2,7 +2,7 @@ title: Gallery
 taxonomies: false
 fields:
   title:
-    type: title
+    type: text
     display: Title
   content:
     type: markdown
